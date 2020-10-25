@@ -129,8 +129,8 @@ print_line(L) :-
     print_bot(L), nl.
 
 player(1). % First Player.
-playerColour(1, 'orange', 'purple'). % Orange | Purple, Purple | Green, Green | Orange -> playerColour(Player, Colour1, Colour2)
-playerColour(2, 'orange', 'green').  % Orange | Green, Purple | Orange, Green | Purple -> playerColour(Player, Colour1, Colour2)
+% playerColour(1, 'orange', 'purple'). % Orange | Purple, Purple | Green, Green | Orange -> playerColour(Player, Colour1, Colour2)
+% playerColour(2, 'orange', 'green').  % Orange | Green, Purple | Orange, Green | Purple -> playerColour(Player, Colour1, Colour2)
 
 
 updatePlayer(Colour) :-
