@@ -1,4 +1,4 @@
-% use_module(library(lists)).
+:- use_module(library(lists)).
 :- dynamic initial/1.
 :- dynamic player/1.
 
@@ -129,13 +129,10 @@ print_line(L) :-
     print_bot(L), nl.
 
 player(1). % First Player.
-% playerColour(1, 'orange', 'purple'). % Orange | Purple, Purple | Green, Green | Orange -> playerColour(Player, Colour1, Colour2)
-% playerColour(2, 'orange', 'green').  % Orange | Green, Purple | Orange, Green | Purple -> playerColour(Player, Colour1, Colour2)
 
-
-updatePlayer(Colour) :-
+updatePlayer(Number) :-
     retract(player(_)),
-    assert(player(Colour)).
+    assert(player(Number)).
 
 updateBoard(Board) :-
     retract(initial(_)),
