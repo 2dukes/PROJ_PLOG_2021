@@ -142,7 +142,7 @@ Um jogador sagra-se vencedor assim que conseguir completar uma segunda cor. <br 
 </p>
 
 # Visualização do estado de jogo ##
-<p style='text-align: justify;'> 
+<p align="justify"> 
     Para visualizar o tabuleiro usamos o predicado display_game/2 que imprime uma linha do tabuleiro (print_line/1) e continua recursivamente até imprimir todas as linhas. Através do predicado print_line/1 imprimimos no ecrã cada linha dividida por três partes(print_top, print_mid, print_bot), para conseguirmos as formas dos hexágonos com a letra da cor correspondente no centro.
 </p>
 
@@ -210,8 +210,4 @@ print_line(L) :-
 
 ```
 
->Nota: Para uma correta visualização do jogo a fonte a utilizar deverá ser a DejaVu Sans Mono (Linux) ou Consolas (Windows).
-
->Links: <br />
->https://nestorgames.com/rulebooks/ALLIANCES_EN.pdf \
->https://github.com/literallysofia/feup-plog/blob/master/Projeto1/Mid-delivery/PLOG_TP1_RI_Fabrik2.PDF
+>Nota: Para uma correta visualização do jogo as fontes recomendadas a utilizar são a DejaVu Sans Mono ou Consolas.
