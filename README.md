@@ -14,8 +14,8 @@
 
 
 # O Jogo: *Alliances*
-<p style='text-align: justify;'> 
-    O *Alliances* é um jogo de tabuleiro para dois jogadores. O objetivo do jogo consiste em conectar lados opostos do tabuleiro, que partilhem a mesma cor. Para fazer essa ligação, os jogadores terão de usar a cor respeitante aos lados que estão a conectar, podendo também ter a ajuda da sua cor aliada.
+<p align="justify"> 
+    O <i>Alliances</i> é um jogo de tabuleiro para dois jogadores. O objetivo do jogo consiste em conectar lados opostos do tabuleiro, que partilhem a mesma cor. Para fazer essa ligação, os jogadores terão de usar a cor respeitante aos lados que estão a conectar, podendo também ter a ajuda da sua cor aliada.
 </p>
 
 <p align="center">
@@ -25,14 +25,14 @@
 
 <br />
 
-<p style='text-align: justify;'> 
+<p align="justify"> 
     O material necessário para o jogo é um tabuleiro hexagonal, 42 discos verdes, 42 discos laranjas, 42 discos roxos e 2 discos prateados.
 </p>
 
 <br />
 
 ## Preparação e regras
-<p style='text-align: justify;'> 
+<p align="justify"> 
     Inicialmente, o tabuleiro está vazio. O jogador um inicia a sua jogada, pegando num disco e colocando-o num lugar vazio. O jogador dois executa o mesmo procedimento. Durante o decorrer do jogo, caso um jogador consiga conectar dois lados oposto do tabuleiro (mesma cor), podendo utilizar cores aliadas (como indica a imagem a seguir), o mesmo deverá pegar num disco da cor que completou e colocá-lo sobre a célula correspondente do seu gráfico, enquanto que o adversário deverá pegar num disco prateado e colocá-lo igualmente no        respetivo lugar do seu gráfico (indicando que perdeu essa cor). 
 </p>
 
@@ -44,7 +44,7 @@
 </p>
 
 
-<p style='text-align: justify;'> 
+<p align="justify"> 
     Se um movimento torna impossível para qualquer jogador conectar uma cor particular (cercando-a), então o jogador adversário bloqueado ganha essa cor.
 </p>
 
@@ -54,7 +54,7 @@
 </p>
 
 <br />
-<p style='text-align: justify;'> 
+<p align="justify"> 
     Cada cor só poderá ser ganha por um jogador; aquele que alcança a mesma primeiro. No caso de um jogador formar uma conexão para ambos os jogadores, durante uma jogada, a primeira cor completada pertencerá ao jogador que efetuou a jogada.
 </p>
 
