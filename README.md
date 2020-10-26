@@ -76,7 +76,29 @@ Um jogador sagra-se vencedor assim que conseguir completar uma segunda cor. <br 
 
 <br />
 
-### Estado Inicial
+### Player Atual
+```
+:- dynamic player/1.
+player(1). % First Player.
+```
+
+<br />
+
+### Peças por jogar
+```
+:- dynamic green/1.
+:- dynamic orange/1.
+:- dynamic purple/1.
+
+orange(42).
+purple(42).
+green(42).
+```
+
+<br />
+
+### Tabuleiro
+#### Estado Inicial
 >**initial**([\
     [nodef, nodef, nodef, space, empty, empty, empty, empty, empty, nodef, nodef, nodef],\
     [nodef, nodef, empty, empty, empty, empty, empty, empty, empty, empty, nodef, nodef],\
@@ -95,7 +117,7 @@ Um jogador sagra-se vencedor assim que conseguir completar uma segunda cor. <br 
 
 <br />
 
-### Estado Intermédio
+#### Estado Intermédio
 >**mid**([\
     [nodef, nodef, nodef, space, empty, purple, empty, empty, empty, nodef, nodef, nodef],\
     [nodef, nodef, empty, empty, purple, empty, empty, empty, empty, empty, nodef, nodef],\
@@ -114,7 +136,7 @@ Um jogador sagra-se vencedor assim que conseguir completar uma segunda cor. <br 
 
 <br />
 
-### Estado Final
+#### Estado Final
 >**final**([\
     [nodef, nodef, nodef, space, empty, purple, empty, empty, empty, nodef, nodef, nodef],\
     [nodef, nodef, empty, empty, purple, empty, empty, empty, empty, empty, nodef, nodef],\
