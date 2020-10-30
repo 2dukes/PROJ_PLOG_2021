@@ -45,12 +45,12 @@
 
 
 <p align="justify"> 
-    Se um movimento torna impossível para qualquer jogador conectar uma cor particular (cercando-a), então o jogador adversário bloqueado ganha essa cor.
+    Se um movimento torna impossível para o outro jogador conectar uma cor particular (cercando-a), então o jogador que fez o bloqueio ganha a cor bloqueada. 
 </p>
 
 <p align="center">
     <img src="images/fence.png" /><br />
-    <i>Cerco à cor laranja</i>
+     <i>Cerco à cor laranja permite ao jogador de baixo ganhar a mesma, pois o de cima, com as cores verde e laranja, não consegue completá-la</i>
 </p>
 
 <br />
