@@ -32,9 +32,12 @@
 <br />
 
 ## Preparação e regras
-<p align="justify"> 
-    Inicialmente, o tabuleiro está vazio. O jogador um inicia a sua jogada, pegando num disco e colocando-o num lugar vazio. O jogador dois executa o mesmo procedimento. Durante o decorrer do jogo, caso um jogador consiga conectar dois lados oposto do tabuleiro (mesma cor), podendo utilizar cores aliadas (como indica a imagem a seguir), o mesmo deverá pegar num disco da cor que completou e colocá-lo sobre a célula correspondente do seu gráfico, enquanto que o adversário deverá pegar num disco prateado e colocá-lo igualmente no        respetivo lugar do seu gráfico (indicando que perdeu essa cor). 
-</p>
+
+- Inicialmente, o tabuleiro está vazio e só podem haver 42 discos de cada cor para utilizar. 
+- Cada jogador deve ter uma tabela no seu lado, que indica as combinações de cores aliadas possíveis para cada conexão. Esta tabela deve começar sem discos colocados.
+- O jogador um inicia a sua jogada, pegando num disco e colocando-o num lugar vazio. O jogador dois executa o mesmo procedimento, e isto repete-se ao longo do jogo.
+- Durante o decorrer do jogo, caso um jogador consiga conectar dois lados oposto do tabuleiro (mesma cor), podendo utilizar cores aliadas (como indica a tabela a seguir), o mesmo deverá pegar num disco da cor que completou e colocá-lo sobre a célula correspondente da sua tabela, enquanto que o adversário deverá pegar num disco prateado e colocá-lo igualmente no respetivo lugar da sua tabela (indicando que perdeu essa cor). 
+
 
 <p align="center">
     <img src="images/allied_colours.png" /> <br />
@@ -44,9 +47,9 @@
 </p>
 
 
-<p align="justify"> 
-    Se um movimento torna impossível para o outro jogador conectar uma cor particular (cercando-a), então o jogador que fez o bloqueio ganha a cor bloqueada. 
-</p>
+
+- Se um movimento torna impossível para qualquer jogador conectar uma cor particular (cercando-a), então o jogador adversário bloqueado ganha essa cor.
+
 
 <p align="center">
     <img src="images/fence.png" /><br />
@@ -54,15 +57,15 @@
 </p>
 
 <br />
-<p align="justify"> 
-    Cada cor só poderá ser ganha por um jogador; aquele que alcança a mesma primeiro. No caso de um jogador formar uma conexão para ambos os jogadores, durante uma jogada, a primeira cor completada pertencerá ao jogador que efetuou a jogada.
-</p>
+
+ - Cada cor só poderá ser ganha por um jogador; aquele que alcança a mesma primeiro. No caso de um jogador formar uma conexão para ambos os jogadores, durante uma jogada, a primeira cor completada pertencerá ao jogador que efetuou a jogada.
+
+- Um jogador sagra-se vencedor assim que conseguir completar uma segunda cor.
+
+<br />
 
 Link para a página de regras do jogo: https://nestorgames.com/rulebooks/ALLIANCES_EN.pdf
 
-## Objetivo
-
-Um jogador sagra-se vencedor assim que conseguir completar uma segunda cor. <br /><br />
 
 # Representação do Estado do Jogo
 
