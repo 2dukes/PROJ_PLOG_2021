@@ -5,10 +5,10 @@
 
 
 
-| Turma  | Nome          | Número    |
-| -------|---------------| ----------|
-| 3      | Davide Castro | 201806512 |
-| 3      | Rui Pinto     | 201806441 |
+| Turma  | Nome                             | Número    |
+| -------|----------------------------------| ----------|
+| 3      | Davide António Ferreira Castro   | 201806512 |
+| 3      | Rui Filipe Mendes Pinto          | 201806441 |
 
 <br />
 
@@ -179,9 +179,10 @@ green(42).
 </p>
 
 # Visualização do estado de jogo ##
-<p align="justify"> 
-    Para visualizar o tabuleiro usamos o predicado display_game/2 que imprime uma linha do tabuleiro (print_line/1) e continua recursivamente até imprimir todas as linhas. Através do predicado print_line/1 imprimimos no ecrã cada linha dividida por três partes(print_top, print_mid, print_bot), para conseguirmos as formas dos hexágonos com a letra da cor correspondente no centro.
-</p>
+Para visualizar o tabuleiro usamos o predicado display_game/2 que imprime uma linha do tabuleiro (print_line/1) e continua recursivamente até imprimir todas as linhas. 
+Através do predicado print_line/1 imprimimos no ecrã cada linha dividida por três partes(print_top, print_mid, print_bot), para conseguirmos as formas dos hexágonos com a letra da cor correspondente no centro. 
+Se uma célula conter um átomo de 'end' imprime a cor daquela extremidade; se for 'space' ou 'nodef' imprime espaços completamente vazios(não fazem parte do tabuleiro). Apenas quando contém o código de uma cor válida ou 'empty' imprime o hexágono com o disco correspondente ou vazio.
+No final da recursividade são também apresentados os números de discos disponíveis para jogar (display_discs/0) e o número do jogador atual (display_player/1).
 
 ```
 display_game([], Player) :- % Switch Player every time we end printing the board.

@@ -50,11 +50,18 @@ initial([
 
 % - For demonstration purposes only -
 
+updateBoard_Initial :- % Updates board to the initial state.
+    initial(InitialState),
+    retract(initial(_)),
+    assert(initial(InitialState)),
+    updateDiscs(42, 42, 42).
+
+
 updateBoard_Mid :- % Updates board to an intermediary state.
     mid(MidState),
     retract(initial(_)),
     assert(initial(MidState)),
-    updateDiscs(2, 2, 2).
+    updateDiscs(40, 40, 39).
 
 mid([
     [nodef, nodef, nodef, nodef, space, purpleEnd, purpleEnd, purpleEnd, purpleEnd, purpleEnd      ],
@@ -66,7 +73,7 @@ mid([
     [orangeEnd,                          empty, empty, empty, empty, empty, empty, orange, empty, empty, empty, empty, empty,           greenEndSpace],
     [nodef, space,                          empty, empty, empty, empty, empty, empty, green, empty, empty, empty, empty                          ],
     [greenEnd,                           empty, empty, empty, empty, empty, empty, empty, empty, empty, empty, empty, empty,            orangeEndSpace],
-    [nodef, greenEndSpace,                   empty, empty, empty, empty, empty, empty, empty, empty, empty, empty, empty,           orangeEndSpace],
+    [nodef, greenEndSpace,                   empty, empty, empty, empty, empty, empty, empty, empty, empty, orange, empty,           orangeEndSpace],
     [nodef, greenEnd,                           empty, empty, empty, empty, orange, empty, empty, empty, empty, empty,         orangeEndSpace],
     [nodef, nodef, greenEndSpace,                 empty, empty, empty, empty, empty, empty, empty, empty, empty,          orangeEndSpace],
     [nodef, nodef, greenEnd,                           empty, empty, empty, empty, empty, empty, empty, empty,           orangeEndSpace],
@@ -78,7 +85,7 @@ updateBoard_Final :- % Updates board to a final state.
     final(FinalState),
     retract(initial(_)),
     assert(initial(FinalState)),
-    updateDiscs(13, 17, 2).
+    updateDiscs(29, 25, 40).
 
 final([
     [nodef, nodef, nodef, nodef, space, purpleEnd, purpleEnd, purpleEnd, purpleEnd, purpleEnd      ],
