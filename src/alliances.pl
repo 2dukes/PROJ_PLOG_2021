@@ -10,21 +10,49 @@ code(empty, ' ').
 code(orange, 'O').
 code(purple, 'P').
 code(green, 'G').
-code(nodef, '      ').
-code(space, '   ').
-code(purpleEnd, '  pur ').
-code(greenEnd, '   grn').
-code(orangeEnd, '   org').
-code(purpleEndSpace, 'pur').
-code(greenEndSpace, 'grn').
-code(orangeEndSpace, 'org').
 
-end(purpleEnd).
-end(greenEnd).
-end(orangeEnd).
-end(purpleEndSpace).
-end(greenEndSpace).
-end(orangeEndSpace).
+info(1, ' [G]').
+info(2, ' [G]').
+info(3, ' [G]').
+info(4, ' [G]').
+info(5, ' [G]').
+info(6, ' [G]').
+info(8, '  [O]').
+info(9, '  [O]').
+info(10, ' [O]').
+info(11, ' [O]').
+info(12, ' [O]').
+info(13, ' [P]').
+
+line(1, '                            1').
+line(2, '                        2').
+line(3, '                    3').
+line(4, '                4').
+line(5, '                    5').
+line(6, '                  6').
+line(7, '                 7').
+line(8, '          8').
+line(9, '                9').
+line(10, '          10').
+line(11, '                11').
+line(12, '          12').
+line(13, '                13').
+line(14, '          14').
+line(15, '                15').
+line(16, '          16').
+line(17, '                17').
+line(18, '                    18').
+line(19, '                  19').
+line(20, '                 20').
+line(21, '                     21').
+line(22, '                         22').
+line(23, '                             23').
+
+
+
+
+
+
 
 orange(42).
 purple(42).
@@ -58,19 +86,26 @@ initial([
 
 spaces([17, 13, 9, 5, 4, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 8, 12, 16]).
 
+printLineInfo(Nline) :-
+    info(Nline, Info),
+    write(Info).
+
+printLineNumber(Nline) :-
+    line(Nline, Info),
+    write(Info).
+
 print_board([], _) :- 
-    printSpaces(20), put_code(9586), write('___'), put_code(9585), write('   '), put_code(9586), write('___'), put_code(9585), nl.
+    printSpaces(20), put_code(9586), write('___'), put_code(9585), write('   '), put_code(9586), write('___'), put_code(9585), write('[P]'), nl.
 print_board([L | Board], Line) :-
     print_line(L, Line),
     NewLine is Line + 1,
     print_board(Board, NewLine).
 
-
 print_line([Cell | Line], Nline) :-
     ( 
         (
             Nline == 1,
-            printSpaces(21), write('___     ___'), nl
+            printSpaces(21), write('___  1  ___ 2'), printLineInfo(2), nl
         );
         true
     ),
@@ -83,7 +118,7 @@ print_line([Cell | Line], Nline) :-
                 (
                     Nline =< 4; Nline == 7
                 ),
-                print_case1([Cell | Line])
+                print_case1([Cell | Line], Nline)
             );
             (
                 %member(Nline, [5, 8, 10, 12, 14, 16, 19]),
@@ -97,7 +132,7 @@ print_line([Cell | Line], Nline) :-
                     );
                     (Nline == 19)
                 ),
-                print_case2([Cell | Line], 0)
+                print_case2([Cell | Line], 0, Nline)
             );
             (
                 %member(Nline, [6, 9, 11, 13, 15, 17, 18, 20, 21, 22, 23]),
@@ -114,9 +149,10 @@ print_line([Cell | Line], Nline) :-
                         Mod == 1
                     )
                 ),
-                print_case3([Cell | Line])   
+                print_case3([Cell | Line], Nline)   
             )
         ),
+        printLineNumber(Nline),
         nl
     ).
 
@@ -131,8 +167,17 @@ printSpaces(Nspaces) :-
     printSpaces(NewNspaces).
     
 
-print_case1([]) :- write('___').
-print_case1([Cell | Line]) :- %partes de cima
+print_case1([], Nline) :- 
+    write('___'), 
+    (
+        (
+            Nline =< 5,
+            Diagonal is Nline + 2, 
+            write(Diagonal), printLineInfo(Diagonal)
+        )
+    ); true.
+    
+print_case1([Cell | Line], Nline) :- %partes de cima
     write('___'),
     put_code(9585),
     write(' '),  
@@ -140,11 +185,33 @@ print_case1([Cell | Line]) :- %partes de cima
     write(P),
     write(' '),
     put_code(9586),
-    print_case1(Line).
+    print_case1(Line, Nline).
 
 
-print_case2([], _).
-print_case2([Cell | Line], Col) :- %parte sem lados
+print_case2([], _, Nline) :-
+    (
+        Nline \= 5,
+        (
+            Nline == 10, write('9'), printLineInfo(9)
+        );
+        (
+            Nline == 12, write('10'), printLineInfo(10)
+        );
+        (
+            Nline == 14, write('11'), printLineInfo(11)
+        );
+        (
+            Nline == 16, write('12'), printLineInfo(12)
+        );
+        (
+            Nline == 19, write('13')
+        );
+        (
+            Nline == 8, write('8'), printLineInfo(8)
+        )
+    ); true.
+
+print_case2([Cell | Line], Col, Nline) :- %parte sem lados
     (
         (
             Col == 0,
@@ -166,10 +233,24 @@ print_case2([Cell | Line], Col) :- %parte sem lados
         )
     ),
     NewCol is Col + 1,
-    print_case2(Line, NewCol).
+    print_case2(Line, NewCol, Nline).
 
-print_case3([]) :- put_code(9586), write('___'), put_code(9585).
-print_case3([Cell | Line]) :- % partes de baixo
+print_case3([], Nline) :- 
+    put_code(9586), 
+    write('___'),
+    put_code(9585),
+    (
+        (
+            Nline == 6, 
+            write(' 7')
+        );
+        (
+            Nline >= 19,
+            write('[P]')
+        );
+        true
+    ).
+print_case3([Cell | Line], Nline) :- % partes de baixo
     put_code(9586),
     write('___'),
     put_code(9585),
@@ -177,7 +258,7 @@ print_case3([Cell | Line]) :- % partes de baixo
     code(Cell, P),       %  \___/ c
     write(P),
     write(' '),
-    print_case3(Line).
+    print_case3(Line, Nline).
 
 
 player(1). % First Player.
