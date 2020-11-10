@@ -31,145 +31,154 @@ purple(42).
 green(42).
 
 initial([
-    [nodef, nodef, nodef, nodef, space, purpleEnd, purpleEnd, purpleEnd, purpleEnd, purpleEnd      ],
-    [nodef, nodef, nodef, nodef, space,                          empty, empty, empty, empty, empty                 ],
-    [nodef, nodef, orangeEnd,                          empty, empty, empty, empty, empty, empty, empty, empty,          greenEndSpace],
-    [nodef, nodef, orangeEndSpace,                empty, empty, empty, empty, empty, empty, empty, empty, empty,          greenEndSpace],
-    [nodef, orangeEnd,                          empty, empty, empty, empty, empty, empty, empty, empty, empty, empty,          greenEndSpace],
-    [nodef, orangeEndSpace,                  empty, empty, empty, empty, empty, empty, empty, empty, empty, empty, empty,           greenEndSpace],
-    [orangeEnd,                          empty, empty, empty, empty, empty, empty, empty, empty, empty, empty, empty, empty,           greenEndSpace],
-    [nodef, space,                          empty, empty, empty, empty, empty, empty, empty, empty, empty, empty, empty                          ],
-    [greenEnd,                           empty, empty, empty, empty, empty, empty, empty, empty, empty, empty, empty, empty,           orangeEndSpace],
-    [nodef, greenEndSpace,                   empty, empty, empty, empty, empty, empty, empty, empty, empty, empty, empty,           orangeEndSpace],
-    [nodef, greenEnd,                           empty, empty, empty, empty, empty, empty, empty, empty, empty, empty,           orangeEndSpace],
-    [nodef, nodef, greenEndSpace,                 empty, empty, empty, empty, empty, empty, empty, empty, empty,          orangeEndSpace],
-    [nodef, nodef, greenEnd,                           empty, empty, empty, empty, empty, empty, empty, empty,           orangeEndSpace],
-    [nodef, nodef, nodef, nodef, space,                          empty, empty, empty, empty, empty                                     ],
-    [nodef, nodef, nodef, nodef, space, purpleEnd, purpleEnd, purpleEnd, purpleEnd, purpleEnd]
+[                                         empty,    empty],
+[                                     empty,   empty,   empty],
+[                                empty,    empty,   empty,  empty],
+[                           empty,    empty,    empty,   empty,   empty],
+[                      empty,    empty,    empty,   empty,   empty,   empty],
+[                          empty,     empty,   empty,   empty,    empty],
+[                      empty,    empty,    empty,   empty,   empty,   empty],
+[                 empty,   empty,     empty,   empty,   empty,    empty,   empty],
+[                      empty,    empty,    empty,   empty,   empty,   empty],
+[                 empty,   empty,     empty,   empty,   empty,    empty,   empty],
+[                      empty,    empty,    empty,   empty,   empty,   empty],
+[                 empty,   empty,     empty,   empty,   empty,    empty,   empty],
+[                      empty,    empty,    empty,   empty,   empty,   empty],
+[                 empty,   empty,     empty,   empty,   empty,    empty,   empty],
+[                      empty,    empty,    empty,   empty,   empty,   empty],
+[                 empty,   empty,     empty,   empty,   empty,    empty,   empty],
+[                      empty,    empty,    empty,   empty,   empty,   empty],
+[                           empty,    empty,   empty,    empty,   empty],
+[                      empty,    empty,    empty,   empty,   empty,   empty],
+[                           empty,    empty,   empty,   empty,   empty],
+[                                empty,    empty,   empty,   empty],
+[                                     empty,   empty,   empty],
+[                                          empty,   empty]
 ]).
 
-% - For demonstration purposes only -
+spaces([17, 13, 9, 5, 4, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 8, 12, 16]).
 
-updateBoard_Initial :- % Updates board to the initial state.
-    initial(InitialState),
-    retract(initial(_)),
-    assert(initial(InitialState)),
-    updateDiscs(42, 42, 42).
+print_board([], _) :- 
+    printSpaces(20), put_code(9586), write('___'), put_code(9585), write('   '), put_code(9586), write('___'), put_code(9585), nl.
+print_board([L | Board], Line) :-
+    print_line(L, Line),
+    NewLine is Line + 1,
+    print_board(Board, NewLine).
 
 
-updateBoard_Mid :- % Updates board to an intermediary state.
-    mid(MidState),
-    retract(initial(_)),
-    assert(initial(MidState)),
-    updateDiscs(40, 40, 39).
+print_line([Cell | Line], Nline) :-
+    ( 
+        (
+            Nline == 1,
+            printSpaces(21), write('___     ___'), nl
+        );
+        true
+    ),
+    (
+        getSpaces(Spaces, Nline),
+        %nth1(Nline, Spaces, E),
+        printSpaces(Spaces),
+        (
+            (
+                (
+                    Nline =< 4; Nline == 7
+                ),
+                print_case1([Cell | Line])
+            );
+            (
+                %member(Nline, [5, 8, 10, 12, 14, 16, 19]),
+                (
+                    (Nline == 5);
+                    (
+                        Nline >= 8,
+                        Nline =< 16, 
+                        Mod is mod(Nline, 2),
+                        Mod == 0
+                    );
+                    (Nline == 19)
+                ),
+                print_case2([Cell | Line], 0)
+            );
+            (
+                %member(Nline, [6, 9, 11, 13, 15, 17, 18, 20, 21, 22, 23]),
+                (
+                    (
+                        Nline >= 17,
+                        Nline \= 19
+                    );
+                    (Nline == 6);
+                    (
+                        Nline >= 9,
+                        Nline =< 15,
+                        Mod is mod(Nline, 2),
+                        Mod == 1
+                    )
+                ),
+                print_case3([Cell | Line])   
+            )
+        ),
+        nl
+    ).
 
-mid([
-    [nodef, nodef, nodef, nodef, space, purpleEnd, purpleEnd, purpleEnd, purpleEnd, purpleEnd      ],
-    [nodef, nodef, nodef, nodef, space,                          empty, purple, empty, empty, empty                 ],
-    [nodef, nodef, orangeEnd,                          empty, empty, purple, empty, empty, empty, empty, empty,          greenEndSpace],
-    [nodef, nodef, orangeEndSpace,                empty, empty, empty, empty, empty, empty, empty, empty, empty,          greenEndSpace],
-    [nodef, orangeEnd,                          empty, empty, empty, empty, empty, empty, empty, empty, empty, empty,          greenEndSpace],
-    [nodef, orangeEndSpace,                  empty, empty, green, empty, empty, empty, empty, empty, empty, empty, empty,           greenEndSpace],
-    [orangeEnd,                          empty, empty, empty, empty, empty, empty, orange, empty, empty, empty, empty, empty,           greenEndSpace],
-    [nodef, space,                          empty, empty, empty, empty, empty, empty, green, empty, empty, empty, empty                          ],
-    [greenEnd,                           empty, empty, empty, empty, empty, empty, empty, empty, empty, empty, empty, empty,            orangeEndSpace],
-    [nodef, greenEndSpace,                   empty, empty, empty, empty, empty, empty, empty, empty, empty, orange, empty,           orangeEndSpace],
-    [nodef, greenEnd,                           empty, empty, empty, empty, orange, empty, empty, empty, empty, empty,         orangeEndSpace],
-    [nodef, nodef, greenEndSpace,                 empty, empty, empty, empty, empty, empty, empty, empty, empty,          orangeEndSpace],
-    [nodef, nodef, greenEnd,                           empty, empty, empty, empty, empty, empty, empty, empty,           orangeEndSpace],
-    [nodef, nodef, nodef, nodef, space,                          empty, empty, empty, empty, empty                                     ],
-    [nodef, nodef, nodef, nodef, space, purpleEnd, purpleEnd, purpleEnd, purpleEnd, purpleEnd]
-]).
+getSpaces(Spaces, Nline) :-
+    spaces(Aux),
+    nth1(Nline, Aux, Spaces).
 
-updateBoard_Final :- % Updates board to a final state.
-    final(FinalState),
-    retract(initial(_)),
-    assert(initial(FinalState)),
-    updateDiscs(29, 25, 40).
+printSpaces(0).
+printSpaces(Nspaces) :-
+    write(' '),
+    NewNspaces is Nspaces - 1,
+    printSpaces(NewNspaces).
+    
 
-final([
-    [nodef, nodef, nodef, nodef, space, purpleEnd, purpleEnd, purpleEnd, purpleEnd, purpleEnd      ],
-    [nodef, nodef, nodef, nodef, space,                          empty, purple, empty, empty, empty                 ],
-    [nodef, nodef, orangeEnd,                          empty, empty, purple, empty, empty, empty, empty, empty,          greenEndSpace],
-    [nodef, nodef, orangeEndSpace,                empty, empty, purple, empty, empty, empty, empty, empty, green,          greenEndSpace],
-    [nodef, orangeEnd,                          empty, empty, empty, purple, empty, empty, empty, empty, green, empty,          greenEndSpace],
-    [nodef, orangeEndSpace,                  empty, empty, green, purple, empty, empty, empty, empty, green, empty, empty,           greenEndSpace],
-    [orangeEnd,                          empty, empty, empty, empty, purple, green, orange, empty, green, empty, empty, empty,           greenEndSpace],
-    [nodef, space,                          empty, empty, empty, purple, empty, empty, green, green, empty, empty, empty                          ],
-    [greenEnd,                           empty, empty, empty, empty, purple, empty, green, green, empty, empty, empty, empty,            orangeEndSpace],
-    [nodef, greenEndSpace,                   empty, empty, empty, purple, empty, green, empty, empty, empty, empty, empty,           orangeEndSpace],
-    [nodef, greenEnd,                           empty, empty, empty, purple, orange, green, empty, empty, empty, empty,         orangeEndSpace],
-    [nodef, nodef, greenEndSpace,                 empty, green, purple, green, green, empty, empty, empty, empty,           orangeEndSpace],
-    [nodef, nodef, greenEnd,                           green, green, purple, empty, empty, empty, empty, empty,           orangeEndSpace],
-    [nodef, nodef, nodef, nodef, space,                          purple, empty, empty, empty, empty                                     ],
-    [nodef, nodef, nodef, nodef, space, purpleEnd, purpleEnd, purpleEnd, purpleEnd, purpleEnd]
-]).
+print_case1([]) :- write('___').
+print_case1([Cell | Line]) :- %partes de cima
+    write('___'),
+    put_code(9585),
+    write(' '),  
+    code(Cell, P),             %  ___/ c \
+    write(P),
+    write(' '),
+    put_code(9586),
+    print_case1(Line).
 
-% - End of "demonstration purposes only" -
 
-updateDiscs(PurpleDiscs, GreenDiscs, OrangeDiscs) :-
-    retract(orange(_)),
-    retract(green(_)),
-    retract(purple(_)),
-    assert(orange(OrangeDiscs)),
-    assert(green(GreenDiscs)),
-    assert(purple(PurpleDiscs)).
-
-print_top([]).
-print_top([C | L]) :- % Displays the top part of a line of the board.
+print_case2([], _).
+print_case2([Cell | Line], Col) :- %parte sem lados
     (
         (
-            C \= nodef,
-            C \= space,
-            \+ end(C),
-            write(' ____ ')
+            Col == 0,
+            put_code(9585),  %  / c \
+            write(' '),
+            code(Cell, P),
+            write(P),            
+            write(' '),       
+            put_code(9586)    
         );
         (
-            code(C, P),
-            write(P)
-        )
-    ), 
-    print_top(L).
-
-print_mid([]).
-print_mid([C | L]) :- % Displays the middle part of a line of the board.
-    (
-        (
-            C \= nodef,
-            C \= space,
-            \+ end(C),
-            put_code(9585), write('  '), 
-            code(C, P), write(P),
-            write(' '), put_code(9586)
-        );
-        (
-            code(C, P),
-            write(P)
+            write('___'),
+            put_code(9585),
+            write(' '),
+            code(Cell, P),     % ___/ c \
+            write(P),
+            write(' '),
+            put_code(9586)
         )
     ),
-    print_mid(L).
+    NewCol is Col + 1,
+    print_case2(Line, NewCol).
 
-print_bot([]).
-print_bot([C | L]) :- % Displays the bottom part of a line of the board.
-    (
-        (
-            C \= nodef,
-            C \= space,
-            \+ end(C),
-            put_code(9586), write('____'), put_code(9585)
-        );
-        (
-            code(C, P),
-            write(P)
-        )
-    ),
-    print_bot(L).
+print_case3([]) :- put_code(9586), write('___'), put_code(9585).
+print_case3([Cell | Line]) :- % partes de baixo
+    put_code(9586),
+    write('___'),
+    put_code(9585),
+    write(' '),
+    code(Cell, P),       %  \___/ c
+    write(P),
+    write(' '),
+    print_case3(Line).
 
-print_line([]).
-print_line(L) :- % Displays a full line of the board.
-    print_top(L), nl,
-    print_mid(L), nl,
-    print_bot(L), nl.
 
 player(1). % First Player.
 
@@ -177,19 +186,12 @@ updatePlayer(Number) :- % Update the current player dinamically.
     retract(player(_)),
     assert(player(Number)).
 
-updateBoard(Board) :- % Update board dynamically.
-    retract(initial(_)),
-    assert(initial(Board)).
-
-display_game([], Player) :- % Switch Player every time we end printing the board.
+display_game(GameState, Player) :- % Switch Player every time we end printing the board.
     NewPlayer is (Player + 1) mod 2,
     updatePlayer(NewPlayer),
+    print_board(GameState, 1),
     display_discs,
     display_player(Player).
-
-display_game([L | T], Player) :- % Displays the current Board.
-    print_line(L),
-    display_game(T, Player).
 
 display_discs :-
     orange(O), green(G), purple(P),
