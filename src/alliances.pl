@@ -84,7 +84,8 @@ initial([
 [                                          empty,   empty]
 ]).
 
-spaces([17, 13, 9, 5, 4, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 8, 12, 16]).
+% spaces([17, 13, 9, 5, 4, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 8, 12, 16]).
+spaces([[17, '[P]'], [13,'[P]'], [9, '[P]'], [5, '[P]'], [4, '   '], [4, '   '], [1, '   '], [0, '[O]'], [0, '   '], [0, '[O]'], [0, '   '], [0, '[O]'], [0, '   '], [0, '[O]'], [0, '   '], [0, '[O]'], [0, '   '], [4, '   '], [4, '   '], [4, '[G]'], [8, '[G]'], [12, '[G]'], [16, '[G]']]).
 
 printLineInfo(Nline) :-
     info(Nline, Info),
@@ -94,8 +95,10 @@ printLineNumber(Nline) :-
     line(Nline, Info),
     write(Info).
 
+printColour(Colour) :- write(Colour).
+
 print_board([], _) :- 
-    printSpaces(20), put_code(9586), write('___'), put_code(9585), write('   '), put_code(9586), write('___'), put_code(9585), write('[P]'), nl.
+    printSpaces(20), write('[G]'), put_code(9586), write('___'), put_code(9585), write('   '), put_code(9586), write('___'), put_code(9585), write('[P]'), nl.
 print_board([L | Board], Line) :-
     print_line(L, Line),
     NewLine is Line + 1,
@@ -105,14 +108,15 @@ print_line([Cell | Line], Nline) :-
     ( 
         (
             Nline == 1,
-            printSpaces(21), write('___  1  ___ 2'), printLineInfo(2), nl
+            printSpaces(24), write('___  1  ___ 2'), printLineInfo(2), nl
         );
         true
     ),
     (
-        getSpaces(Spaces, Nline),
+        getSpaces(Spaces, Nline, Colour),
         %nth1(Nline, Spaces, E),
         printSpaces(Spaces),
+        printColour(Colour),
         (
             (
                 (
@@ -156,9 +160,11 @@ print_line([Cell | Line], Nline) :-
         nl
     ).
 
-getSpaces(Spaces, Nline) :-
+getSpaces(Spaces, Nline, Colour) :-
     spaces(Aux),
-    nth1(Nline, Aux, Spaces).
+    nth1(Nline, Aux, AuxSpaces),
+    nth0(0, AuxSpaces, Spaces),
+    nth0(1, AuxSpaces, Colour).
 
 printSpaces(0).
 printSpaces(Nspaces) :-
