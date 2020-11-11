@@ -44,32 +44,34 @@ countDiscs([Line | Rest], OrangeDiscs, GreenDiscs, PurpleDiscs) :-
 
 display_discs(Board) :-
     countDiscs(Board, O, G, P),
-    write('Orange discs: '), write(O), nl,
-    write('Green discs: '), write(G), nl,
-    write('Purple discs: '), write(P), nl.
+    NewO is 42 - O,
+    NewG is 42 - G,
+    NewP is 42 - P,
+    write('Orange discs: '), write(NewO), nl,
+    write('Green discs: '), write(NewG), nl,
+    write('Purple discs: '), write(NewP), nl.
 
 
 display_player(Player) :-
     write('Player '),
-    NewPlayer is ((Player mod 2) + 1), 
-    write(NewPlayer),
-    write(' is next'), nl, nl.
+    write(Player),
+    write(' turn'), nl, nl.
 
 gameLoop(Board) :-
     % Player 1
+    display_game(Board, 1),
     userPlay(Board, NewBoard),
-    display_game(NewBoard, 1),
     (
         (
-            fail % checkGameEnded(), write('\nThanks for playing!\n')
+            checkGameEnded(NewBoard, 1), write('\nP1 won!\n')
         );
         (
             % Player 2
+            display_game(NewBoard, 2),
             userPlay(NewBoard, FinalBoard),
-            display_game(FinalBoard, 2),
             (
                 (
-                    fail % checkGameEnded(), write('\nThanks for playing!\n')
+                    checkGameEnded(FinalBoard, 2), write('\nP2 won!\n')
                 );
                 (
                     gameLoop(FinalBoard)
@@ -77,6 +79,41 @@ gameLoop(Board) :-
             )
         )
     ).
+
+checkGameEnded(Board, Player) :-
+    % NotAlliedPurple = green,
+    % Row = 3,
+    % Diagonal = 1,
+    % runPath(Row, Diagonal, Board, NotAlliedPurple, [], purple1).
+    (
+        (
+            Player == 1,
+            NotAlliedPurple = green,
+            NotAlliedOrange = purple,
+            NotAlliedGreen = orange
+        );
+        (
+            Player == 2,
+            NotAlliedPurple = orange,
+            NotAlliedOrange = green,
+            NotAlliedGreen = purple
+        )
+    ),
+    (
+        ( %win purple
+            purple1(Row, Diagonal),
+            runPath(Row, Diagonal, Board, NotAlliedPurple, [], purple2)
+        );
+        ( %win orange
+            orange1(Row, Diagonal),
+            runPath(Row, Diagonal, Board, NotAlliedOrange, [], orange2)
+        );
+        ( %win green
+            green1(Row, Diagonal),
+            runPath(Row, Diagonal, Board, NotAlliedGreen, [], green2)
+        )
+    ).
+
 
 play :-
     initial(GameState),

@@ -34,3 +34,7 @@ countOccurrence([H|T] , H,NewCount):-
 countOccurrence([H|T], H2, Count):-
     H \= H2, 
     countOccurrence(T,H2,Count).
+
+execute(Function, Args) :-
+    Run =.. [Function | Args], 
+    Run.
