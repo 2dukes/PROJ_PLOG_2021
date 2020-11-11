@@ -40,9 +40,16 @@ display_player(Player) :-
 
 play :-
     initial(GameState),
-    userPlay(GameState, NewGameState),
-    % player(Player), % Assume first player.
-    display_game(NewGameState, 1).
+    repeat,
+    (  
+        % First Player
+        userPlay(GameState, NewGameState),
+        display_game(NewGameState, 1)        
+        % Second Player
+        % userPlay(NewGameState, FinalGameState),
+        % display_game(FinalGameState, 1)
+    ).
+
 
 % display_discs :-
 %     orange(O), green(G), purple(P),

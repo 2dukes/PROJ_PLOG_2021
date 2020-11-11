@@ -101,7 +101,8 @@ updateBoard(Board, Row, Diagonal, Colour, NewBoard) :-
     startDiag(Row, StartDiagonal),
     IndexDiagonal is (Diagonal - StartDiagonal),
     replaceNth(Line, IndexDiagonal, Colour, NewLine),
-    replaceNth(Board, Row - 1, NewLine, NewBoard).
+    RowToUpdate is Row - 1,
+    replaceNth(Board, RowToUpdate, NewLine, NewBoard).
 
 checkEmpty(Row, Diagonal, Board) :-
     getCellByCoords(Board, Row, Diagonal, Cell),

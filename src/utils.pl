@@ -18,7 +18,7 @@ getChar(Char) :-
     read_line(_),
     nl.
 
-% replace(+List, +Index, +Value, -NewList).
+% replaceNth(+List, +Index, +Value, -NewList).
 replaceNth([_|T], 0, X, [X|T]).
 replaceNth([H|T], I, X, [H|R]):- I > -1, NI is I-1, replaceNth(T, NI, X, R), !.
 replaceNth(L, _, _, L).
