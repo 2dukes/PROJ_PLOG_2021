@@ -71,7 +71,7 @@ purple(42).
 green(42).
 
 initial([
-[                                         empty,    empty],                             %1
+[                                         orange,    empty],                             %1
 [                                     empty,   empty,   empty],                         %2
 [                                empty,    empty,   empty,  empty],                     %3
 [                           empty,    empty,    empty,   empty,   empty],               %4
@@ -96,6 +96,12 @@ initial([
 [                                          empty,   empty]                              %23
 ]).
 
+updateBoard(Board, Row, Diagonal, Colour, NewBoard) :-
+    nth1(Row, Board, Line),
+    startDiag(Diagonal, StartDiagonal),
+    IndexDiagonal is Diagonal - StartDiagonal,
+    replaceNth(Line, IndexDiagonal, Colour, NewLine),
+    replaceNth(Board, Row - 1, NewLine, NewBoard).
 
 checkEmpty(Row, Diagonal, Board) :-
     getCellByCoords(Board, Row, Diagonal, Cell),

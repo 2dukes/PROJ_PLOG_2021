@@ -1,19 +1,23 @@
 
 getUserInput(Row, Diagonal, Colour) :- 
     getCoordinates(Row, Diagonal),
-    getColour(Colour).
+    getColour(Colour), !.
+
 
 getCoordinates(Row, Diagonal) :-
+    repeat,
     (
-        once(getRow(Row)),
-        once(getDiagonal(Diagonal)),
-        once(verifyCoordinates(Row, Diagonal))
-    );
-    (
-        write('Invalid coordinates!'), nl,
-        getCoordinates(Row, Diagonal)
+        getRow(Row),
+        getDiagonal(Diagonal)
+    ),
+    ( 
+        verifyCoordinates(Row, Diagonal); 
+        (
+            !, 
+            write('Invalid coordinates!'), nl,
+            fail
+        )
     ).
-
 
 getRow(Row) :-
     write('Insert Row [1 - 23]: '),
@@ -23,16 +27,19 @@ getDiagonal(Diagonal) :-
     write('Insert Diagonal [1 - 13]: '),
     getInt(Diagonal).
 
-getColour(Colour) :-
-    
+getColour(ColourAtom) :-
+    repeat,
     (
-        write('Insert Colour [G, O, P]: '),
-        getChar(Colour),
-        verifyColour(Colour)
-    );
-    (
-        write('Invalid Colour!'), nl,
-        getColour(Colour)
+        (
+            write('Insert Colour [G, O, P]: '),
+            getChar(Colour),
+            verifyColour(Colour),
+            code(ColourAtom, Colour)
+        );
+        (
+            write('Invalid Colour!'), nl,
+            fail
+        )
     ).
 
 verifyColour(Colour) :-

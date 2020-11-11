@@ -4,11 +4,26 @@
 
 
 checkValidPlay(Row, Diagonal, Board) :-
-    checkEmpty(Row, Diagonal, Board).
+    (
+        checkEmpty(Row, Diagonal, Board)
+    ); 
+    (
+        write('Cell not empty!'), nl, fail
+    ).
 
-userPlay(Board) :-
-    getUserInput(Row, Diagonal, _),
-    checkEmpty(Row, Diagonal, Board).
+userPlay(Board, NewBoard) :-
+    
+    repeat,
+    (
+        getUserInput(Row, Diagonal, Colour),
+        move(Board, Row, Diagonal, Colour, NewBoard)
+    ).
+    
+    % move(+GameState, +Move, -NewGameState)
+
+move(Board, Row, Diagonal, Colour, NewBoard) :-
+    checkValidPlay(Row, Diagonal, Board),
+    updateBoard(Board, Row, Diagonal, Colour, NewBoard).
 
 
 display_game(GameState, Player) :- % Switch Player every time we end printing the board.
@@ -25,9 +40,9 @@ display_player(Player) :-
 
 play :-
     initial(GameState),
-    userPlay(GameState),
+    userPlay(GameState, NewGameState),
     % player(Player), % Assume first player.
-    display_game(GameState, 1).
+    display_game(NewGameState, 1).
 
 % display_discs :-
 %     orange(O), green(G), purple(P),
