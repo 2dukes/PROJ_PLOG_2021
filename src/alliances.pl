@@ -27,10 +27,26 @@ move(Board, Row, Diagonal, Colour, NewBoard) :-
 
 
 display_game(GameState, Player) :- % Switch Player every time we end printing the board.
-    %NewPlayer is (Player + 1) mod 2,
     print_board(GameState, 1),
-    % display_discs,
+    display_discs(GameState),
     display_player(Player).
+
+
+countDiscs([], 0, 0, 0).
+countDiscs([Line | Rest], OrangeDiscs, GreenDiscs, PurpleDiscs) :-
+    countOccurrence(Line, orange, AuxOrangeDiscs),
+    countOccurrence(Line, green, AuxGreenDiscs),
+    countOccurrence(Line, purple, AuxPurpleDiscs),
+    countDiscs(Rest, Oranges, Greens, Purples),
+    OrangeDiscs is Oranges + AuxOrangeDiscs,
+    GreenDiscs is Greens + AuxGreenDiscs,
+    PurpleDiscs is Purples + AuxPurpleDiscs.
+
+display_discs(Board) :-
+    countDiscs(Board, O, G, P),
+    write('Orange discs: '), write(O), nl,
+    write('Green discs: '), write(G), nl,
+    write('Purple discs: '), write(P), nl.
 
 
 display_player(Player) :-
@@ -65,13 +81,6 @@ gameLoop(Board) :-
 play :-
     initial(GameState),
     gameLoop(GameState).
-
-
-% display_discs :-
-%     orange(O), green(G), purple(P),
-%     write('Orange discs: '), write(O), nl,
-%     write('Green discs: '), write(G), nl,
-%     write('Purple discs: '), write(P), nl.
 
 % line_elem(N, List, Elem, Counter, Aux) :- % Returns the content(Elem) of the Nth cell in the 'List' line of the board 
 %     (
