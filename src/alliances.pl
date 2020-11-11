@@ -34,21 +34,37 @@ display_game(GameState, Player) :- % Switch Player every time we end printing th
 
 
 display_player(Player) :-
-    write('Player '), 
-    write(Player),
-    write(' is next').
+    write('Player '),
+    NewPlayer is ((Player mod 2) + 1), 
+    write(NewPlayer),
+    write(' is next'), nl, nl.
+
+gameLoop(Board) :-
+    % Player 1
+    userPlay(Board, NewBoard),
+    display_game(NewBoard, 1),
+    (
+        (
+            fail % checkGameEnded(), write('\nThanks for playing!\n')
+        );
+        (
+            % Player 2
+            userPlay(NewBoard, FinalBoard),
+            display_game(FinalBoard, 2),
+            (
+                (
+                    fail % checkGameEnded(), write('\nThanks for playing!\n')
+                );
+                (
+                    gameLoop(FinalBoard)
+                )
+            )
+        )
+    ).
 
 play :-
     initial(GameState),
-    repeat,
-    (  
-        % First Player
-        userPlay(GameState, NewGameState),
-        display_game(NewGameState, 1)        
-        % Second Player
-        % userPlay(NewGameState, FinalGameState),
-        % display_game(FinalGameState, 1)
-    ).
+    gameLoop(GameState).
 
 
 % display_discs :-
