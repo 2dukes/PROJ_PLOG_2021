@@ -78,27 +78,17 @@ purple2(21,13).
 purple2(22,13).
 purple2(23,13).
 
-% purple1(Row, Diagonal) :-
-%     Row > 0,
-%     Row < 6,
-%     Diagonal == 1.
+green2(1,2).
+green2(2,3).
+green2(3,4).
+green2(4,5).
+green2(5,6).
 
-% purple2(Row, Diagonal) :-
-%     Row >= 19,
-%     Row =< 23,
-%     Diagonal == 13.
-
-green1(1,2).
-green1(2,3).
-green1(3,4).
-green1(4,5).
-green1(5,6).
-
-green2(19,8).
-green2(20,9).
-green2(21,10).
-green2(22,11).
-green2(23,12).
+green1(19,8).
+green1(20,9).
+green1(21,10).
+green1(22,11).
+green1(23,12).
 
 orange1(8, 2).
 orange1(10,3).
@@ -116,25 +106,25 @@ initial([
 [                                         empty,    empty],                            %1
 [                                     empty,   empty,   empty],                         %2
 [                                purple,    empty,   empty,  empty],                     %3
-[                           empty,    purple,    empty,   empty,   empty],               %4
-[                      empty,    empty,    purple,   empty,   empty,   empty],           %5
-[                          empty,     empty,   purple,   empty,    empty],               %6
-[                      empty,    empty,    empty,   purple,   empty,   empty],           %7 
-[                 empty,   empty,     empty,   purple,   empty,    empty,   empty],      %8
-[                      empty,    empty,    empty,   purple,   empty,   empty],           %9
-[                 empty,   empty,     empty,   empty,   purple,    empty,   empty],      %10
-[                      empty,    empty,    empty,   empty,   purple,   empty],           %11
-[                 empty,   empty,     empty,   empty,   purple,    empty,   empty],      %12
-[                      empty,    empty,    empty,   empty,   purple,   empty],           %13
-[                 empty,   empty,     empty,   empty,   purple,    empty,   empty],      %14
-[                      empty,    empty,    empty,   empty,   purple,   empty],           %15
-[                 empty,   empty,     empty,   empty,   purple,    empty,   empty],      %16
-[                      empty,    empty,    empty,   empty,   purple,   empty],           %17
-[                           empty,    empty,   empty,    purple,   empty],               %18
-[                      empty,    empty,    empty,   empty,   purple,   empty],           %19
-[                           empty,    empty,   empty,   empty,   empty],                %20
-[                                empty,    empty,   empty,   empty],                    %21
-[                                     empty,   empty,   empty],                         %22
+[                           purple,    purple,    empty,   empty,   empty],               %4
+[                      purple,    empty,    purple,   empty,   empty,   empty],           %5
+[                          purple,     empty,   purple,   empty,    empty],               %6
+[                      purple,    empty,    empty,   purple,   empty,   empty],           %7 
+[                 purple,   empty,     empty,   purple,   empty,    empty,   empty],      %8
+[                      purple,    empty,    empty,   purple,   empty,   empty],           %9
+[                 purple,   empty,     empty,   empty,   purple,    empty,   empty],      %10
+[                      purple,    empty,    empty,   empty,   purple,   empty],           %11
+[                 purple,   empty,     empty,   empty,   purple,    empty,   empty],      %12
+[                      purple,    empty,    empty,   empty,   purple,   empty],           %13
+[                 purple,   empty,     empty,   empty,   purple,    empty,   empty],      %14
+[                      purple,    empty,    empty,   empty,   purple,   empty],           %15
+[                 purple,   purple,     empty,   purple,   purple,    empty,   empty],      %16
+[                      purple,    empty,    purple,   empty,   purple,   empty],           %17
+[                           purple,    purple,   empty,    purple,   empty],               %18
+[                      purple,    purple,    empty,   empty,   purple,   empty],           %19
+[                           purple,    empty,   empty,   empty,   empty],                %20
+[                                purple,    empty,   empty,   empty],                    %21
+[                                     purple,   empty,   empty],                         %22
 [                                          empty,   empty]                              %23
 ]).
 
@@ -180,6 +170,50 @@ runPath(Row, Diagonal, Board, NotAlliedColour, AlreadyVisited, Predicate) :-
         runPath(NewRow, NewDiagonal, Board, NotAlliedColour, NewAlreadyVisited, Predicate)
     ).
 
+
+checkNotBlocked(Row, Diagonal, Board, NotAlliedColour, _, BorderPredicate) :- 
+    getCellByCoords(Board, Row, Diagonal, Cell),
+    Cell \= NotAlliedColour,
+    execute(BorderPredicate, [Row, Diagonal]), !.
+
+checkNotBlocked(Row, Diagonal, Board, NotAlliedColour, AlreadyVisited, BorderPredicate) :- 
+    \+ member([Row, Diagonal], AlreadyVisited),
+    getCellByCoords(Board, Row, Diagonal, AnalizeCell),
+    AnalizeCell \= NotAlliedColour,
+    %write(AlreadyVisited),nl,
+    %write(Row),write(', '), write(Diagonal),nl,
+    (
+        (
+            NewRow is Row - 2,
+            NewDiagonal is Diagonal - 1
+        );
+        (          
+            NewRow is Row - 1,
+            NewDiagonal is Diagonal
+        );
+        (
+            NewRow is Row + 1,
+            NewDiagonal is Diagonal + 1
+        );
+        (
+            NewRow is Row + 1,
+            NewDiagonal is Diagonal
+        );
+        (
+            NewRow is Row + 2,
+            NewDiagonal is Diagonal + 1
+        );
+        (
+            NewRow is Row - 1,
+            NewDiagonal is Diagonal - 1
+        )
+    ),
+    (
+        append(AlreadyVisited, [[Row, Diagonal]], NewAlreadyVisited),
+        checkNotBlocked(NewRow, NewDiagonal, Board, NotAlliedColour, NewAlreadyVisited, BorderPredicate)
+    ).
+
+
 updateBoard(Board, Row, Diagonal, Colour, NewBoard) :-
     nth1(Row, Board, Line),
     startDiag(Row, StartDiagonal),
@@ -193,6 +227,7 @@ checkEmpty(Row, Diagonal, Board) :-
     Cell == 'empty'.
 
 getCellByCoords(Board, Row, Diagonal, Cell) :-
+    verifyRowDiagonal(Row, Diagonal),
     nth1(Row, Board, Line),
     startDiag(Row, StartDiagonal),
     Index is (Diagonal - StartDiagonal),
