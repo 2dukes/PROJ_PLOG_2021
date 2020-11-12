@@ -146,8 +146,8 @@ runPath(Row, Diagonal, Board, NotAlliedColour, _,  Predicate) :-
 
 runPath(Row, Diagonal, Board, NotAlliedColour, AlreadyVisited, Predicate) :-
     \+ member([Row, Diagonal], AlreadyVisited),
-    getCellByCoords(Board, Row, Diagonal, Cell),
-    Cell \= empty, Cell \= NotAlliedColour,
+    getCellByCoords(Board, Row, Diagonal, AnalizeCell),
+    AnalizeCell \= empty, AnalizeCell \= NotAlliedColour,
     Row >=1, Row =< 23, Diagonal >= 1, Diagonal =< 13, 
     (
         (
@@ -176,7 +176,6 @@ runPath(Row, Diagonal, Board, NotAlliedColour, AlreadyVisited, Predicate) :-
         )
     ),
     (
-        getCellByCoords(Board, NewRow, NewDiagonal, Cell),
         append(AlreadyVisited, [[Row, Diagonal]], NewAlreadyVisited),
         runPath(NewRow, NewDiagonal, Board, NotAlliedColour, NewAlreadyVisited, Predicate)
     ).
