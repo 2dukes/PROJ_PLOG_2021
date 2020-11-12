@@ -111,6 +111,9 @@ gameLoop(Board) :-
         )
     ).
 
+
+
+
 checkGameEnded(Board, Player, PurpleWon, OrangeWon, GreenWon) :-
     % NotAlliedPurple = green,
     % Row = 3,
@@ -136,7 +139,7 @@ checkGameEnded(Board, Player, PurpleWon, OrangeWon, GreenWon) :-
                     ( % win purple
                         purple1(Row, Diagonal),
                         runPath(Row, Diagonal, Board, NotAlliedPurple, [], purple2),
-                        PurpleWon = 'TRUE', write('YES!')
+                        PurpleWon = 'TRUE'
                     )
             ),
             once(
@@ -150,7 +153,7 @@ checkGameEnded(Board, Player, PurpleWon, OrangeWon, GreenWon) :-
         (
             (
                 (
-                    OrangeWon == 'TRUE', 
+                    OrangeWon == 'TRUE'
                 );
                 once(
                         ( % win orange
