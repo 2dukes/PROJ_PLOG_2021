@@ -89,9 +89,20 @@ display_player(Player) :-
     write(Player),
     write(' turn'), nl, nl.
 
-displayColourWon(Player, Colour) :-
-    write('Player '), write(Player), write(' has colour '),
-    write(Colour), nl, nl.
+displayColourWon(Player, [PurpleWon, OrangeWon, GreenWon]) :-
+    (
+        (PurpleWon == 'TRUE'; OrangeWon == 'TRUE', GreenWon == 'TRUE'),
+        write('Player '), write(Player), write(' has colour(s): '), 
+        (
+            (PurpleWon == 'TRUE', write('PURPLE ')); true
+        ),
+        (
+            (OrangeWon == 'TRUE', write('ORANGE ')); true
+        ),
+        (
+            (GreenWon == 'TRUE', write('GREEN ')); true
+        ), nl, nl
+    ); true.
 
 gameWon(PurpleWon, OrangeWon, GreenWon) :-
     (PurpleWon == 'TRUE', OrangeWon == 'TRUE');
@@ -118,6 +129,7 @@ gameLoop(Board, [[PurpleWon1, GreenWon1, OrangeWon1], [PurpleWon2, GreenWon2, Or
             ),
             (       
                 (
+                    displayColourWon(1, [NewPurpleWon1, NewOrangeWon1, NewGreenWon1]),
                     gameWon(NewPurpleWon1, NewOrangeWon1, NewGreenWon1),
                     write('\nP1 won!\n')
                 );
@@ -141,6 +153,7 @@ gameLoop(Board, [[PurpleWon1, GreenWon1, OrangeWon1], [PurpleWon2, GreenWon2, Or
                             ),
                             (
                                 (
+                                    displayColourWon(2, [NewPurpleWon2, NewOrangeWon2, NewGreenWon2]),
                                     gameWon(NewPurpleWon2, NewOrangeWon2, NewGreenWon2),
                                     write('\nP2 won!\n')
                                 );
@@ -184,7 +197,7 @@ checkPurpleWon(Board, Player, PurpleWon) :-
                     checkBlocked(5, 1, Board, AlliedColour, [], _, purple2)
                 )
             ),
-            !, displayColourWon(Player, 'PURPLE'), PurpleWon = 'TRUE'
+            !, PurpleWon = 'TRUE' % , displayColourWon(Player, 'PURPLE'),
         );
         (
             !, true
@@ -223,7 +236,7 @@ checkOrangeWon(Board, Player, OrangeWon) :-
                     checkBlocked(16, 6, Board, AlliedColour, [], _, orange2)
                 )
             ),
-            !, displayColourWon(Player, 'ORANGE'), OrangeWon = 'TRUE'
+            !, OrangeWon = 'TRUE' % , displayColourWon(Player, 'ORANGE')
         );
         (
             !, true
@@ -265,7 +278,7 @@ checkGreenWon(Board, Player, GreenWon) :-
                     %checkBlocked(Row, Diagonal, Board, AlliedColour, [], _, green2)
                 )
             ),
-            !, displayColourWon(Player, 'GREEN'), GreenWon = 'TRUE'
+            !, GreenWon = 'TRUE' % , displayColourWon(Player, 'GREEN')
         );
         (
             !, true
