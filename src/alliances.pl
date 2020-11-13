@@ -3,27 +3,59 @@
 :- consult('utils.pl').
 
 
-checkValidPlay(Row, Diagonal, Board) :-
+checkValidPlay(Board, [Row, Diagonal, Colour]) :-
     (
-        checkEmpty(Row, Diagonal, Board)
-    ); 
+        (
+            checkEmpty(Row, Diagonal, Board)
+        ); 
+        (
+            write('Cell not empty!'), nl, fail
+        )
+    ),
     (
-        write('Cell not empty!'), nl, fail
+        (
+            checkAvailableDisc(Board, Colour)
+        ); 
+        (
+            write('No more '), write(Colour), write(' discs remaining!'), nl, !, fail
+        )
     ).
+
+checkAvailableDisc(Board, Colour) :-
+    countDiscs(Board, O, G, P),
+    (
+        (
+            Colour == orange,
+            NewO is 42 - O,
+            NewO > 0
+        );
+        (
+            Colour == green,
+            NewG is 42 - G,
+            NewG > 0
+        );
+        (
+            Colour == purple,
+            NewP is 42 - P,
+            NewP > 0
+        )
+    ).
+    
+
 
 userPlay(Board, NewBoard) :-
     
     repeat,
     (
         getUserInput(Row, Diagonal, Colour),
-        move(Board, Row, Diagonal, Colour, NewBoard)
+        move(Board, [Row, Diagonal, Colour], NewBoard)
     ).
     
     % move(+GameState, +Move, -NewGameState)
 
-move(Board, Row, Diagonal, Colour, NewBoard) :-
-    checkValidPlay(Row, Diagonal, Board),
-    updateBoard(Board, Row, Diagonal, Colour, NewBoard).
+move(Board, Move, NewBoard) :-
+    checkValidPlay(Board, Move),
+    updateBoard(Board, Move, NewBoard).
 
 
 display_game(GameState, Player) :- % Switch Player every time we end printing the board.
@@ -66,51 +98,56 @@ gameWon(PurpleWon, OrangeWon, GreenWon) :-
     (PurpleWon == 'TRUE', GreenWon == 'TRUE');
     (OrangeWon == 'TRUE', GreenWon == 'TRUE').
 
-gameLoop(Board, [PurpleWon, GreenWon, OrangeWon]) :-
+gameLoop(Board, [[PurpleWon1, GreenWon1, OrangeWon1], [PurpleWon2, GreenWon2, OrangeWon2]]) :-
     % Player 1
     display_game(Board, 1),
     userPlay(Board, NewBoard),
     (
         (   
             (
-                (PurpleWon == 'TRUE', PurpleWon1 = PurpleWon);
-                checkPurpleWon(NewBoard, 1, PurpleWon1)
+                ((PurpleWon1 == 'TRUE'; PurpleWon2 == 'TRUE'), (NewPurpleWon1 = PurpleWon1));
+                checkPurpleWon(NewBoard, 1, NewPurpleWon1)
             ), 
             (
-                (OrangeWon == 'TRUE', OrangeWon1 = OrangeWon);
-                checkOrangeWon(NewBoard, 1, OrangeWon1)
+                ((OrangeWon1 == 'TRUE'; OrangeWon2 == 'TRUE'), (NewOrangeWon1 = OrangeWon1));
+                checkOrangeWon(NewBoard, 1, NewOrangeWon1)
             ),
             (
-                (GreenWon == 'TRUE', GreenWon1 = GreenWon);
-                checkGreenWon(NewBoard, 1, GreenWon1)
+                ((GreenWon1 == 'TRUE'; GreenWon2 == 'TRUE') , (NewGreenWon1 = GreenWon1));
+                checkGreenWon(NewBoard, 1, NewGreenWon1)
             ),
-            gameWon(PurpleWon1, OrangeWon1, GreenWon1),
-            write('\nP1 won!\n')
-        );
-        (
-            % Player 2
-            display_game(NewBoard, 2),
-            userPlay(NewBoard, FinalBoard),
-            (
+            (       
                 (
-                    (
-                        (PurpleWon1 == 'TRUE', PurpleWon2 = PurpleWon1);
-                        checkPurpleWon(FinalBoard, 2, PurpleWon2)
-                    ),
-                    ( 
-                        (OrangeWon1 == 'TRUE', OrangeWon2 = OrangeWon1);
-                        checkOrangeWon(FinalBoard, 2, OrangeWon2)
-                    ),
-                    ( 
-                        (GreenWon1 == 'TRUE', GreenWon2 = GreenWon1);
-                        checkGreenWon(FinalBoard, 2, GreenWon2)
-                    ),
-                    gameWon(PurpleWon2, OrangeWon2, GreenWon2),
-                    write('\nP2 won!\n')
+                    gameWon(NewPurpleWon1, NewOrangeWon1, NewGreenWon1),
+                    write('\nP1 won!\n')
                 );
-
                 (
-                    gameLoop(FinalBoard, [PurpleWon2, GreenWon2, OrangeWon2])
+                    % Player 2
+                    display_game(NewBoard, 2),
+                    userPlay(NewBoard, FinalBoard),
+                    (
+                        (
+                            (
+                                ((PurpleWon2 == 'TRUE'; NewPurpleWon1 == 'TRUE'), (NewPurpleWon2 = PurpleWon2));
+                                checkPurpleWon(FinalBoard, 2, NewPurpleWon2)
+                            ),
+                            ( 
+                                ((OrangeWon2 == 'TRUE'; NewOrangeWon1 == 'TRUE'), (NewOrangeWon2 = OrangeWon2));
+                                checkOrangeWon(FinalBoard, 2, NewOrangeWon2)
+                            ),
+                            ( 
+                                ((GreenWon2 == 'TRUE'; NewGreenWon1 == 'TRUE'), (NewGreenWon2 = GreenWon2));
+                                checkGreenWon(FinalBoard, 2, NewGreenWon2)
+                            ),
+                            (
+                                (
+                                    gameWon(NewPurpleWon2, NewOrangeWon2, NewGreenWon2),
+                                    write('\nP2 won!\n')
+                                );
+                                gameLoop(FinalBoard, [[NewPurpleWon1, NewGreenWon1, NewOrangeWon1], [NewPurpleWon2, NewGreenWon2, NewOrangeWon2]])
+                            )
+                        )
+                    )
                 )
             )
         )
@@ -134,11 +171,11 @@ checkPurpleWon(Board, Player, PurpleWon) :-
             (
                 (
                     purple1(Row, Diagonal),
-                    write('Finding purple path'),nl,
+                    %write('Finding purple path'),nl,
                     runPath(Row, Diagonal, Board, NotAlliedPurple, [], purple2)
                 ); 
                 (
-                    write('checkNotBlocked1'),nl,
+                    %write('checkNotBlocked1'),nl,
                     %\+ checkNotBlocked(Row, Diagonal, Board, AlliedColour, [], purple2,0)
                     checkBlocked(1, 1, Board, AlliedColour, [], _, purple2),
                     checkBlocked(2, 1, Board, AlliedColour, [], _, purple2),
@@ -175,7 +212,7 @@ checkOrangeWon(Board, Player, OrangeWon) :-
                     runPath(Row, Diagonal, Board, NotAlliedOrange, [], orange2)
                 );
                 (
-                    write('checkNotBlocked2'), nl,
+                    %write('checkNotBlocked2'), nl,
                     
                     % \+ (checkNotBlocked(Row, Diagonal, Board, AlliedColour, [], orange2); ...)
                     %\+ checkNotBlocked(Row, Diagonal, Board, AlliedColour, [], orange2,0)
@@ -214,16 +251,16 @@ checkGreenWon(Board, Player, GreenWon) :-
                     runPath(Row, Diagonal, Board, NotAlliedGreen, [], green2)
                 );
                 (
-                    write('checkBlockedGreen 1'),nl, 
+                    %write('checkBlockedGreen 1'),nl, 
                     %\+checkNotBlocked(Row, Diagonal, Board, AlliedColour, [], green2,0)
                     checkBlocked(19, 8, Board, AlliedColour, [], _, green2),
-                    write('checkBlockedGreen 2'),nl, 
+                    %write('checkBlockedGreen 2'),nl, 
                     checkBlocked(20, 9, Board, AlliedColour, [], _, green2),
-                    write('checkBlockedGreen 3'),nl, 
+                    %write('checkBlockedGreen 3'),nl, 
                     checkBlocked(21, 10, Board, AlliedColour, [], _, green2),
-                    write('checkBlockedGreen 4'),nl, 
+                    %write('checkBlockedGreen 4'),nl, 
                     checkBlocked(22, 11, Board, AlliedColour, [], _, green2),
-                    write('checkBlockedGreen 5'),nl, 
+                    %write('checkBlockedGreen 5'),nl, 
                     checkBlocked(23, 12, Board, AlliedColour, [], _, green2)
                     %checkBlocked(Row, Diagonal, Board, AlliedColour, [], _, green2)
                 )
@@ -238,7 +275,7 @@ checkGreenWon(Board, Player, GreenWon) :-
 
 play :-
     initial(GameState),
-    gameLoop(GameState, ['FALSE', 'FALSE', 'FALSE']).
+    gameLoop(GameState, [['FALSE', 'FALSE', 'FALSE'], ['FALSE', 'FALSE', 'FALSE']]).
 
 % line_elem(N, List, Elem, Counter, Aux) :- % Returns the content(Elem) of the Nth cell in the 'List' line of the board 
 %     (

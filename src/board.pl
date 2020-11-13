@@ -106,17 +106,17 @@ initial([
 [                                         empty,    empty],                            %1
 [                                     empty,   empty,   empty],                         %2
 [                                purple,    empty,   empty,  empty],                     %3
-[                           empty,    purple,    empty,   empty,   empty],               %4
-[                      empty,    empty,    purple,   empty,   empty,   empty],           %5
-[                          empty,     empty,   purple,   empty,    empty],               %6
-[                      empty,    empty,    empty,   purple,   empty,   empty],           %7 
-[                 empty,   empty,     empty,   purple,   empty,    empty,   empty],      %8
+[                           empty,    purple,    purple,   empty,   empty],               %4
+[                      empty,    empty,    purple,   purple,   empty,   empty],           %5
+[                          purple,     empty,   purple,   purple,    empty],               %6
+[                      empty,    empty,    purple,   purple,   purple,   empty],           %7 
+[                 purple,   empty,     purple,   purple,   empty,    empty,   empty],      %8
 [                      purple,    empty,    empty,   purple,   empty,   empty],           %9
-[                 empty,   empty,     empty,   empty,   purple,    empty,   empty],      %10
-[                      purple,    empty,    empty,   empty,   purple,   empty],           %11
-[                 empty,   empty,     empty,   empty,   purple,    empty,   empty],      %12
+[                 purple,   empty,     empty,   empty,   purple,    empty,   empty],      %10
+[                      purple,    empty,    empty,   purple,   purple,   empty],           %11
+[                 purple,   empty,     empty,   purple,   purple,    empty,   empty],      %12
 [                      purple,    empty,    empty,   empty,   purple,   empty],           %13
-[                 empty,   empty,     empty,   empty,   purple,    empty,   empty],      %14
+[                 purple,   empty,     empty,   empty,   purple,    empty,   empty],      %14
 [                      empty,    empty,    empty,   empty,   purple,   empty],           %15
 [                 empty,   empty,     empty,   empty,   purple,    empty,   empty],      %16
 [                      empty,    empty,    purple,   empty,   purple,   empty],           %17
@@ -194,7 +194,7 @@ runPath(Row, Diagonal, Board, NotAlliedColour, AlreadyVisited, Predicate) :-
         )
     ).
 
-checkBlocked(Row, Diagonal, Board, NotAlliedColour, AlreadyVisited, Visited, BorderPredicate) :-
+checkBlocked(Row, Diagonal, Board, NotAlliedColour, AlreadyVisited, Visited, _) :-
     (
         (
             member([Row, Diagonal], AlreadyVisited),
@@ -360,7 +360,7 @@ checkBlocked(Row, Diagonal, Board, NotAlliedColour, AlreadyVisited, Visited, Bor
 %         )
 %     ).
 
-updateBoard(Board, Row, Diagonal, Colour, NewBoard) :-
+updateBoard(Board, [Row, Diagonal, Colour], NewBoard) :-
     nth1(Row, Board, Line),
     startDiag(Row, StartDiagonal),
     IndexDiagonal is (Diagonal - StartDiagonal),
