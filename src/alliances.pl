@@ -131,12 +131,20 @@ checkPurpleWon(Board, Player, PurpleWon) :-
     ),
     (
         (
-            purple1(Row, Diagonal),
             (
-                runPath(Row, Diagonal, Board, NotAlliedPurple, [], purple2); 
                 (
-                    write('checkNotBlocked1'),nl,  
-                    \+ checkNotBlocked(Row, Diagonal, Board, AlliedColour, [], purple2)
+                    purple1(Row, Diagonal),
+                    write('Finding purple path'),nl,
+                    runPath(Row, Diagonal, Board, NotAlliedPurple, [], purple2)
+                ); 
+                (
+                    write('checkNotBlocked1'),nl,
+                    %\+ checkNotBlocked(Row, Diagonal, Board, AlliedColour, [], purple2,0)
+                    checkBlocked(1, 1, Board, AlliedColour, [], _, purple2),
+                    checkBlocked(2, 1, Board, AlliedColour, [], _, purple2),
+                    checkBlocked(3, 1, Board, AlliedColour, [], _, purple2),
+                    checkBlocked(4, 1, Board, AlliedColour, [], _, purple2),
+                    checkBlocked(5, 1, Board, AlliedColour, [], _, purple2)
                 )
             ),
             !, displayColourWon(Player, 'PURPLE'), PurpleWon = 'TRUE'
@@ -161,14 +169,21 @@ checkOrangeWon(Board, Player, OrangeWon) :-
     ),
     (
         (
-            orange1(Row, Diagonal),
             (
-                runPath(Row, Diagonal, Board, NotAlliedOrange, [], orange2);
+                (
+                    orange1(Row, Diagonal),
+                    runPath(Row, Diagonal, Board, NotAlliedOrange, [], orange2)
+                );
                 (
                     write('checkNotBlocked2'), nl,
-                    fail
+                    
                     % \+ (checkNotBlocked(Row, Diagonal, Board, AlliedColour, [], orange2); ...)
-                    % \+ checkNotBlocked(Row, Diagonal, Board, AlliedColour, [], orange2)
+                    %\+ checkNotBlocked(Row, Diagonal, Board, AlliedColour, [], orange2,0)
+                    checkBlocked(8, 2, Board, AlliedColour, [], _, orange2),
+                    checkBlocked(10, 3, Board, AlliedColour, [], _, orange2),
+                    checkBlocked(12, 4, Board, AlliedColour, [], _, orange2),
+                    checkBlocked(14, 5, Board, AlliedColour, [], _, orange2),
+                    checkBlocked(16, 6, Board, AlliedColour, [], _, orange2)
                 )
             ),
             !, displayColourWon(Player, 'ORANGE'), OrangeWon = 'TRUE'
@@ -193,16 +208,24 @@ checkGreenWon(Board, Player, GreenWon) :-
     ),
     (
         (
-            green1(Row, Diagonal),
             (
-                write('Preso'), runPath(Row, Diagonal, Board, NotAlliedGreen, [], green2);
                 (
-                    write('checkNotBlocked3'),nl,
-                    \+ checkNotBlocked(19, 8, Board, AlliedColour, [], green2),
-                    \+ checkNotBlocked(20, 9, Board, AlliedColour, [], green2),
-                    \+ checkNotBlocked(21, 10, Board, AlliedColour, [], green2),
-                    \+ checkNotBlocked(22, 11, Board, AlliedColour, [], green2),
-                    \+ checkNotBlocked(23, 12, Board, AlliedColour, [], green2)
+                    green1(Row, Diagonal),
+                    runPath(Row, Diagonal, Board, NotAlliedGreen, [], green2)
+                );
+                (
+                    write('checkBlockedGreen 1'),nl, 
+                    %\+checkNotBlocked(Row, Diagonal, Board, AlliedColour, [], green2,0)
+                    checkBlocked(19, 8, Board, AlliedColour, [], _, green2),
+                    write('checkBlockedGreen 2'),nl, 
+                    checkBlocked(20, 9, Board, AlliedColour, [], _, green2),
+                    write('checkBlockedGreen 3'),nl, 
+                    checkBlocked(21, 10, Board, AlliedColour, [], _, green2),
+                    write('checkBlockedGreen 4'),nl, 
+                    checkBlocked(22, 11, Board, AlliedColour, [], _, green2),
+                    write('checkBlockedGreen 5'),nl, 
+                    checkBlocked(23, 12, Board, AlliedColour, [], _, green2)
+                    %checkBlocked(Row, Diagonal, Board, AlliedColour, [], _, green2)
                 )
             ),
             !, displayColourWon(Player, 'GREEN'), GreenWon = 'TRUE'
