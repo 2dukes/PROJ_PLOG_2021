@@ -103,7 +103,7 @@ orange2(14,11).
 orange2(16,12).
 
 initial([
-[                                         empty,    empty],                            %1
+[                                         purple,    empty],                            %1
 [                                     empty,   empty,   empty],                         %2
 [                                purple,    empty,   empty,  empty],                     %3
 [                           empty,    purple,    purple,   empty,   empty],               %4
@@ -286,80 +286,6 @@ checkBlocked(Row, Diagonal, Board, NotAlliedColour, AlreadyVisited, Visited, Bor
         )
     ).
 
-% checkNotBlocked(Row, Diagonal, Board, NotAlliedColour, AlreadyVisited, BorderPredicate, _) :- 
-%     getCellByCoords(Board, Row, Diagonal, Cell),
-%     Cell \= NotAlliedColour,
-%     execute(BorderPredicate, [Row, Diagonal]), !.
-
-% checkNotBlocked(Row, Diagonal, Board, NotAlliedColour, AlreadyVisited, BorderPredicate, Aux) :-
-%     NewAux is Aux+1, 
-%     append(AlreadyVisited, [[Row, Diagonal]], NewAlreadyVisited),
-%     \+ member([Row, Diagonal], AlreadyVisited),
-%     getCellByCoords(Board, Row, Diagonal, AnalizeCell),
-%     AnalizeCell \= NotAlliedColour,
-%     %write(AlreadyVisited),nl,
-%     %write(Row),write(', '), write(Diagonal),nl,
-%     (
-%         (
-%             NewRow1 is Row - 2,
-%             NewDiagonal1 is Diagonal - 1
-%         ),
-%         (
-%             NewRow2 is Row - 1,
-%             NewDiagonal2 is Diagonal
-%         ),
-%         (
-%             NewRow3 is Row + 1,
-%             NewDiagonal3 is Diagonal + 1
-%         ),
-%         (
-%             NewRow4 is Row + 1,
-%             NewDiagonal4 is Diagonal
-%         ),
-%         (
-%             NewRow5 is Row + 2,
-%             NewDiagonal5 is Diagonal + 1
-%         ),
-%         (
-%             NewRow6 is Row - 1,
-%             NewDiagonal6 is Diagonal - 1
-%         )
-%     ),
-    
-%     (
-%         (
-            
-%             % write('1 adjacent: '), write(NewRow1), write(', '), write(NewDiagonal1), nl,
-%             % write(NewAlreadyVisited), nl,
-%             checkNotBlocked(NewRow1, NewDiagonal1, Board, NotAlliedColour, NewAlreadyVisited, BorderPredicate, NewAux)
-%         );
-%         (
-%             % write('2 adjacent: '), write(NewRow2), write(', '), write(NewDiagonal2), nl,
-%             % write(NewAlreadyVisited), nl,
-%             checkNotBlocked(NewRow2, NewDiagonal2, Board, NotAlliedColour, NewAlreadyVisited, BorderPredicate, NewAux)
-%         );
-%         (
-%             % write('3 adjacent: '), write(NewRow3), write(', '), write(NewDiagonal3), nl,
-%             % write(NewAlreadyVisited), nl,
-%             checkNotBlocked(NewRow3, NewDiagonal3, Board, NotAlliedColour, NewAlreadyVisited, BorderPredicate, NewAux)
-%         );
-%         (
-%             % write('4 adjacent: '), write(NewRow4), write(', '), write(NewDiagonal4), nl,
-%             % write(NewAlreadyVisited), nl,
-%             checkNotBlocked(NewRow4, NewDiagonal4, Board, NotAlliedColour, NewAlreadyVisited, BorderPredicate, NewAux)
-%         );
-%         (
-%             % write('5 adjacent: '), write(NewRow5), write(', '), write(NewDiagonal5), nl,
-%             % write(NewAlreadyVisited), nl,
-%             checkNotBlocked(NewRow5, NewDiagonal5, Board, NotAlliedColour, NewAlreadyVisited, BorderPredicate, NewAux)
-%         );
-%         (
-%             % write('6 adjacent: '), write(NewRow6), write(', '), write(NewDiagonal6), nl,
-%             % write(NewAlreadyVisited), nl,
-%             checkNotBlocked(NewRow6, NewDiagonal6, Board, NotAlliedColour, NewAlreadyVisited, BorderPredicate, NewAux)
-%         )
-%     ).
-
 updateBoard(Board, [Row, Diagonal, Colour], NewBoard) :-
     nth1(Row, Board, Line),
     startDiag(Row, StartDiagonal),
@@ -368,12 +294,12 @@ updateBoard(Board, [Row, Diagonal, Colour], NewBoard) :-
     RowToUpdate is Row - 1,
     replaceNth(Board, RowToUpdate, NewLine, NewBoard).
 
-checkEmpty(Row, Diagonal, Board) :-
+checkEmpty([Row, Diagonal, _], Board) :-
     getCellByCoords(Board, Row, Diagonal, Cell),
     Cell == 'empty'.
 
 getCellByCoords(Board, Row, Diagonal, Cell) :-
-    verifyRowDiagonal(Row, Diagonal),
+    verifyCoordinates(Row, Diagonal),
     nth1(Row, Board, Line),
     startDiag(Row, StartDiagonal),
     Index is (Diagonal - StartDiagonal),

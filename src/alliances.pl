@@ -1,12 +1,13 @@
 :- consult('board.pl').
 :- consult('input.pl').
 :- consult('utils.pl').
+:- consult('bot.pl').
 
 
 checkValidPlay(Board, [Row, Diagonal, Colour]) :-
     (
         (
-            checkEmpty(Row, Diagonal, Board)
+            checkEmpty([Row, Diagonal, Colour], Board)
         ); 
         (
             write('Cell not empty!'), nl, fail
