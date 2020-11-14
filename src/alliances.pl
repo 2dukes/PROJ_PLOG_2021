@@ -1,7 +1,9 @@
+:- use_module(library(lists)).
 :- consult('board.pl').
 :- consult('input.pl').
 :- consult('utils.pl').
 :- consult('bot.pl').
+:- consult('game.pl').
 
 
 checkValidPlay(Board, [Row, Diagonal, Colour]) :-
@@ -45,7 +47,6 @@ checkAvailableDisc(Board, Colour) :-
 
 
 userPlay(Board, NewBoard) :-
-    
     repeat,
     (
         getUserInput(Row, Diagonal, Colour),
@@ -60,20 +61,10 @@ move(Board, Move, NewBoard) :-
 
 
 display_game(GameState, Player) :- % Switch Player every time we end printing the board.
+    %clear,
     print_board(GameState, 1),
     display_discs(GameState),
     display_player(Player).
-
-
-countDiscs([], 0, 0, 0).
-countDiscs([Line | Rest], OrangeDiscs, GreenDiscs, PurpleDiscs) :-
-    countOccurrence(Line, orange, AuxOrangeDiscs),
-    countOccurrence(Line, green, AuxGreenDiscs),
-    countOccurrence(Line, purple, AuxPurpleDiscs),
-    countDiscs(Rest, Oranges, Greens, Purples),
-    OrangeDiscs is Oranges + AuxOrangeDiscs,
-    GreenDiscs is Greens + AuxGreenDiscs,
-    PurpleDiscs is Purples + AuxPurpleDiscs.
 
 display_discs(Board) :-
     countDiscs(Board, O, G, P),
@@ -92,7 +83,7 @@ display_player(Player) :-
 
 displayColourWon(Player, [PurpleWon, OrangeWon, GreenWon]) :-
     (
-        (PurpleWon == 'TRUE'; OrangeWon == 'TRUE', GreenWon == 'TRUE'),
+        (PurpleWon == 'TRUE'; OrangeWon == 'TRUE'; GreenWon == 'TRUE'),
         write('Player '), write(Player), write(' has colour(s): '), 
         (
             (PurpleWon == 'TRUE', write('PURPLE ')); true
@@ -131,10 +122,28 @@ gameLoop(Board, [[PurpleWon1, GreenWon1, OrangeWon1], [PurpleWon2, GreenWon2, Or
                 ((GreenWon1 == 'TRUE'; GreenWon2 == 'TRUE') , (NewGreenWon1 = GreenWon1));
                 checkGreenWon(NewBoard, 1, NewGreenWon1)
             ),
+            (
+                ((PurpleWon2 == 'TRUE'; NewPurpleWon1 == 'TRUE'), (NewPurpleWon2 = PurpleWon2));
+                checkPurpleWon(NewBoard, 2, NewPurpleWon2)
+            ),
+            ( 
+                ((OrangeWon2 == 'TRUE'; NewOrangeWon1 == 'TRUE'), (NewOrangeWon2 = OrangeWon2));
+                (
+                checkOrangeWon(NewBoard, 2, NewOrangeWon2),
+                write(NewOrangeWon2))
+            ),
+            ( 
+                ((GreenWon2 == 'TRUE'; NewGreenWon1 == 'TRUE'), (NewGreenWon2 = GreenWon2));
+                checkGreenWon(NewBoard, 2, NewGreenWon2)
+            ),
             (       
                 (
                     displayColourWon(1, [NewPurpleWon1, NewOrangeWon1, NewGreenWon1]),
-                    game_over([NewPurpleWon1, NewOrangeWon1, NewGreenWon1], 1)
+                    displayColourWon(2, [NewPurpleWon2, NewOrangeWon2, NewGreenWon2]),
+                    (
+                        game_over([NewPurpleWon1, NewOrangeWon1, NewGreenWon1], 1);
+                        game_over([NewPurpleWon2, NewOrangeWon2, NewGreenWon2], 2)
+                    )
                 );
                 (
                     % Player 2
@@ -143,23 +152,40 @@ gameLoop(Board, [[PurpleWon1, GreenWon1, OrangeWon1], [PurpleWon2, GreenWon2, Or
                     (
                         (
                             (
-                                ((PurpleWon2 == 'TRUE'; NewPurpleWon1 == 'TRUE'), (NewPurpleWon2 = PurpleWon2));
-                                checkPurpleWon(FinalBoard, 2, NewPurpleWon2)
+                                ((NewPurpleWon2 == 'TRUE'; NewPurpleWon1 == 'TRUE'), (NewPurpleWon4 = NewPurpleWon2));
+                                checkPurpleWon(FinalBoard, 2, NewPurpleWon4)
                             ),
                             ( 
-                                ((OrangeWon2 == 'TRUE'; NewOrangeWon1 == 'TRUE'), (NewOrangeWon2 = OrangeWon2));
-                                checkOrangeWon(FinalBoard, 2, NewOrangeWon2)
+                                ((NewOrangeWon2 == 'TRUE'; NewOrangeWon1 == 'TRUE'), (NewOrangeWon4 = NewOrangeWon2));
+                                checkOrangeWon(FinalBoard, 2, NewOrangeWon4)
+                                
                             ),
                             ( 
-                                ((GreenWon2 == 'TRUE'; NewGreenWon1 == 'TRUE'), (NewGreenWon2 = GreenWon2));
-                                checkGreenWon(FinalBoard, 2, NewGreenWon2)
+                                ((NewGreenWon2 == 'TRUE'; NewGreenWon1 == 'TRUE'), (NewGreenWon4 = NewGreenWon2));
+                                checkGreenWon(FinalBoard, 2, NewGreenWon4)
+                            ),
+                            (
+                                ((NewPurpleWon1 == 'TRUE'; NewPurpleWon4 == 'TRUE'), (NewPurpleWon3 = NewPurpleWon1));
+                                checkPurpleWon(FinalBoard, 1, NewPurpleWon3)
+                            ), 
+                            (
+                                ((NewOrangeWon1 == 'TRUE'; NewOrangeWon4 == 'TRUE'), (NewOrangeWon3 = NewOrangeWon1));
+                                checkOrangeWon(FinalBoard, 1, NewOrangeWon3)
+                            ),
+                            (
+                                ((NewGreenWon1 == 'TRUE'; NewGreenWon4 == 'TRUE') , (NewGreenWon3 = NewGreenWon1));
+                                checkGreenWon(FinalBoard, 1, NewGreenWon3)
                             ),
                             (
                                 (
-                                    displayColourWon(2, [NewPurpleWon2, NewOrangeWon2, NewGreenWon2]),
-                                    game_over([NewPurpleWon2, NewOrangeWon2, NewGreenWon2], 2)
+                                    displayColourWon(1, [NewPurpleWon3, NewOrangeWon3, NewGreenWon3]),
+                                    displayColourWon(2, [NewPurpleWon4, NewOrangeWon4, NewGreenWon4]),
+                                    (
+                                        game_over([NewPurpleWon4, NewOrangeWon4, NewGreenWon4], 2);
+                                        game_over([NewPurpleWon3, NewOrangeWon3, NewGreenWon3], 1)
+                                    )
                                 );
-                                gameLoop(FinalBoard, [[NewPurpleWon1, NewGreenWon1, NewOrangeWon1], [NewPurpleWon2, NewGreenWon2, NewOrangeWon2]])
+                                gameLoop(FinalBoard, [[NewPurpleWon3, NewGreenWon3, NewOrangeWon3], [NewPurpleWon4, NewGreenWon4, NewOrangeWon4]])
                             )
                         )
                     )
@@ -291,31 +317,3 @@ checkGreenWon(Board, Player, GreenWon) :-
 play :-
     initial(GameState),
     gameLoop(GameState, [['FALSE', 'FALSE', 'FALSE'], ['FALSE', 'FALSE', 'FALSE']]).
-
-% line_elem(N, List, Elem, Counter, Aux) :- % Returns the content(Elem) of the Nth cell in the 'List' line of the board 
-%     (
-%         nth0(Aux, List, Result),
-%         ( 
-%             (Result == empty ; Result == purple ; Result == orange ; Result == green),
-%             (
-%                 (
-%                     Counter == N, Elem = Result
-%                 );
-%                 (
-%                     NewCounter is Counter + 1,
-%                     NewAux is Aux + 1,
-%                     line_elem(N, List, Elem, NewCounter, NewAux)
-%                 )
-%             )
-%         );
-%         (
-%             NewAux is Aux + 1,
-%             line_elem(N, List, Elem, Counter, NewAux)
-%         )
-%     ).
-
-
-% cell(L, C, Elem) :- % Returns the cell in a specific Line | Column
-%     initial(Board),
-%     nth0(L, Board, Line),
-%     line_elem(C, Line, Elem, 0, 0).

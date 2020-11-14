@@ -1,4 +1,4 @@
-valid_moves(Board, Player, ListOfMoves) :-
+valid_moves(Board, ListOfMoves) :-
     % searchBoard(NewBoard, List, 1).
     searchBoard(Board, [], List, 1),
     write(List),

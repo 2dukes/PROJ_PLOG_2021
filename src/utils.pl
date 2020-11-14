@@ -38,3 +38,16 @@ countOccurrence([H|T], H2, Count):-
 execute(Function, Args) :-
     Run =.. [Function | Args], 
     Run.
+
+countDiscs([], 0, 0, 0).
+countDiscs([Line | Rest], OrangeDiscs, GreenDiscs, PurpleDiscs) :-
+    countOccurrence(Line, orange, AuxOrangeDiscs),
+    countOccurrence(Line, green, AuxGreenDiscs),
+    countOccurrence(Line, purple, AuxPurpleDiscs),
+    countDiscs(Rest, Oranges, Greens, Purples),
+    OrangeDiscs is Oranges + AuxOrangeDiscs,
+    GreenDiscs is Greens + AuxGreenDiscs,
+    PurpleDiscs is Purples + AuxPurpleDiscs.
+
+ clear :- write('\33\[2J').
+    

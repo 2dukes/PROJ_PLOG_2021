@@ -1,4 +1,3 @@
-:- use_module(library(lists)).
 
 code(empty, ' ').
 code(orange, 'O').
@@ -119,8 +118,8 @@ initial([
 [                 purple,   empty,     empty,   empty,   purple,    empty,   empty],      %14
 [                      empty,    empty,    empty,   empty,   purple,   empty],           %15
 [                 empty,   empty,     empty,   empty,   purple,    empty,   empty],      %16
-[                      empty,    empty,    purple,   empty,   purple,   empty],           %17
-[                           purple,    purple,   empty,    purple,   empty],               %18
+[                      empty,    empty,    empty,   empty,   purple,   empty],           %17
+[                           empty,    purple,   empty,    purple,   empty],               %18
 [                      purple,    purple,    empty,   empty,   purple,   empty],           %19
 [                           purple,    empty,   empty,   empty,   empty],                %20
 [                                purple,    empty,   empty,   empty],                    %21
