@@ -104,10 +104,13 @@ displayColourWon(Player, [PurpleWon, OrangeWon, GreenWon]) :-
         ), nl, nl
     ); true.
 
-gameWon(PurpleWon, OrangeWon, GreenWon) :-
-    (PurpleWon == 'TRUE', OrangeWon == 'TRUE');
-    (PurpleWon == 'TRUE', GreenWon == 'TRUE');
-    (OrangeWon == 'TRUE', GreenWon == 'TRUE').
+game_over([PurpleWon, OrangeWon, GreenWon], Player) :-
+    (
+        (PurpleWon == 'TRUE', OrangeWon == 'TRUE');
+        (PurpleWon == 'TRUE', GreenWon == 'TRUE');
+        (OrangeWon == 'TRUE', GreenWon == 'TRUE')
+    ),
+    nl, write('P'), write(Player), write(' won!'), nl.
 
 gameLoop(Board, [[PurpleWon1, GreenWon1, OrangeWon1], [PurpleWon2, GreenWon2, OrangeWon2]]) :-
     % Player 1
@@ -130,8 +133,7 @@ gameLoop(Board, [[PurpleWon1, GreenWon1, OrangeWon1], [PurpleWon2, GreenWon2, Or
             (       
                 (
                     displayColourWon(1, [NewPurpleWon1, NewOrangeWon1, NewGreenWon1]),
-                    gameWon(NewPurpleWon1, NewOrangeWon1, NewGreenWon1),
-                    write('\nP1 won!\n')
+                    game_over([NewPurpleWon1, NewOrangeWon1, NewGreenWon1], 1)
                 );
                 (
                     % Player 2
@@ -154,8 +156,7 @@ gameLoop(Board, [[PurpleWon1, GreenWon1, OrangeWon1], [PurpleWon2, GreenWon2, Or
                             (
                                 (
                                     displayColourWon(2, [NewPurpleWon2, NewOrangeWon2, NewGreenWon2]),
-                                    gameWon(NewPurpleWon2, NewOrangeWon2, NewGreenWon2),
-                                    write('\nP2 won!\n')
+                                    game_over([NewPurpleWon2, NewOrangeWon2, NewGreenWon2], 2)
                                 );
                                 gameLoop(FinalBoard, [[NewPurpleWon1, NewGreenWon1, NewOrangeWon1], [NewPurpleWon2, NewGreenWon2, NewOrangeWon2]])
                             )
