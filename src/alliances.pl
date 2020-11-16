@@ -4,6 +4,7 @@
 :- consult('utils.pl').
 :- consult('bot.pl').
 :- consult('game.pl').
+:- consult('menus.pl').
 
 
 checkValidPlay(Board, [Row, Diagonal, Colour]) :-
@@ -61,7 +62,7 @@ move(Board, Move, NewBoard) :-
 
 
 display_game(GameState, Player) :- % Switch Player every time we end printing the board.
-    %clear,
+    %, ,
     print_board(GameState, 1),
     display_discs(GameState),
     display_player(Player).
@@ -96,13 +97,24 @@ displayColourWon(Player, [PurpleWon, OrangeWon, GreenWon]) :-
         ), nl, nl
     ); true.
 
-game_over([PurpleWon, OrangeWon, GreenWon], Player) :-
+
+game_over([[PurpleWon1, GreenWon1, OrangeWon1], [PurpleWon2, GreenWon2, OrangeWon2]], Winner) :-
     (
-        (PurpleWon == 'TRUE', OrangeWon == 'TRUE');
-        (PurpleWon == 'TRUE', GreenWon == 'TRUE');
-        (OrangeWon == 'TRUE', GreenWon == 'TRUE')
-    ),
-    nl, write('P'), write(Player), write(' won!'), nl.
+        (
+            (PurpleWon1 == 'TRUE', OrangeWon1 == 'TRUE');
+            (PurpleWon1 == 'TRUE', GreenWon1 == 'TRUE');
+            (OrangeWon1 == 'TRUE', GreenWon1 == 'TRUE')
+        ),
+        Winner is 1
+    );
+    (
+        (   
+            (PurpleWon2 == 'TRUE', OrangeWon2 == 'TRUE');
+            (PurpleWon2 == 'TRUE', GreenWon2 == 'TRUE');
+            (OrangeWon2 == 'TRUE', GreenWon2 == 'TRUE')
+        ),
+        Winner is 2
+    ).
 
 gameLoop(Board, [[PurpleWon1, GreenWon1, OrangeWon1], [PurpleWon2, GreenWon2, OrangeWon2]]) :-
     % Player 1
@@ -128,9 +140,7 @@ gameLoop(Board, [[PurpleWon1, GreenWon1, OrangeWon1], [PurpleWon2, GreenWon2, Or
             ),
             ( 
                 ((OrangeWon2 == 'TRUE'; NewOrangeWon1 == 'TRUE'), (NewOrangeWon2 = OrangeWon2));
-                (
-                checkOrangeWon(NewBoard, 2, NewOrangeWon2),
-                write(NewOrangeWon2))
+                checkOrangeWon(NewBoard, 2, NewOrangeWon2)
             ),
             ( 
                 ((GreenWon2 == 'TRUE'; NewGreenWon1 == 'TRUE'), (NewGreenWon2 = GreenWon2));
@@ -140,9 +150,9 @@ gameLoop(Board, [[PurpleWon1, GreenWon1, OrangeWon1], [PurpleWon2, GreenWon2, Or
                 (
                     displayColourWon(1, [NewPurpleWon1, NewOrangeWon1, NewGreenWon1]),
                     displayColourWon(2, [NewPurpleWon2, NewOrangeWon2, NewGreenWon2]),
-                    (
-                        game_over([NewPurpleWon1, NewOrangeWon1, NewGreenWon1], 1);
-                        game_over([NewPurpleWon2, NewOrangeWon2, NewGreenWon2], 2)
+                    (  
+                        game_over([[NewPurpleWon1, NewOrangeWon1, NewGreenWon1],[NewPurpleWon2, NewOrangeWon2, NewGreenWon2]], Winner),
+                        write('P'), write(Winner), write(' won!'), nl  
                     )
                 );
                 (
@@ -180,9 +190,9 @@ gameLoop(Board, [[PurpleWon1, GreenWon1, OrangeWon1], [PurpleWon2, GreenWon2, Or
                                 (
                                     displayColourWon(1, [NewPurpleWon3, NewOrangeWon3, NewGreenWon3]),
                                     displayColourWon(2, [NewPurpleWon4, NewOrangeWon4, NewGreenWon4]),
-                                    (
-                                        game_over([NewPurpleWon4, NewOrangeWon4, NewGreenWon4], 2);
-                                        game_over([NewPurpleWon3, NewOrangeWon3, NewGreenWon3], 1)
+                                    (  
+                                        game_over([[NewPurpleWon3, NewOrangeWon3, NewGreenWon3],[NewPurpleWon4, NewOrangeWon4, NewGreenWon4]], Winner),
+                                        write('P'), write(Winner), write(' won!'), nl  
                                     )
                                 );
                                 gameLoop(FinalBoard, [[NewPurpleWon3, NewGreenWon3, NewOrangeWon3], [NewPurpleWon4, NewGreenWon4, NewOrangeWon4]])
@@ -314,6 +324,10 @@ checkGreenWon(Board, Player, GreenWon) :-
     ).
 
 
+startGame(GameState) :-
+    mainMenu(GameState).
+
 play :-
     initial(GameState),
-    gameLoop(GameState, [['FALSE', 'FALSE', 'FALSE'], ['FALSE', 'FALSE', 'FALSE']]).
+    startGame(GameState).
+    %gameLoop(GameState, [['FALSE', 'FALSE', 'FALSE'], ['FALSE', 'FALSE', 'FALSE']]).
