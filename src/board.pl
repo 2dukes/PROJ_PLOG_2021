@@ -102,28 +102,28 @@ orange2(14,11).
 orange2(16,12).
 
 initial([
-[                                         purple,    empty],                            %1
+[                                         empty,    empty],                            %1
 [                                     empty,   empty,   empty],                         %2
-[                                purple,    empty,   empty,  empty],                     %3
-[                           empty,    purple,    purple,   empty,   empty],               %4
-[                      empty,    empty,    purple,   purple,   empty,   empty],           %5
-[                          purple,     empty,   purple,   purple,    empty],               %6
-[                      empty,    empty,    purple,   purple,   purple,   empty],           %7 
-[                 purple,   empty,     purple,   purple,   empty,    empty,   empty],      %8
-[                      purple,    empty,    empty,   purple,   empty,   empty],           %9
-[                 purple,   empty,     empty,   empty,   purple,    empty,   empty],      %10
-[                      purple,    empty,    empty,   purple,   purple,   empty],           %11
-[                 purple,   empty,     empty,   purple,   purple,    empty,   empty],      %12
-[                      purple,    empty,    empty,   empty,   purple,   empty],           %13
-[                 purple,   empty,     empty,   empty,   purple,    empty,   empty],      %14
-[                      empty,    empty,    empty,   empty,   purple,   empty],           %15
-[                 empty,   empty,     empty,   empty,   purple,    empty,   empty],      %16
-[                      empty,    empty,    empty,   empty,   purple,   empty],           %17
-[                           empty,    purple,   empty,    purple,   empty],               %18
-[                      purple,    purple,    empty,   empty,   purple,   empty],           %19
-[                           purple,    empty,   empty,   empty,   empty],                %20
-[                                purple,    empty,   empty,   empty],                    %21
-[                                     purple,   empty,   empty],                         %22
+[                                empty,    empty,   empty,  empty],                     %3
+[                           empty,    purple,    empty,   empty,   empty],               %4
+[                      empty,    purple,    empty,   empty,   empty,   empty],           %5
+[                          empty,     empty,   empty,   empty,    empty],               %6
+[                      empty,    purple,    empty,   empty,   purple,   empty],           %7 
+[                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      %8
+[                      empty,    empty,    empty,   empty,   empty,   purple],           %9
+[                 empty,   empty,     empty,   empty,   empty,    purple,   empty],      %10
+[                      empty,    empty,    empty,   empty,   empty,   empty],           %11
+[                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      %12
+[                      empty,    empty,    empty,   empty,   empty,   empty],           %13
+[                 empty,   purple,     empty,   empty,   empty,    empty,   empty],      %14
+[                      empty,    purple,    empty,   empty,   empty,   empty],           %15
+[                 empty,   purple,     empty,   empty,   empty,    empty,   empty],      %16
+[                      empty,    empty,    empty,   empty,   empty,   empty],           %17
+[                           empty,    empty,   empty,    purple,   empty],               %18
+[                      empty,    empty,    empty,   empty,   purple,   empty],           %19
+[                           empty,    empty,   empty,   empty,   empty],                %20
+[                                empty,    empty,   empty,   empty],                    %21
+[                                     empty,   empty,   empty],                         %22
 [                                          empty,   empty]                              %23
 ]).
 
