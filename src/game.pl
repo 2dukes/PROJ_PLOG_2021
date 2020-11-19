@@ -1,7 +1,11 @@
-
-%evaluateBoard()
-
 max_depth(5).
+
+
+%evaluateBoard(Board, Player, PurpleWon-GreenWon-OrangeWon) :-
+    %valid_moves(Board, ListOfMoves),
+    
+     
+
 
 getDistanceColour(Board, Colour-NotAlliedColour, Distance) :-
     (
@@ -32,7 +36,7 @@ getDistanceColour(Board, Colour-NotAlliedColour, Distance) :-
     
 
 distanceToEdge([Row,Diagonal], Board, NotAlliedColour, Predicate, Depth, Result) :-
-    max_depth(MaxDepth)
+    max_depth(MaxDepth),
     (
         Depth =< MaxDepth,
         (

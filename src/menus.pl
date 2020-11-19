@@ -38,14 +38,14 @@ manageInput(0, _) :-
     write('\nExiting...\n\n'), fail.
 
 manageInput(1, GameState) :- % Player vs Player
-    gameLoop(GameState, [['FALSE', 'FALSE', 'FALSE'], ['FALSE', 'FALSE', 'FALSE']]).
+    gameLoop(GameState).
 
 manageInput(2, GameState) :- % Player vs Computer
-    %gameLoop(GameState, [['FALSE', 'FALSE', 'FALSE'], ['FALSE', 'FALSE', 'FALSE']]), fail.
+    %gameLoop(GameState, 'FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE'), fail.
     read(_), clearConsole.
 
 manageInput(3, GameState) :- % Computer vs Computer
-    %gameLoop(GameState, [['FALSE', 'FALSE', 'FALSE'], ['FALSE', 'FALSE', 'FALSE']]), fail.
+    %gameLoop(GameState, 'FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE'), fail.
     read(_), clearConsole.
 
 askMenuOption :-

@@ -82,7 +82,7 @@ display_player(Player) :-
     write(Player),
     write(' turn'), nl, nl.
 
-displayColourWon(Player, [PurpleWon, OrangeWon, GreenWon]) :-
+displayColourWon(Player, PurpleWon-OrangeWon-GreenWon) :-
     (
         (PurpleWon == 'TRUE'; OrangeWon == 'TRUE'; GreenWon == 'TRUE'),
         write('Player '), write(Player), write(' has colour(s): '), 
@@ -116,43 +116,44 @@ game_over([[PurpleWon1, GreenWon1, OrangeWon1], [PurpleWon2, GreenWon2, OrangeWo
         Winner is 2
     ).
 
-gameLoop(Board, [[PurpleWon1, GreenWon1, OrangeWon1], [PurpleWon2, GreenWon2, OrangeWon2]]) :-
+gameLoop(Board-(PurpleWon1-GreenWon1-OrangeWon1-PurpleWon2-GreenWon2-OrangeWon2)) :-
     % Player 1
     display_game(Board, 1),
     userPlay(Board, NewBoard),
     (
         (   
+            
             (
                 ((PurpleWon1 == 'TRUE'; PurpleWon2 == 'TRUE'), (NewPurpleWon1 = PurpleWon1));
-                checkPurpleWon(NewBoard, 1, NewPurpleWon1)
+                checkColourWon(NewBoard, 1, purple, NewPurpleWon1)
             ), 
             (
                 ((OrangeWon1 == 'TRUE'; OrangeWon2 == 'TRUE'), (NewOrangeWon1 = OrangeWon1));
-                checkOrangeWon(NewBoard, 1, NewOrangeWon1)
+                checkColourWon(NewBoard, 1, orange, NewOrangeWon1)
             ),
             (
                 ((GreenWon1 == 'TRUE'; GreenWon2 == 'TRUE') , (NewGreenWon1 = GreenWon1));
-                checkGreenWon(NewBoard, 1, NewGreenWon1)
+                checkColourWon(NewBoard, 1, green, NewGreenWon1)
             ),
             (
                 ((PurpleWon2 == 'TRUE'; NewPurpleWon1 == 'TRUE'), (NewPurpleWon2 = PurpleWon2));
-                checkPurpleWon(NewBoard, 2, NewPurpleWon2)
+                checkColourWon(NewBoard, 2, purple, NewPurpleWon2)
             ),
             ( 
                 ((OrangeWon2 == 'TRUE'; NewOrangeWon1 == 'TRUE'), (NewOrangeWon2 = OrangeWon2));
-                checkOrangeWon(NewBoard, 2, NewOrangeWon2)
+                checkColourWon(NewBoard, 2, orange, NewOrangeWon2)
             ),
             ( 
                 ((GreenWon2 == 'TRUE'; NewGreenWon1 == 'TRUE'), (NewGreenWon2 = GreenWon2));
-                checkGreenWon(NewBoard, 2, NewGreenWon2)
+                checkColourWon(NewBoard, 2, green, NewGreenWon2)
             ),
             (       
                 (
-                    displayColourWon(1, [NewPurpleWon1, NewOrangeWon1, NewGreenWon1]),
-                    displayColourWon(2, [NewPurpleWon2, NewOrangeWon2, NewGreenWon2]),
+                    displayColourWon(1, NewPurpleWon1-NewOrangeWon1-NewGreenWon1),
+                    displayColourWon(2, NewPurpleWon2-NewOrangeWon2-NewGreenWon2),
                     (  
                         game_over([[NewPurpleWon1, NewOrangeWon1, NewGreenWon1],[NewPurpleWon2, NewOrangeWon2, NewGreenWon2]], Winner),
-                        write('P'), write(Winner), write(' won!'), nl  
+                        write('Player '), write(Winner), write(' won!'), nl  
                     )
                 );
                 (
@@ -163,39 +164,39 @@ gameLoop(Board, [[PurpleWon1, GreenWon1, OrangeWon1], [PurpleWon2, GreenWon2, Or
                         (
                             (
                                 ((NewPurpleWon2 == 'TRUE'; NewPurpleWon1 == 'TRUE'), (NewPurpleWon4 = NewPurpleWon2));
-                                checkPurpleWon(FinalBoard, 2, NewPurpleWon4)
+                                checkColourWon(FinalBoard, 2, purple, NewPurpleWon4)
                             ),
                             ( 
                                 ((NewOrangeWon2 == 'TRUE'; NewOrangeWon1 == 'TRUE'), (NewOrangeWon4 = NewOrangeWon2));
-                                checkOrangeWon(FinalBoard, 2, NewOrangeWon4)
+                                checkColourWon(FinalBoard, 2, orange, NewOrangeWon4)
                                 
                             ),
                             ( 
                                 ((NewGreenWon2 == 'TRUE'; NewGreenWon1 == 'TRUE'), (NewGreenWon4 = NewGreenWon2));
-                                checkGreenWon(FinalBoard, 2, NewGreenWon4)
+                                checkColourWon(FinalBoard, 2, green, NewGreenWon4)
                             ),
                             (
                                 ((NewPurpleWon1 == 'TRUE'; NewPurpleWon4 == 'TRUE'), (NewPurpleWon3 = NewPurpleWon1));
-                                checkPurpleWon(FinalBoard, 1, NewPurpleWon3)
+                                checkColourWon(FinalBoard, 1, purple, NewPurpleWon3)
                             ), 
                             (
                                 ((NewOrangeWon1 == 'TRUE'; NewOrangeWon4 == 'TRUE'), (NewOrangeWon3 = NewOrangeWon1));
-                                checkOrangeWon(FinalBoard, 1, NewOrangeWon3)
+                                checkColourWon(FinalBoard, 1, orange, NewOrangeWon3)
                             ),
                             (
                                 ((NewGreenWon1 == 'TRUE'; NewGreenWon4 == 'TRUE') , (NewGreenWon3 = NewGreenWon1));
-                                checkGreenWon(FinalBoard, 1, NewGreenWon3)
+                                checkColourWon(FinalBoard, 1, green, NewGreenWon3)
                             ),
                             (
                                 (
-                                    displayColourWon(1, [NewPurpleWon3, NewOrangeWon3, NewGreenWon3]),
-                                    displayColourWon(2, [NewPurpleWon4, NewOrangeWon4, NewGreenWon4]),
+                                    displayColourWon(1, NewPurpleWon3-NewOrangeWon3-NewGreenWon3),
+                                    displayColourWon(2, NewPurpleWon4-NewOrangeWon4-NewGreenWon4),
                                     (  
                                         game_over([[NewPurpleWon3, NewOrangeWon3, NewGreenWon3],[NewPurpleWon4, NewOrangeWon4, NewGreenWon4]], Winner),
-                                        write('P'), write(Winner), write(' won!'), nl  
+                                        write('Player '), write(Winner), write(' won!'), nl  
                                     )
                                 );
-                                gameLoop(FinalBoard, [[NewPurpleWon3, NewGreenWon3, NewOrangeWon3], [NewPurpleWon4, NewGreenWon4, NewOrangeWon4]])
+                                gameLoop(FinalBoard-(NewPurpleWon3-NewGreenWon3-NewOrangeWon3-NewPurpleWon4-NewGreenWon4-NewOrangeWon4))
                             )
                         )
                     )
@@ -204,125 +205,31 @@ gameLoop(Board, [[PurpleWon1, GreenWon1, OrangeWon1], [PurpleWon2, GreenWon2, Or
         )
     ).
 
-checkPurpleWon(Board, Player, PurpleWon) :-
-    (
-        (
-            Player == 1,
-            AlliedColour = orange,
-            NotAlliedPurple = green
-        );
-        (
-            Player == 2,
-            AlliedColour = green,
-            NotAlliedPurple = orange
-        )
-    ),
+checkColourWon(Board, Player, Colour, ColourWon) :-
+    colourTable(Player, Colour-AlliedColour-NotAlliedColour),
+    colourEdges(Colour, Edge1, Edge2),
     (
         (
             (
                 (
-                    purple1(Row, Diagonal),
-                    %write('Finding purple path'),nl,
-                    runPath(Row, Diagonal, Board, NotAlliedPurple, [], purple2)
-                ); 
-                (
-                    %write('checkNotBlocked1'),nl,
-                    %\+ checkNotBlocked(Row, Diagonal, Board, AlliedColour, [], purple2,0)
-                    checkBlocked(1, 1, Board, AlliedColour, [], _, purple2),
-                    checkBlocked(2, 1, Board, AlliedColour, [], _, purple2),
-                    checkBlocked(3, 1, Board, AlliedColour, [], _, purple2),
-                    checkBlocked(4, 1, Board, AlliedColour, [], _, purple2),
-                    checkBlocked(5, 1, Board, AlliedColour, [], _, purple2)
-                )
-            ),
-            !, PurpleWon = 'TRUE' % , displayColourWon(Player, 'PURPLE'),
-        );
-        (
-            !, true
-        )
-    ).
-
-checkOrangeWon(Board, Player, OrangeWon) :-
-    ( 
-        (
-            Player == 1,
-            AlliedColour = green,
-            NotAlliedOrange = purple
-        );
-        (
-            Player == 2,
-            AlliedColour = purple,
-            NotAlliedOrange = green
-        )
-    ),
-    (
-        (
-            (
-                (
-                    orange1(Row, Diagonal),
-                    runPath(Row, Diagonal, Board, NotAlliedOrange, [], orange2)
+                    execute(Edge1, [Row, Diagonal]),
+                    runPath(Row, Diagonal, Board, NotAlliedColour, [], Edge2)
                 );
                 (
-                    %write('checkNotBlocked2'), nl,
-                    
-                    % \+ (checkNotBlocked(Row, Diagonal, Board, AlliedColour, [], orange2); ...)
-                    %\+ checkNotBlocked(Row, Diagonal, Board, AlliedColour, [], orange2,0)
-                    checkBlocked(8, 2, Board, AlliedColour, [], _, orange2),
-                    checkBlocked(10, 3, Board, AlliedColour, [], _, orange2),
-                    checkBlocked(12, 4, Board, AlliedColour, [], _, orange2),
-                    checkBlocked(14, 5, Board, AlliedColour, [], _, orange2),
-                    checkBlocked(16, 6, Board, AlliedColour, [], _, orange2)
+                    findall(Row-Diagonal, execute(Edge1, [Row, Diagonal]), [P1,P2,P3,P4,P5]),
+                    checkBlocked(P1, Board, AlliedColour, [], _, Edge2),
+                    checkBlocked(P2, Board, AlliedColour, [], _, Edge2),
+                    checkBlocked(P3, Board, AlliedColour, [], _, Edge2),
+                    checkBlocked(P4, Board, AlliedColour, [], _, Edge2),
+                    checkBlocked(P5, Board, AlliedColour, [], _, Edge2)
                 )
             ),
-            !, OrangeWon = 'TRUE' % , displayColourWon(Player, 'ORANGE')
+            !, ColourWon = 'TRUE'
         );
         (
             !, true
         )
     ).
-
-checkGreenWon(Board, Player, GreenWon) :-
-    (
-        (
-            Player == 1,
-            AlliedColour = purple,
-            NotAlliedGreen = orange
-        );
-        (
-            Player == 2,
-            AlliedColour = orange,
-            NotAlliedGreen = purple
-        )
-    ),
-    (
-        (
-            (
-                (
-                    green1(Row, Diagonal),
-                    runPath(Row, Diagonal, Board, NotAlliedGreen, [], green2)
-                );
-                (
-                    %write('checkBlockedGreen 1'),nl, 
-                    %\+checkNotBlocked(Row, Diagonal, Board, AlliedColour, [], green2,0)
-                    checkBlocked(19, 8, Board, AlliedColour, [], _, green2),
-                    %write('checkBlockedGreen 2'),nl, 
-                    checkBlocked(20, 9, Board, AlliedColour, [], _, green2),
-                    %write('checkBlockedGreen 3'),nl, 
-                    checkBlocked(21, 10, Board, AlliedColour, [], _, green2),
-                    %write('checkBlockedGreen 4'),nl, 
-                    checkBlocked(22, 11, Board, AlliedColour, [], _, green2),
-                    %write('checkBlockedGreen 5'),nl, 
-                    checkBlocked(23, 12, Board, AlliedColour, [], _, green2)
-                    %checkBlocked(Row, Diagonal, Board, AlliedColour, [], _, green2)
-                )
-            ),
-            !, GreenWon = 'TRUE' % , displayColourWon(Player, 'GREEN')
-        );
-        (
-            !, true
-        )
-    ).
-
 
 startGame(GameState) :-
     mainMenu(GameState).
@@ -330,4 +237,3 @@ startGame(GameState) :-
 play :-
     initial(GameState),
     startGame(GameState).
-    %gameLoop(GameState, [['FALSE', 'FALSE', 'FALSE'], ['FALSE', 'FALSE', 'FALSE']]).

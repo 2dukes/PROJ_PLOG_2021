@@ -64,7 +64,7 @@ verifyDiagonal(Diagonal) :-
     Diagonal =< 13.
 
 verifyRowDiagonal(Row, Diagonal) :-
-    initial(Board),
+    initial(Board-_),
     startDiag(Row, StartDiagonal),
     nth1(Row, Board, Line),
     length(Line, Len), 

@@ -101,31 +101,42 @@ orange2(12,10).
 orange2(14,11).
 orange2(16,12).
 
+colourEdges(purple, purple1, purple2).
+colourEdges(orange, orange1, orange2).
+colourEdges(green, green1, green2).
+
+colourTable(1, purple-orange-green). % Colour | Allied | NotAllied
+colourTable(1, orange-green-purple).
+colourTable(1, green-purple-orange).
+colourTable(2, purple-green-orange).
+colourTable(2, orange-purple-green).
+colourTable(2, green-orange-purple). % Colour | Allied | NotAllied
+
 initial([
 [                                         empty,    empty],                            %1
 [                                     empty,   empty,   empty],                         %2
-[                                empty,    empty,   empty,  empty],                     %3
-[                           empty,    purple,    empty,   empty,   empty],               %4
-[                      empty,    purple,    empty,   empty,   empty,   empty],           %5
-[                          empty,     empty,   empty,   empty,    empty],               %6
-[                      empty,    purple,    empty,   empty,   purple,   empty],           %7 
-[                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      %8
-[                      empty,    empty,    empty,   empty,   empty,   purple],           %9
-[                 empty,   empty,     empty,   empty,   empty,    purple,   empty],      %10
-[                      empty,    empty,    empty,   empty,   empty,   empty],           %11
-[                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      %12
-[                      empty,    empty,    empty,   empty,   empty,   empty],           %13
-[                 empty,   purple,     empty,   empty,   empty,    empty,   empty],      %14
-[                      empty,    purple,    empty,   empty,   empty,   empty],           %15
-[                 empty,   purple,     empty,   empty,   empty,    empty,   empty],      %16
-[                      empty,    empty,    empty,   empty,   empty,   empty],           %17
-[                           empty,    empty,   empty,    purple,   empty],               %18
-[                      empty,    empty,    empty,   empty,   purple,   empty],           %19
+[                                purple,    empty,   empty,  empty],                     %3
+[                           empty,    purple,    empty,   green,   empty],               %4
+[                      empty,    purple,    empty,   green,   empty,   empty],           %5
+[                          empty,     purple,   green,   empty,    empty],               %6
+[                      empty,    purple,    green,   empty,   purple,   empty],           %7 
+[                 empty,   empty,     green,   purple,   empty,    empty,   empty],      %8
+[                      empty,    empty,    purple,   empty,   empty,   purple],           %9
+[                 empty,   empty,     green,   purple,   empty,    purple,   empty],      %10
+[                      empty,    green,    empty,   purple,   empty,   empty],           %11
+[                 empty,   empty,     empty,   empty,   purple,    empty,   empty],      %12
+[                      empty,    green,    empty,   empty,   empty,   empty],           %13
+[                 empty,   green,     empty,   empty,   purple,    empty,   empty],      %14
+[                      empty,    green,    empty,   empty,   empty,   empty],           %15
+[                 empty,   green,     empty,   empty,   purple,    empty,   empty],      %16
+[                      green,    empty,    empty,   empty,   empty,   empty],           %17
+[                           green,    empty,   empty,    purple,   empty],               %18
+[                      green,    empty,    empty,   empty,   purple,   empty],           %19
 [                           empty,    empty,   empty,   empty,   empty],                %20
 [                                empty,    empty,   empty,   empty],                    %21
 [                                     empty,   empty,   empty],                         %22
 [                                          empty,   empty]                              %23
-]).
+]-('FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE')).
 
 runPath(Row, Diagonal, Board, NotAlliedColour, _,  Predicate) :- 
     getCellByCoords(Board, Row, Diagonal, Cell),
@@ -193,7 +204,7 @@ runPath(Row, Diagonal, Board, NotAlliedColour, AlreadyVisited, Predicate) :-
         )
     ).
 
-checkBlocked(Row, Diagonal, Board, NotAlliedColour, AlreadyVisited, Visited, _) :-
+checkBlocked(Row-Diagonal, Board, NotAlliedColour, AlreadyVisited, Visited, _) :-
     (
         (
             member([Row, Diagonal], AlreadyVisited),
@@ -213,7 +224,7 @@ checkBlocked(Row, Diagonal, Board, NotAlliedColour, AlreadyVisited, Visited, _) 
     ),
     (Visited = NewVisited).
 
-checkBlocked(Row, Diagonal, Board, NotAlliedColour, AlreadyVisited, Visited, BorderPredicate) :-
+checkBlocked(Row-Diagonal, Board, NotAlliedColour, AlreadyVisited, Visited, BorderPredicate) :-
     (
         \+execute(BorderPredicate, [Row, Diagonal]),
         getCellByCoords(Board, Row, Diagonal, AnalizeCell),
@@ -258,27 +269,27 @@ checkBlocked(Row, Diagonal, Board, NotAlliedColour, AlreadyVisited, Visited, Bor
                 !,
                 % write(NewAlreadyVisited), nl,
                 % write('1 adjacent: '), write(NewRow1), write(', '), write(NewDiagonal1), nl,
-                checkBlocked(NewRow1, NewDiagonal1, Board, NotAlliedColour, NewAlreadyVisited, Visited1, BorderPredicate),
+                checkBlocked(NewRow1-NewDiagonal1, Board, NotAlliedColour, NewAlreadyVisited, Visited1, BorderPredicate),
                 !,
                 % write(Visited1), nl,
                 % write('2 adjacent: '), write(NewRow2), write(', '), write(NewDiagonal2), nl,
-                checkBlocked(NewRow2, NewDiagonal2, Board, NotAlliedColour, Visited1, Visited2, BorderPredicate),
+                checkBlocked(NewRow2-NewDiagonal2, Board, NotAlliedColour, Visited1, Visited2, BorderPredicate),
                 !,
                 % write(Visited2), nl,
                 % write('3 adjacent: '), write(NewRow3), write(', '), write(NewDiagonal3), nl,
-                checkBlocked(NewRow3, NewDiagonal3, Board, NotAlliedColour, Visited2, Visited3, BorderPredicate),
+                checkBlocked(NewRow3-NewDiagonal3, Board, NotAlliedColour, Visited2, Visited3, BorderPredicate),
                 !,
                 % write(Visited3), nl,
                 % write('4 adjacent: '), write(NewRow4), write(', '), write(NewDiagonal4), nl,
-                checkBlocked(NewRow4, NewDiagonal4, Board, NotAlliedColour, Visited3, Visited4, BorderPredicate),
+                checkBlocked(NewRow4-NewDiagonal4, Board, NotAlliedColour, Visited3, Visited4, BorderPredicate),
                 !,
                 % write(Visited4), nl,
                 % write('5 adjacent: '), write(NewRow5), write(', '), write(NewDiagonal5), nl,
-                checkBlocked(NewRow5, NewDiagonal5, Board, NotAlliedColour, Visited4, Visited5, BorderPredicate),
+                checkBlocked(NewRow5-NewDiagonal5, Board, NotAlliedColour, Visited4, Visited5, BorderPredicate),
                 !,
                 % write(Visited5), nl,
                 % write('6 adjacent: '), write(NewRow6), write(', '), write(NewDiagonal6), nl,
-                checkBlocked(NewRow6, NewDiagonal6, Board, NotAlliedColour, Visited5, Visited6, BorderPredicate),
+                checkBlocked(NewRow6-NewDiagonal6, Board, NotAlliedColour, Visited5, Visited6, BorderPredicate),
                 Visited = Visited6
                 %write(Visited), nl
             )
