@@ -23,7 +23,6 @@ replaceNth([_|T], 0, X, [X|T]).
 replaceNth([H|T], I, X, [H|R]):- I > -1, NI is I-1, replaceNth(T, NI, X, R), !.
 replaceNth(L, _, _, L).
 
-
 % countOccurrence(+List, +Value, -Count)
 countOccurrence([] , _,0). % empty list, count of anything is 0. Base case.
 

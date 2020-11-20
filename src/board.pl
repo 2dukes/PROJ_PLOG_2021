@@ -119,7 +119,7 @@ initial([
 [                           empty,    purple,    empty,   green,   empty],               %4
 [                      empty,    purple,    empty,   green,   empty,   empty],           %5
 [                          empty,     purple,   green,   empty,    empty],               %6
-[                      empty,    purple,    green,   empty,   purple,   empty],           %7 
+[                      empty,    purple,    purple,   empty,   purple,   empty],           %7 
 [                 empty,   empty,     green,   purple,   empty,    empty,   empty],      %8
 [                      empty,    empty,    purple,   empty,   empty,   purple],           %9
 [                 empty,   empty,     green,   purple,   empty,    purple,   empty],      %10

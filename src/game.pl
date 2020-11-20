@@ -1,13 +1,37 @@
-max_depth(5).
+max_depth(1).
 
 
-%evaluateBoard(Board, Player, PurpleWon-GreenWon-OrangeWon) :-
-    %valid_moves(Board, ListOfMoves),
+value(Board-(PurpleWon-GreenWon-OrangeWon), Player, Value) :-
+    findall(ValueColour, ( colourTable(Player, Colour-AlliedColour-NotAlliedColour), 
+        evaluateColour(Board, Colour-NotAlliedColour, ValueColour) ), ValueColours),
+    sumlist(ValueColours, Value).
     
-     
+evaluateColour(Board, Colour-NotAlliedColour, ValueColour) :-
+    % write('evaluate'),nl,
+
+    getDistanceColour(Board, Colour-NotAlliedColour, Distance),
+    % write('Distance: '), write(Distance),nl,
+    (
+        (
+            % write('1'),nl,
+            Distance is 2000,
+            ValueColour is 0
+            % write('consegui 1'),nl
+        );
+        (
+            % write(':2:'),nl,
+            NewDistance is Distance + 1,
+            ValueColour is 20 / NewDistance
+        )
+    ),!.
+    % write('fim evaluate'),nl.
+
+% calculateValue(Distance, Value) :-
+
 
 
 getDistanceColour(Board, Colour-NotAlliedColour, Distance) :-
+    % write(Colour),nl,
     (
         (   
             Colour == orange,
@@ -38,21 +62,23 @@ getDistanceColour(Board, Colour-NotAlliedColour, Distance) :-
 distanceToEdge([Row,Diagonal], Board, NotAlliedColour, Predicate, Depth, Result) :-
     max_depth(MaxDepth),
     (
-        Depth =< MaxDepth,
         (
+            Depth =< MaxDepth,
             (
-                getDistance(Row-Diagonal, Board, NotAlliedColour, [],  Predicate, 'TRUE', Depth, 0, Result1),
-                Result = Result1
-            );
-            (
-                NewDepth is Depth + 1, !,
-                distanceToEdge([Row,Diagonal], Board, NotAlliedColour, Predicate, NewDepth, Result)
+                (
+                    getDistance(Row-Diagonal, Board, NotAlliedColour, [],  Predicate, 'TRUE', Depth, 0, Result1),
+                    Result = Result1
+                );
+                (
+                    NewDepth is Depth + 1, !,
+                    distanceToEdge([Row,Diagonal], Board, NotAlliedColour, Predicate, NewDepth, Result)
+                )
             )
+        );
+        (
+            Depth > MaxDepth,
+            Result is 2000
         )
-    );
-    (
-        Depth > MaxDepth,
-        Result is 2000
     ).
 
 getDistance(Row-Diagonal, Board, NotAlliedColour, _,  Predicate, DistanceFind, Depth, Distance, Result) :- 

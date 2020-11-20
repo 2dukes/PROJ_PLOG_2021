@@ -1,4 +1,5 @@
 :- use_module(library(lists)).
+:- use_module(library(random)).
 :- consult('board.pl').
 :- consult('input.pl').
 :- consult('utils.pl').
