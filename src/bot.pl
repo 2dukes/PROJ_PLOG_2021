@@ -18,14 +18,10 @@ choose_move(Board-(PurpleWon1-GreenWon1-OrangeWon1-PurpleWon2-GreenWon2-OrangeWo
     ).
 
 colourWonBoth(Colour1, Colour2, Result) :-
-    (
-        (
-            Colour1 == 'TRUE';
-            Colour2 == 'TRUE'
-        ), Result = 'TRUE'
-    );
-    Result = 'FALSE'.
+    (Colour1 =='TRUE'; Colour2 == 'TRUE'), Result = 'TRUE'.
 
+colourWonBoth(_, _, Result) :-
+    Result = 'FALSE'.
 
 valid_moves(Board, ListOfMoves) :-
     % searchBoard(NewBoard, List, 1).

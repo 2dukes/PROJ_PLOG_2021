@@ -46,18 +46,25 @@ checkAvailableDisc(Board, Colour) :-
         )
     ).
     
+print_move([Row, Diagonal, Colour]) :-
+    write('Played R:'), write(Row),
+    write(', D:'), write(Diagonal),
+    write(', '), write(Colour), nl.
 
-
-userPlay(Board, NewBoard) :-
+userPlay(GameState, NewGameState, _-p) :-
     repeat,
     (
         getUserInput(Row, Diagonal, Colour),
-        move(Board, [Row, Diagonal, Colour], NewBoard)
+        move(GameState, [Row, Diagonal, Colour], NewGameState)
+        %print_move([Row, Diagonal, Colour])
     ).
-    
-    % move(+GameState, +Move, -NewGameState)
 
-move(Board, Move, NewBoard) :-
+userPlay(GameState, NewGameState, Nplayer-(c-Level)) :-
+    choose_move(GameState, Nplayer, Level, Move),
+    move(GameState, Move, NewGameState),
+    print_move(Move).
+
+move(Board-_, Move, NewBoard-_) :-
     checkValidPlay(Board, Move),
     updateBoard(Board, Move, NewBoard).
 
@@ -73,9 +80,9 @@ display_discs(Board) :-
     NewO is 42 - O,
     NewG is 42 - G,
     NewP is 42 - P,
-    write('Orange discs: '), write(NewO), nl,
-    write('Green discs: '), write(NewG), nl,
-    write('Purple discs: '), write(NewP), nl.
+    write('   Orange discs: '), write(NewO), 
+    write(' | Green discs: '), write(NewG),
+    write(' | Purple discs: '), write(NewP),nl.
 
 
 display_player(Player) :-
@@ -98,32 +105,31 @@ displayColourWon(Player, PurpleWon-OrangeWon-GreenWon) :-
         ), nl, nl
     ); true.
 
+checkPlayerWinner(Purple-Orange-_) :-
+    Purple == 'TRUE', Orange == 'TRUE'.
 
-game_over([[PurpleWon1, GreenWon1, OrangeWon1], [PurpleWon2, GreenWon2, OrangeWon2]], Winner) :-
-    (
-        (
-            (PurpleWon1 == 'TRUE', OrangeWon1 == 'TRUE');
-            (PurpleWon1 == 'TRUE', GreenWon1 == 'TRUE');
-            (OrangeWon1 == 'TRUE', GreenWon1 == 'TRUE')
-        ),
-        Winner is 1
-    );
-    (
-        (   
-            (PurpleWon2 == 'TRUE', OrangeWon2 == 'TRUE');
-            (PurpleWon2 == 'TRUE', GreenWon2 == 'TRUE');
-            (OrangeWon2 == 'TRUE', GreenWon2 == 'TRUE')
-        ),
-        Winner is 2
-    ).
+checkPlayerWinner(Purple-_-Green) :-
+    Purple == 'TRUE', Green == 'TRUE'.
 
-gameLoop(Board-(PurpleWon1-GreenWon1-OrangeWon1-PurpleWon2-GreenWon2-OrangeWon2)) :-
-    % Player 1
+checkPlayerWinner(_-Orange-Green) :-
+    Orange == 'TRUE', Green == 'TRUE'.
+
+
+game_over(Colours1-_, Winner) :-
+    checkPlayerWinner(Colours1),
+    Winner is 1.
+
+game_over(_-Colours2, Winner) :-
+    checkPlayerWinner(Colours2),
+    Winner is 2.
+
+
+gameLoop(Board-(PurpleWon1-GreenWon1-OrangeWon1-PurpleWon2-GreenWon2-OrangeWon2), P1-P2) :-
+    % Player 1                                                                                    
     display_game(Board, 1),
-    userPlay(Board, NewBoard),
+    userPlay(Board-_, NewBoard-_, 1-P1),
     (
-        (   
-            
+        (     
             (
                 ((PurpleWon1 == 'TRUE'; PurpleWon2 == 'TRUE'), (NewPurpleWon1 = PurpleWon1));
                 checkColourWon(NewBoard, 1, purple, NewPurpleWon1)
@@ -153,14 +159,14 @@ gameLoop(Board-(PurpleWon1-GreenWon1-OrangeWon1-PurpleWon2-GreenWon2-OrangeWon2)
                     displayColourWon(1, NewPurpleWon1-NewOrangeWon1-NewGreenWon1),
                     displayColourWon(2, NewPurpleWon2-NewOrangeWon2-NewGreenWon2),
                     (  
-                        game_over([[NewPurpleWon1, NewOrangeWon1, NewGreenWon1],[NewPurpleWon2, NewOrangeWon2, NewGreenWon2]], Winner),
+                        game_over((NewPurpleWon1-NewOrangeWon1-NewGreenWon1)-(NewPurpleWon2-NewOrangeWon2-NewGreenWon2), Winner),
                         write('Player '), write(Winner), write(' won!'), nl  
                     )
                 );
                 (
                     % Player 2
                     display_game(NewBoard, 2),
-                    userPlay(NewBoard, FinalBoard),
+                    userPlay(NewBoard-_, FinalBoard-_, 2-P2),
                     (
                         (
                             (
@@ -193,11 +199,11 @@ gameLoop(Board-(PurpleWon1-GreenWon1-OrangeWon1-PurpleWon2-GreenWon2-OrangeWon2)
                                     displayColourWon(1, NewPurpleWon3-NewOrangeWon3-NewGreenWon3),
                                     displayColourWon(2, NewPurpleWon4-NewOrangeWon4-NewGreenWon4),
                                     (  
-                                        game_over([[NewPurpleWon3, NewOrangeWon3, NewGreenWon3],[NewPurpleWon4, NewOrangeWon4, NewGreenWon4]], Winner),
+                                        game_over((NewPurpleWon3-NewOrangeWon3-NewGreenWon3)-(NewPurpleWon4-NewOrangeWon4-NewGreenWon4), Winner),
                                         write('Player '), write(Winner), write(' won!'), nl  
                                     )
                                 );
-                                gameLoop(FinalBoard-(NewPurpleWon3-NewGreenWon3-NewOrangeWon3-NewPurpleWon4-NewGreenWon4-NewOrangeWon4))
+                                gameLoop(FinalBoard-(NewPurpleWon3-NewGreenWon3-NewOrangeWon3-NewPurpleWon4-NewGreenWon4-NewOrangeWon4), P1-P2)
                             )
                         )
                     )
@@ -214,7 +220,8 @@ checkColourWon(Board, Player, Colour, ColourWon) :-
             (
                 (
                     execute(Edge1, [Row, Diagonal]),
-                    runPath(Row, Diagonal, Board, NotAlliedColour, [], Edge2)
+                    getDistance(Row-Diagonal, Board, NotAlliedColour, [], Edge2, 'FALSE', 0, 0, Result),
+                    Result == 0
                 );
                 (
                     findall(Row-Diagonal, execute(Edge1, [Row, Diagonal]), [P1,P2,P3,P4,P5]),

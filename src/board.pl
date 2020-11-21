@@ -18,8 +18,8 @@ info(12, ' [O]').
 info(13, ' [P]').
 
 line(1, '                            1').
-line(2, '                        2').
-line(3, '                    3').
+line(2,     '                        2').
+line(3,         '                    3').
 line(4, '                4').
 line(5, '                    5').
 line(6, '                  6').
@@ -115,94 +115,29 @@ colourTable(2, green-orange-purple). % Colour | Allied | NotAllied
 initial([
 [                                         empty,    empty],                            %1
 [                                     empty,   empty,   empty],                         %2
-[                                purple,    empty,   empty,  empty],                     %3
-[                           empty,    purple,    empty,   green,   empty],               %4
-[                      empty,    purple,    empty,   green,   empty,   empty],           %5
-[                          empty,     purple,   green,   empty,    empty],               %6
-[                      empty,    purple,    purple,   empty,   purple,   empty],           %7 
-[                 empty,   empty,     green,   purple,   empty,    empty,   empty],      %8
-[                      empty,    empty,    purple,   empty,   empty,   purple],           %9
-[                 empty,   empty,     green,   purple,   empty,    purple,   empty],      %10
-[                      empty,    green,    empty,   purple,   empty,   empty],           %11
-[                 empty,   empty,     empty,   empty,   purple,    empty,   empty],      %12
-[                      empty,    green,    empty,   empty,   empty,   empty],           %13
-[                 empty,   green,     empty,   empty,   purple,    empty,   empty],      %14
-[                      empty,    green,    empty,   empty,   empty,   empty],           %15
-[                 empty,   green,     empty,   empty,   purple,    empty,   empty],      %16
-[                      green,    empty,    empty,   empty,   empty,   empty],           %17
-[                           green,    empty,   empty,    purple,   empty],               %18
-[                      green,    empty,    empty,   empty,   purple,   empty],           %19
+[                                empty,    empty,   empty,  empty],                     %3
+[                           empty,    empty,    empty,   empty,   empty],               %4
+[                      empty,    empty,    empty,   empty,   empty,   empty],           %5
+[                          empty,     empty,   empty,   empty,    empty],               %6
+[                      empty,    empty,    empty,   empty,   empty,   empty],           %7 
+[                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      %8
+[                      empty,    empty,    empty,   empty,   empty,   empty],           %9
+[                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      %10
+[                      empty,    empty,    empty,   empty,   empty,   empty],           %11
+[                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      %12
+[                      empty,    empty,    empty,   empty,   empty,   empty],           %13
+[                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      %14
+[                      empty,    empty,    empty,   empty,   empty,   empty],           %15
+[                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      %16
+[                      empty,    empty,    empty,   empty,   empty,   empty],           %17
+[                           empty,    empty,   empty,    empty,   empty],               %18
+[                      empty,    empty,    empty,   empty,   empty,   empty],           %19
 [                           empty,    empty,   empty,   empty,   empty],                %20
 [                                empty,    empty,   empty,   empty],                    %21
 [                                     empty,   empty,   empty],                         %22
 [                                          empty,   empty]                              %23
 ]-('FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE')).
 
-runPath(Row, Diagonal, Board, NotAlliedColour, _,  Predicate) :- 
-    getCellByCoords(Board, Row, Diagonal, Cell),
-    Cell \= NotAlliedColour,
-    Cell \= empty,
-    execute(Predicate, [Row , Diagonal]), !.
-
-runPath(Row, Diagonal, Board, NotAlliedColour, AlreadyVisited, Predicate) :-
-    \+ member([Row, Diagonal], AlreadyVisited),
-    getCellByCoords(Board, Row, Diagonal, AnalizeCell),
-    AnalizeCell \= empty, AnalizeCell \= NotAlliedColour,
-    Row >=1, Row =< 23, Diagonal >= 1, Diagonal =< 13, 
-    (
-        (
-            NewRow1 is Row - 2,
-            NewDiagonal1 is Diagonal - 1
-        ),
-        (
-            NewRow2 is Row - 1,
-            NewDiagonal2 is Diagonal
-        ),
-        (
-            NewRow3 is Row + 1,
-            NewDiagonal3 is Diagonal + 1
-        ),
-        (
-            NewRow4 is Row + 1,
-            NewDiagonal4 is Diagonal
-        ),
-        (
-            NewRow5 is Row + 2,
-            NewDiagonal5 is Diagonal + 1
-        ),
-        (
-            NewRow6 is Row - 1,
-            NewDiagonal6 is Diagonal - 1
-        )
-    ),
-    (
-        append(AlreadyVisited, [[Row, Diagonal],
-            [NewRow2, NewDiagonal2],[NewRow3, NewDiagonal3],[NewRow4, NewDiagonal4],[NewRow5, NewDiagonal5],[NewRow6, NewDiagonal6]], 
-            NewAlreadyVisited1),
-        append(AlreadyVisited, [[Row, Diagonal],
-            [NewRow1, NewDiagonal1],[NewRow3, NewDiagonal3],[NewRow4, NewDiagonal4],[NewRow5, NewDiagonal5],[NewRow6, NewDiagonal6]], 
-            NewAlreadyVisited2),
-        append(AlreadyVisited, [[Row, Diagonal],
-            [NewRow1, NewDiagonal1],[NewRow2, NewDiagonal2],[NewRow4, NewDiagonal4],[NewRow5, NewDiagonal5],[NewRow6, NewDiagonal6]], 
-            NewAlreadyVisited3),
-        append(AlreadyVisited, [[Row, Diagonal],
-            [NewRow1, NewDiagonal1],[NewRow2, NewDiagonal2],[NewRow3, NewDiagonal3],[NewRow5, NewDiagonal5],[NewRow6, NewDiagonal6]], 
-            NewAlreadyVisited4),
-        append(AlreadyVisited, [[Row, Diagonal],
-            [NewRow1, NewDiagonal1],[NewRow2, NewDiagonal2],[NewRow3, NewDiagonal3],[NewRow4, NewDiagonal4],[NewRow6, NewDiagonal6]], 
-            NewAlreadyVisited5),
-        append(AlreadyVisited, [[Row, Diagonal],
-            [NewRow1, NewDiagonal1],[NewRow2, NewDiagonal2],[NewRow3, NewDiagonal3],[NewRow4, NewDiagonal4],[NewRow5, NewDiagonal5]], 
-            NewAlreadyVisited6),
-        (
-            runPath(NewRow1, NewDiagonal1, Board, NotAlliedColour, NewAlreadyVisited1, Predicate);
-            runPath(NewRow2, NewDiagonal2, Board, NotAlliedColour, NewAlreadyVisited2, Predicate);
-            runPath(NewRow3, NewDiagonal3, Board, NotAlliedColour, NewAlreadyVisited3, Predicate);
-            runPath(NewRow4, NewDiagonal4, Board, NotAlliedColour, NewAlreadyVisited4, Predicate);
-            runPath(NewRow5, NewDiagonal5, Board, NotAlliedColour, NewAlreadyVisited5, Predicate);
-            runPath(NewRow6, NewDiagonal6, Board, NotAlliedColour, NewAlreadyVisited6, Predicate)
-        )
-    ).
 
 checkBlocked(Row-Diagonal, Board, NotAlliedColour, AlreadyVisited, Visited, _) :-
     (
@@ -240,59 +175,108 @@ checkBlocked(Row-Diagonal, Board, NotAlliedColour, AlreadyVisited, Visited, Bord
             AnalizeCell \= NotAlliedColour,
             append(AlreadyVisited, [[Row, Diagonal]], NewAlreadyVisited),
             (
-                (
-                    NewRow1 is Row - 2,
-                    NewDiagonal1 is Diagonal - 1
-                ),
-                (
-                    NewRow2 is Row - 1,
-                    NewDiagonal2 is Diagonal
-                ),
-                (
-                    NewRow3 is Row + 1,
-                    NewDiagonal3 is Diagonal + 1
-                ),
-                (
-                    NewRow4 is Row + 1,
-                    NewDiagonal4 is Diagonal
-                ),
-                (
-                    NewRow5 is Row + 2,
-                    NewDiagonal5 is Diagonal + 1
-                ),
-                (
-                    NewRow6 is Row - 1,
-                    NewDiagonal6 is Diagonal - 1
-                )
+                (NewRow1 is Row - 2, NewDiagonal1 is Diagonal - 1),
+                (NewRow2 is Row - 1, NewDiagonal2 is Diagonal),
+                (NewRow3 is Row + 1, NewDiagonal3 is Diagonal + 1),
+                (NewRow4 is Row + 1, NewDiagonal4 is Diagonal),
+                (NewRow5 is Row + 2, NewDiagonal5 is Diagonal + 1),
+                (NewRow6 is Row - 1, NewDiagonal6 is Diagonal - 1)
             ),
             (
                 !,
-                % write(NewAlreadyVisited), nl,
-                % write('1 adjacent: '), write(NewRow1), write(', '), write(NewDiagonal1), nl,
-                checkBlocked(NewRow1-NewDiagonal1, Board, NotAlliedColour, NewAlreadyVisited, Visited1, BorderPredicate),
-                !,
-                % write(Visited1), nl,
-                % write('2 adjacent: '), write(NewRow2), write(', '), write(NewDiagonal2), nl,
-                checkBlocked(NewRow2-NewDiagonal2, Board, NotAlliedColour, Visited1, Visited2, BorderPredicate),
-                !,
-                % write(Visited2), nl,
-                % write('3 adjacent: '), write(NewRow3), write(', '), write(NewDiagonal3), nl,
-                checkBlocked(NewRow3-NewDiagonal3, Board, NotAlliedColour, Visited2, Visited3, BorderPredicate),
-                !,
-                % write(Visited3), nl,
-                % write('4 adjacent: '), write(NewRow4), write(', '), write(NewDiagonal4), nl,
-                checkBlocked(NewRow4-NewDiagonal4, Board, NotAlliedColour, Visited3, Visited4, BorderPredicate),
-                !,
-                % write(Visited4), nl,
-                % write('5 adjacent: '), write(NewRow5), write(', '), write(NewDiagonal5), nl,
-                checkBlocked(NewRow5-NewDiagonal5, Board, NotAlliedColour, Visited4, Visited5, BorderPredicate),
-                !,
-                % write(Visited5), nl,
-                % write('6 adjacent: '), write(NewRow6), write(', '), write(NewDiagonal6), nl,
+                checkBlocked(NewRow1-NewDiagonal1, Board, NotAlliedColour, NewAlreadyVisited, Visited1, BorderPredicate),!,
+                checkBlocked(NewRow2-NewDiagonal2, Board, NotAlliedColour, Visited1, Visited2, BorderPredicate),!,
+                checkBlocked(NewRow3-NewDiagonal3, Board, NotAlliedColour, Visited2, Visited3, BorderPredicate),!,
+                checkBlocked(NewRow4-NewDiagonal4, Board, NotAlliedColour, Visited3, Visited4, BorderPredicate),!,
+                checkBlocked(NewRow5-NewDiagonal5, Board, NotAlliedColour, Visited4, Visited5, BorderPredicate),!,
                 checkBlocked(NewRow6-NewDiagonal6, Board, NotAlliedColour, Visited5, Visited6, BorderPredicate),
                 Visited = Visited6
-                %write(Visited), nl
             )
+        )
+    ).
+
+getDistance(Row-Diagonal, Board, NotAlliedColour, _,  Predicate, DistanceFind, Depth, Distance, Result) :- 
+    execute(Predicate, [Row , Diagonal]), 
+    getCellByCoords(Board, Row, Diagonal, Cell),
+    Cell \= NotAlliedColour,
+    !,
+    (
+        (
+          DistanceFind == 'FALSE',
+          Cell \= empty
+        ); 
+        DistanceFind == 'TRUE'
+    ),
+    (
+        (
+            Cell == empty,
+            Distance < Depth,
+            Result is Distance + 1
+        );
+        (
+            Cell \= empty,
+            Distance =< Depth,
+            Result is Distance
+        )
+    ).
+
+getDistance(Row-Diagonal, Board, NotAlliedColour, AlreadyVisited, Predicate, DistanceFind, Depth, Distance, Result) :-
+    \+ member([Row, Diagonal], AlreadyVisited),
+    getCellByCoords(Board, Row, Diagonal, AnalizeCell),
+    AnalizeCell \= NotAlliedColour,
+    Distance =< Depth,
+    (
+        (   
+            DistanceFind == 'FALSE',
+            AnalizeCell \= empty,
+            NewDistance is Distance
+        );
+        (
+            DistanceFind == 'TRUE',
+            (
+                (
+                    AnalizeCell == empty,
+                    NewDistance is Distance + 1
+                );
+                NewDistance is Distance
+            )
+        )
+    ),
+    (   
+        (NewRow1 is Row - 2, NewDiagonal1 is Diagonal - 1),
+        (NewRow2 is Row - 1, NewDiagonal2 is Diagonal),
+        (NewRow3 is Row + 1, NewDiagonal3 is Diagonal + 1),
+        (NewRow4 is Row + 1, NewDiagonal4 is Diagonal),
+        (NewRow5 is Row + 2, NewDiagonal5 is Diagonal + 1),
+        (NewRow6 is Row - 1, NewDiagonal6 is Diagonal - 1)
+    ),
+    !,
+    (
+        append(AlreadyVisited, [[Row, Diagonal],
+            [NewRow2, NewDiagonal2],[NewRow3, NewDiagonal3],[NewRow4, NewDiagonal4],[NewRow5, NewDiagonal5],[NewRow6, NewDiagonal6]], 
+            NewAlreadyVisited1),
+        append(AlreadyVisited, [[Row, Diagonal],
+            [NewRow1, NewDiagonal1],[NewRow3, NewDiagonal3],[NewRow4, NewDiagonal4],[NewRow5, NewDiagonal5],[NewRow6, NewDiagonal6]], 
+            NewAlreadyVisited2),
+        append(AlreadyVisited, [[Row, Diagonal],
+            [NewRow1, NewDiagonal1],[NewRow2, NewDiagonal2],[NewRow4, NewDiagonal4],[NewRow5, NewDiagonal5],[NewRow6, NewDiagonal6]], 
+            NewAlreadyVisited3),
+        append(AlreadyVisited, [[Row, Diagonal],
+            [NewRow1, NewDiagonal1],[NewRow2, NewDiagonal2],[NewRow3, NewDiagonal3],[NewRow5, NewDiagonal5],[NewRow6, NewDiagonal6]], 
+            NewAlreadyVisited4),
+        append(AlreadyVisited, [[Row, Diagonal],
+            [NewRow1, NewDiagonal1],[NewRow2, NewDiagonal2],[NewRow3, NewDiagonal3],[NewRow4, NewDiagonal4],[NewRow6, NewDiagonal6]], 
+            NewAlreadyVisited5),
+        append(AlreadyVisited, [[Row, Diagonal],
+            [NewRow1, NewDiagonal1],[NewRow2, NewDiagonal2],[NewRow3, NewDiagonal3],[NewRow4, NewDiagonal4],[NewRow5, NewDiagonal5]], 
+            NewAlreadyVisited6),
+        (
+            getDistance(NewRow3-NewDiagonal3, Board, NotAlliedColour, NewAlreadyVisited3, Predicate, DistanceFind, Depth, NewDistance, Result);
+            getDistance(NewRow4-NewDiagonal4, Board, NotAlliedColour, NewAlreadyVisited4, Predicate, DistanceFind, Depth, NewDistance, Result);
+            getDistance(NewRow5-NewDiagonal5, Board, NotAlliedColour, NewAlreadyVisited5, Predicate, DistanceFind, Depth, NewDistance, Result);
+            getDistance(NewRow2-NewDiagonal2, Board, NotAlliedColour, NewAlreadyVisited2, Predicate, DistanceFind, Depth, NewDistance, Result);
+            getDistance(NewRow6-NewDiagonal6, Board, NotAlliedColour, NewAlreadyVisited6, Predicate, DistanceFind, Depth, NewDistance, Result);
+            getDistance(NewRow1-NewDiagonal1, Board, NotAlliedColour, NewAlreadyVisited1, Predicate, DistanceFind, Depth, NewDistance, Result)
         )
     ).
 
