@@ -195,8 +195,7 @@ checkBlocked(Row-Diagonal, Board, NotAlliedColour, AlreadyVisited, Visited, Bord
         )
     ).
 
-getDistance([PointToVisit | Rest], Board, NotAlliedColour, _,  Predicate, DistanceFind, Depth, Distance, Result) :- 
-    
+getDistance([Row-Diagonal-PointDistance | Rest], Board, NotAlliedColour, _,  Predicate, DistanceFind, Depth, Distance, Result) :- 
     execute(Predicate, [Row , Diagonal]), 
     getCellByCoords(Board, Row, Diagonal, Cell),
     Cell \= NotAlliedColour,
