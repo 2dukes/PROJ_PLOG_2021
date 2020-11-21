@@ -115,22 +115,22 @@ colourTable(2, green-orange-purple). % Colour | Allied | NotAllied
 initial([
 [                                         empty,    empty],                            %1
 [                                     empty,   empty,   empty],                         %2
-[                                empty,    empty,   empty,  empty],                     %3
-[                           empty,    empty,    empty,   empty,   empty],               %4
+[                                purple,    empty,   empty,  empty],                     %3
+[                           empty,    purple,    empty,   empty,   empty],               %4
 [                      empty,    empty,    empty,   empty,   empty,   empty],           %5
-[                          empty,     empty,   empty,   empty,    empty],               %6
+[                          empty,     purple,   empty,   empty,    empty],               %6
 [                      empty,    empty,    empty,   empty,   empty,   empty],           %7 
-[                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      %8
-[                      empty,    empty,    empty,   empty,   empty,   empty],           %9
-[                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      %10
+[                 empty,   empty,     purple,   empty,   empty,    empty,   empty],      %8
+[                      empty,    empty,    purple,   empty,   empty,   empty],           %9
+[                 empty,   empty,     empty,   purple,   empty,    empty,   empty],      %10
 [                      empty,    empty,    empty,   empty,   empty,   empty],           %11
-[                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      %12
-[                      empty,    empty,    empty,   empty,   empty,   empty],           %13
-[                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      %14
-[                      empty,    empty,    empty,   empty,   empty,   empty],           %15
-[                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      %16
+[                 empty,   empty,     empty,   purple,   empty,    empty,   empty],      %12
+[                      empty,    empty,    empty,   purple,   empty,   empty],           %13
+[                 empty,   empty,     empty,   empty,   purple,    empty,   empty],      %14
+[                      empty,    empty,    empty,   purple,   empty,   empty],           %15
+[                 empty,   empty,     empty,   empty,   purple,    empty,   empty],      %16
 [                      empty,    empty,    empty,   empty,   empty,   empty],           %17
-[                           empty,    empty,   empty,    empty,   empty],               %18
+[                           empty,    empty,   empty,    green,   empty],               %18
 [                      empty,    empty,    empty,   empty,   empty,   empty],           %19
 [                           empty,    empty,   empty,   empty,   empty],                %20
 [                                empty,    empty,   empty,   empty],                    %21
@@ -252,31 +252,44 @@ getDistance(Row-Diagonal, Board, NotAlliedColour, AlreadyVisited, Predicate, Dis
     ),
     !,
     (
-        append(AlreadyVisited, [[Row, Diagonal],
-            [NewRow2, NewDiagonal2],[NewRow3, NewDiagonal3],[NewRow4, NewDiagonal4],[NewRow5, NewDiagonal5],[NewRow6, NewDiagonal6]], 
-            NewAlreadyVisited1),
-        append(AlreadyVisited, [[Row, Diagonal],
-            [NewRow1, NewDiagonal1],[NewRow3, NewDiagonal3],[NewRow4, NewDiagonal4],[NewRow5, NewDiagonal5],[NewRow6, NewDiagonal6]], 
-            NewAlreadyVisited2),
-        append(AlreadyVisited, [[Row, Diagonal],
-            [NewRow1, NewDiagonal1],[NewRow2, NewDiagonal2],[NewRow4, NewDiagonal4],[NewRow5, NewDiagonal5],[NewRow6, NewDiagonal6]], 
-            NewAlreadyVisited3),
-        append(AlreadyVisited, [[Row, Diagonal],
-            [NewRow1, NewDiagonal1],[NewRow2, NewDiagonal2],[NewRow3, NewDiagonal3],[NewRow5, NewDiagonal5],[NewRow6, NewDiagonal6]], 
-            NewAlreadyVisited4),
-        append(AlreadyVisited, [[Row, Diagonal],
-            [NewRow1, NewDiagonal1],[NewRow2, NewDiagonal2],[NewRow3, NewDiagonal3],[NewRow4, NewDiagonal4],[NewRow6, NewDiagonal6]], 
-            NewAlreadyVisited5),
-        append(AlreadyVisited, [[Row, Diagonal],
-            [NewRow1, NewDiagonal1],[NewRow2, NewDiagonal2],[NewRow3, NewDiagonal3],[NewRow4, NewDiagonal4],[NewRow5, NewDiagonal5]], 
-            NewAlreadyVisited6),
+        
         (
-            getDistance(NewRow3-NewDiagonal3, Board, NotAlliedColour, NewAlreadyVisited3, Predicate, DistanceFind, Depth, NewDistance, Result);
-            getDistance(NewRow4-NewDiagonal4, Board, NotAlliedColour, NewAlreadyVisited4, Predicate, DistanceFind, Depth, NewDistance, Result);
-            getDistance(NewRow5-NewDiagonal5, Board, NotAlliedColour, NewAlreadyVisited5, Predicate, DistanceFind, Depth, NewDistance, Result);
-            getDistance(NewRow2-NewDiagonal2, Board, NotAlliedColour, NewAlreadyVisited2, Predicate, DistanceFind, Depth, NewDistance, Result);
-            getDistance(NewRow6-NewDiagonal6, Board, NotAlliedColour, NewAlreadyVisited6, Predicate, DistanceFind, Depth, NewDistance, Result);
-            getDistance(NewRow1-NewDiagonal1, Board, NotAlliedColour, NewAlreadyVisited1, Predicate, DistanceFind, Depth, NewDistance, Result)
+            (
+                append(AlreadyVisited, [[Row, Diagonal],
+                    [NewRow1, NewDiagonal1],[NewRow2, NewDiagonal2],[NewRow4, NewDiagonal4],[NewRow5, NewDiagonal5],[NewRow6, NewDiagonal6]], 
+                    NewAlreadyVisited3),
+                getDistance(NewRow3-NewDiagonal3, Board, NotAlliedColour, NewAlreadyVisited3, Predicate, DistanceFind, Depth, NewDistance, Result)
+            );
+            (
+                append(AlreadyVisited, [[Row, Diagonal],
+                    [NewRow1, NewDiagonal1],[NewRow2, NewDiagonal2],[NewRow3, NewDiagonal3],[NewRow5, NewDiagonal5],[NewRow6, NewDiagonal6]], 
+                    NewAlreadyVisited4),
+                getDistance(NewRow4-NewDiagonal4, Board, NotAlliedColour, NewAlreadyVisited4, Predicate, DistanceFind, Depth, NewDistance, Result)
+            );
+            (
+                append(AlreadyVisited, [[Row, Diagonal],
+                    [NewRow1, NewDiagonal1],[NewRow2, NewDiagonal2],[NewRow3, NewDiagonal3],[NewRow4, NewDiagonal4],[NewRow6, NewDiagonal6]], 
+                    NewAlreadyVisited5),
+                getDistance(NewRow5-NewDiagonal5, Board, NotAlliedColour, NewAlreadyVisited5, Predicate, DistanceFind, Depth, NewDistance, Result)
+            );
+            (
+                append(AlreadyVisited, [[Row, Diagonal],
+                    [NewRow1, NewDiagonal1],[NewRow3, NewDiagonal3],[NewRow4, NewDiagonal4],[NewRow5, NewDiagonal5],[NewRow6, NewDiagonal6]], 
+                    NewAlreadyVisited2),
+                getDistance(NewRow2-NewDiagonal2, Board, NotAlliedColour, NewAlreadyVisited2, Predicate, DistanceFind, Depth, NewDistance, Result)
+            );
+            (
+                append(AlreadyVisited, [[Row, Diagonal],
+                    [NewRow1, NewDiagonal1],[NewRow2, NewDiagonal2],[NewRow3, NewDiagonal3],[NewRow4, NewDiagonal4],[NewRow5, NewDiagonal5]], 
+                    NewAlreadyVisited6),
+                getDistance(NewRow6-NewDiagonal6, Board, NotAlliedColour, NewAlreadyVisited6, Predicate, DistanceFind, Depth, NewDistance, Result)
+            );
+            (
+                append(AlreadyVisited, [[Row, Diagonal],
+                    [NewRow2, NewDiagonal2],[NewRow3, NewDiagonal3],[NewRow4, NewDiagonal4],[NewRow5, NewDiagonal5],[NewRow6, NewDiagonal6]], 
+                    NewAlreadyVisited1),
+                getDistance(NewRow1-NewDiagonal1, Board, NotAlliedColour, NewAlreadyVisited1, Predicate, DistanceFind, Depth, NewDistance, Result)
+            )
         )
     ).
 
