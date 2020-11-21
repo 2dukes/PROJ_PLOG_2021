@@ -1,4 +1,4 @@
-max_depth(1).
+max_depth(2).
 
 
 value(Board-_, Player, Value) :-
@@ -50,10 +50,6 @@ getDistanceColour(Board, Colour-NotAlliedColour, Distance) :-
 
 distanceToEdge([Row,Diagonal], Board, NotAlliedColour, Predicate, Depth, Result) :-
     max_depth(MaxDepth),
-    % (
-    %     getDistance(Row-Diagonal, Board, NotAlliedColour, [],  Predicate, 'TRUE', MaxDepth, 0, Result);
-    %     Result is 2000
-    % ).
     (
         (
             Depth =< MaxDepth,

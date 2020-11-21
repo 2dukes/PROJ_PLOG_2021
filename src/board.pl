@@ -195,6 +195,12 @@ checkBlocked(Row-Diagonal, Board, NotAlliedColour, AlreadyVisited, Visited, Bord
         )
     ).
 
+adjacent(Row-Diagonal, Row1-Diagonal1) :-
+    Row1 == Row -2, Diagonal1 == Diagonal - 1 
+
+
+
+
 getDistance(Row-Diagonal, Board, NotAlliedColour, _,  Predicate, DistanceFind, Depth, Distance, Result) :- 
     execute(Predicate, [Row , Diagonal]), 
     getCellByCoords(Board, Row, Diagonal, Cell),
