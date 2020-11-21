@@ -40,13 +40,13 @@ getDistanceColour(Board, Colour-NotAlliedColour, Distance) :-
     ),
     (
         % [[Row-Diagonal-0], [Row-Diagonal-1], ...]
-        append([], [P1-0], [P2-0], [P3-0], [P4-0], [P5-0], InitialPoints),
-        distanceToEdge(InitialPoints, Board, NotAlliedColour, Predicate, 0, Result1),
+        append([], [[P1-0], [P2-0], [P3-0], [P4-0], [P5-0]], InitialPoints),
+        distanceToEdge(InitialPoints, Board, NotAlliedColour, Predicate, 0, Result),
         % distanceToEdge(P2, Board, NotAlliedColour, Predicate, 0, Result2),
         % distanceToEdge(P3, Board, NotAlliedColour, Predicate, 0, Result3),
         % distanceToEdge(P4, Board, NotAlliedColour, Predicate, 0, Result4),
         % distanceToEdge(P5, Board, NotAlliedColour, Predicate, 0, Result5),
-        min_member(Distance, [Result1, Result2, Result3, Result4, Result5])
+        % min_member(Distance, Result)
     ).
     
 
@@ -57,8 +57,7 @@ distanceToEdge(InitialPoints, Board, NotAlliedColour, Predicate, Depth, Result) 
             Depth =< MaxDepth,
             (
                 (
-                    getDistance(InitialPoints, Board, NotAlliedColour, [],  Predicate, 'TRUE', Depth, 0, Result1),
-                    Result = Result1
+                    getDistance(InitialPoints, Board, NotAlliedColour, [],  Predicate, 'TRUE', Depth, 0, -1, []),
                 );
                 (
                     NewDepth is Depth + 1, !,

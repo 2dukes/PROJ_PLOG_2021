@@ -195,15 +195,16 @@ checkBlocked(Row-Diagonal, Board, NotAlliedColour, AlreadyVisited, Visited, Bord
         )
     ).
 
-getDistance([Row-Diagonal-PointDistance | Rest], Board, NotAlliedColour, _,  Predicate, DistanceFind, Depth, Distance, Result) :- 
+
+getDistance([[Row-Diagonal-PointDistance] | Rest], Board, NotAlliedColour, _,  Predicate, DistanceFind, Depth, Distance, AuxResult, Result) :- 
     execute(Predicate, [Row , Diagonal]), 
     getCellByCoords(Board, Row, Diagonal, Cell),
     Cell \= NotAlliedColour,
     !,
     (
         (
-          DistanceFind == 'FALSE',
-          Cell \= empty
+            DistanceFind == 'FALSE',
+            Cell \= empty
         ); 
         DistanceFind == 'TRUE'
     ),
@@ -211,16 +212,17 @@ getDistance([Row-Diagonal-PointDistance | Rest], Board, NotAlliedColour, _,  Pre
         (
             Cell == empty,
             Distance < Depth,
-            Result is Distance + 1
+            AuxResult is Distance + 1
         );
         (
             Cell \= empty,
             Distance =< Depth,
-            Result is Distance
+            AuxResult is Distance
         )
     ).
 
-getDistance(Row-Diagonal, Board, NotAlliedColour, AlreadyVisited, Predicate, DistanceFind, Depth, Distance, Result) :-
+
+getDistance([[Row-Diagonal-PointDistance] | Rest], Board, NotAlliedColour, AlreadyVisited, Predicate, DistanceFind, Depth, Distance, AuxResult, Result) :-
     \+ member([Row, Diagonal], AlreadyVisited),
     getCellByCoords(Board, Row, Diagonal, AnalizeCell),
     AnalizeCell \= NotAlliedColour,
@@ -252,32 +254,12 @@ getDistance(Row-Diagonal, Board, NotAlliedColour, AlreadyVisited, Predicate, Dis
     ),
     !,
     (
-        append(AlreadyVisited, [[Row, Diagonal],
-            [NewRow2, NewDiagonal2],[NewRow3, NewDiagonal3],[NewRow4, NewDiagonal4],[NewRow5, NewDiagonal5],[NewRow6, NewDiagonal6]], 
-            NewAlreadyVisited1),
-        append(AlreadyVisited, [[Row, Diagonal],
-            [NewRow1, NewDiagonal1],[NewRow3, NewDiagonal3],[NewRow4, NewDiagonal4],[NewRow5, NewDiagonal5],[NewRow6, NewDiagonal6]], 
-            NewAlreadyVisited2),
-        append(AlreadyVisited, [[Row, Diagonal],
-            [NewRow1, NewDiagonal1],[NewRow2, NewDiagonal2],[NewRow4, NewDiagonal4],[NewRow5, NewDiagonal5],[NewRow6, NewDiagonal6]], 
-            NewAlreadyVisited3),
-        append(AlreadyVisited, [[Row, Diagonal],
-            [NewRow1, NewDiagonal1],[NewRow2, NewDiagonal2],[NewRow3, NewDiagonal3],[NewRow5, NewDiagonal5],[NewRow6, NewDiagonal6]], 
-            NewAlreadyVisited4),
-        append(AlreadyVisited, [[Row, Diagonal],
-            [NewRow1, NewDiagonal1],[NewRow2, NewDiagonal2],[NewRow3, NewDiagonal3],[NewRow4, NewDiagonal4],[NewRow6, NewDiagonal6]], 
-            NewAlreadyVisited5),
-        append(AlreadyVisited, [[Row, Diagonal],
-            [NewRow1, NewDiagonal1],[NewRow2, NewDiagonal2],[NewRow3, NewDiagonal3],[NewRow4, NewDiagonal4],[NewRow5, NewDiagonal5]], 
-            NewAlreadyVisited6),
-        (
-            getDistance(NewRow3-NewDiagonal3, Board, NotAlliedColour, NewAlreadyVisited3, Predicate, DistanceFind, Depth, NewDistance, Result);
-            getDistance(NewRow4-NewDiagonal4, Board, NotAlliedColour, NewAlreadyVisited4, Predicate, DistanceFind, Depth, NewDistance, Result);
-            getDistance(NewRow5-NewDiagonal5, Board, NotAlliedColour, NewAlreadyVisited5, Predicate, DistanceFind, Depth, NewDistance, Result);
-            getDistance(NewRow2-NewDiagonal2, Board, NotAlliedColour, NewAlreadyVisited2, Predicate, DistanceFind, Depth, NewDistance, Result);
-            getDistance(NewRow6-NewDiagonal6, Board, NotAlliedColour, NewAlreadyVisited6, Predicate, DistanceFind, Depth, NewDistance, Result);
-            getDistance(NewRow1-NewDiagonal1, Board, NotAlliedColour, NewAlreadyVisited1, Predicate, DistanceFind, Depth, NewDistance, Result)
-        )
+        append(AlreadyVisited, [[Row, Diagonal]], NewAlreadyVisited),
+        append(Rest, [[NewRow2-NewDiagonal2-Distance], [NewRow3-NewDiagonal3-Distance],
+            [NewRow4-NewDiagonal4-Distance], [NewRow5-NewDiagonal5-Distance], [NewRow6-NewDiagonal6-Distance]], NewRest),
+        
+        getDistance(NewRest, Board, NotAlliedColour, NewAlreadyVisited, Predicate, DistanceFind, Depth, NewDistance, Result),
+        append(Result,     
     ).
 
 updateBoard(Board, [Row, Diagonal, Colour], NewBoard) :-
