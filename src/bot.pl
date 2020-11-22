@@ -12,9 +12,13 @@ choose_move(Board-(PurpleWon1-GreenWon1-OrangeWon1-PurpleWon2-GreenWon2-OrangeWo
             colourWonBoth(GreenWon1, GreenWon2, GreenWon),
             colourWonBoth(OrangeWon1, OrangeWon2, OrangeWon),
             findall(Value-Move1, ( member(Move1, ListOfMoves), updateBoard(Board, Move1, NewBoard), value(NewBoard-(PurpleWon-GreenWon-OrangeWon), Player, Value)), ValueMoveList),
-            %write(ValueMoveList),
+            % write(ValueMoveList),
             
-            max_member(Value-ChosenMove, ValueMoveList),
+
+            max_member(Value1-ChosenMove, ValueMoveList),
+            write('Length: '), length(ValueMoveList, Length), write(Length),nl,
+
+            % write(Value1),nl,
             (
                 (
                     Value == 0,

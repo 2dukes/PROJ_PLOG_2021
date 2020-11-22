@@ -1,10 +1,16 @@
-max_depth(3).
+max_depth(30).
 
 
 value(Board-_, Player, Value) :-
-    findall(ValueColour, ( colourTable(Player, Colour-_-NotAlliedColour), 
-        evaluateColour(Board, Colour-NotAlliedColour, ValueColour) ), ValueColours),
+    findall(Colour1-AlliedColour1-NotAlliedColour1, colourTable(Player, Colour1-AlliedColour1-NotAlliedColour1), ColourTables),
+    % write(ColourTables),
+    findall(ValueColour, ( member(Colour2-_-NotAlliedColour2, ColourTables), 
+        % write(Colour2),nl,
+        evaluateColour(Board, Colour2-NotAlliedColour2, ValueColour) ), ValueColours),
     sumlist(ValueColours, Value).
+    % write(ValueColours),nl,
+    
+    % write('Soma lista: '), write(Value),nl.
     
 evaluateColour(Board, Colour-NotAlliedColour, ValueColour) :-
     getDistanceColour(Board, Colour-NotAlliedColour, Distance),

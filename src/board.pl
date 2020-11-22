@@ -113,26 +113,26 @@ colourTable(2, orange-purple-green).
 colourTable(2, green-orange-purple). % Colour | Allied | NotAllied
 
 initial([
-[                                         empty,    empty],                            %1
-[                                     empty,   empty,   empty],                         %2
-[                                purple,    empty,   empty,  empty],                     %3
-[                           empty,    purple,    empty,   empty,   empty],               %4
-[                      empty,    empty,    empty,   empty,   empty,   empty],           %5
-[                          empty,     purple,   empty,   empty,    empty],               %6
-[                      empty,    empty,    empty,   empty,   empty,   empty],           %7 
-[                 empty,   empty,     purple,   empty,   empty,    empty,   empty],      %8
-[                      empty,    empty,    empty,   empty,   empty,   empty],           %9
-[                 empty,   empty,     empty,    empty,   empty,    empty,   empty],      %10
-[                      empty,    empty,    empty,   empty,   empty,   empty],           %11
-[                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      %12
-[                      empty,    empty,    empty,   empty,   empty,   empty],           %13
-[                 empty,   empty,     empty,   empty,   purple,    empty,   empty],      %14
-[                      empty,    empty,    empty,   empty,   empty,   empty],           %15
-[                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      %16
-[                      empty,    empty,    empty,   empty,   purple,   empty],           %17
-[                           empty,    empty,   purple,    empty,   empty],               %18
-[                      empty,    empty,    empty,   empty,   empty,   empty],           %19
-[                           empty,    empty,   empty,   empty,   empty],                %20
+[                                         orange,    empty],                            %1
+[                                     orange,   empty,   empty],                         %2
+[                                purple,    orange,   empty,  empty],                     %3
+[                           empty,    purple,    orange,   empty,   empty],               %4
+[                      empty,    empty,    empty,   empty,   green,   empty],           %5
+[                          empty,     empty,   empty,   green,    empty],               %6
+[                      empty,    empty,    empty,   green,   empty,   empty],           %7 
+[                 empty,   empty,     empty,   green,   empty,    empty,   empty],      %8
+[                      empty,    green,    empty,   empty,  empty,   empty],           %9
+[                 empty,   green,     empty,    empty,   empty,    empty,   empty],      %10
+[                      empty,    green,    empty,   purple,  empty,   empty],           %11
+[                 empty,   green,     empty,   empty,     empty,    empty,   empty],      %12
+[                      empty,    empty,    empty,   purple,  empty,   empty],           %13
+[                 empty,   empty,     empty,   orange,     purple,    empty,   empty],      %14
+[                      empty,    green,    orange,   green,   empty,   empty],           %15
+[                 empty,   empty,     orange,   empty,     empty,    empty,   empty],      %16
+[                      empty,    empty,    empty,   orange,   green,   empty],           %17
+[                           empty,    green,   purple,    empty,   empty],               %18
+[                      empty,    empty,    empty,   orange,   empty,   empty],           %19
+[                           empty,    empty,   orange,   empty,   empty],                %20
 [                                empty,    empty,   empty,   empty],                    %21
 [                                     empty,   empty,   empty],                         %22
 [                                          empty,   empty]                              %23
@@ -217,7 +217,7 @@ adjacent(Row1-Diagonal1, Row2-Diagonal2) :-
 validAdjacent(NivelAtual, RowAdj-DiagAdj, NotAlliedColour, Visitados, Board) :-
     member(Ponto, NivelAtual),
     adjacent(RowAdj-DiagAdj, Ponto),
-    \+member(Visitados, RowAdj-DiagAdj),
+    \+member(RowAdj-DiagAdj, Visitados),
     getCellByCoords(Board, RowAdj, DiagAdj, Cell),
     Cell \= NotAlliedColour.
 
@@ -236,16 +236,17 @@ adjacentAllied(Pontos, NotAlliedColour, Visitados, Board, Row-Diag) :-
     Cell \= NotAlliedColour,
     Cell \= empty.
 
-getAdjList([], NotAlliedColour, Board, Lista, Resultado) :-
+getAdjList([], NotAlliedColour, Visited, Board, Lista, Resultado) :-
     Resultado = Lista.
 
-getAdjList(Pontos, NotAlliedColour, Board, Lista, Resultado) :-
+getAdjList(Pontos, NotAlliedColour, Visited, Board, Lista, Resultado) :-
     append(Pontos, Lista, NovaLista),
+    append(NovaLista, Visited, NovaLista1),
     (
-        setof(Ponto, adjacentAllied(Pontos, NotAlliedColour, NovaLista, Board, Ponto), Adjacentes);
+        setof(Ponto, adjacentAllied(Pontos, NotAlliedColour, NovaLista1, Board, Ponto), Adjacentes);
         Adjacentes = []
     ),    
-    getAdjList(Adjacentes, NotAlliedColour, Board, NovaLista, Resultado).
+    getAdjList(Adjacentes, NotAlliedColour, Visited, Board, NovaLista, Resultado).
 
 
 % findall(Row-Diagonal, ( adjacentAllied(1-1, NotAlliedColour, Board, Row-Diagonal) ), List).
@@ -257,7 +258,7 @@ newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, 0, Resul
         , PontosAliados),
     
     getAdjList(PontosAliados, NotAlliedColour, Board, [], LevelZero),
-       
+    % nl, write('Level Zero'), write(LevelZero), nl,
     % setof(Ponto, (
     %         member(Row-Diag, PontosDoNivelAtual),
     %         getCellByCoords(Board, Row, Diag, Cell), 
@@ -288,33 +289,37 @@ newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, 0, Resul
                     ), Part1)
                 ); Part1 = []
             ),
-
-            append(Part1, LevelZero, Visitados),
+            % write('Part1'), write(Part1),nl,
+            append(LevelZero, Part1, Visitados),
             (
                 setof(Ponto, validAdjacent(LevelZero, Ponto, NotAlliedColour, Visitados, Board), Part2);
                 Part2 = []
             ),
             append(Part1, Part2, Part3),
             
-            % write(Part3),nl,
+
+            % write('Part3'),write(Part3),nl,
             % write('STEP 1 '), nl,
             (
                 (
                     setof(Row1-Diag1, 
                     ( 
-                        validAdjacent(Part3, Row1-Diag1, NotAlliedColour, Part3, Board),
+                        validAdjacent(Part3, Row1-Diag1, NotAlliedColour, Visitados, Board),
                         getCellByCoords(Board, Row1, Diag1, Cell1), Cell1 \= empty, Cell1 \= NotAlliedColour
                     ), NovoNivelAdjacentes)
                 );
                 NovoNivelAdjacentes = []
             ),
             % write('STEP 2 '), write(NovoNivelAdjacentes), nl,
-
-            getAdjList(NovoNivelAdjacentes, NotAlliedColour, Board, [], Part4),
+            % write(NovoNivelAdjacentes),nl,
+            append(LevelZero, Part3, Visited1),
+            getAdjList(NovoNivelAdjacentes, NotAlliedColour, Visited1, Board, [], Part4),
             % write('STEP 3 '), write(Part4), nl, 
             append(Part3, Part4, LevelOne),
 
             % write('Level One'), nl, write(LevelOne), nl, 
+            % write('not allied: '), write(NotAlliedColour), nl,
+            % nl, write('Level One'), write(LevelOne), nl,
             !, newGetDistance(LevelOne, LevelZero, NotAlliedColour, Depth, 1, Resultado, Board, Predicate)
         )  
     ).
