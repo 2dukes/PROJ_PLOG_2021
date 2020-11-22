@@ -121,16 +121,16 @@ initial([
 [                          empty,     purple,   empty,   empty,    empty],               %6
 [                      empty,    empty,    empty,   empty,   empty,   empty],           %7 
 [                 empty,   empty,     purple,   empty,   empty,    empty,   empty],      %8
-[                      empty,    empty,    purple,   empty,   empty,   empty],           %9
-[                 empty,   empty,     empty,   purple,   empty,    empty,   empty],      %10
+[                      empty,    empty,    empty,   empty,   empty,   empty],           %9
+[                 empty,   empty,     empty,    empty,   empty,    empty,   empty],      %10
 [                      empty,    empty,    empty,   empty,   empty,   empty],           %11
-[                 empty,   empty,     empty,   purple,   empty,    empty,   empty],      %12
-[                      empty,    empty,    empty,   purple,   empty,   empty],           %13
+[                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      %12
+[                      empty,    empty,    empty,   empty,   empty,   empty],           %13
 [                 empty,   empty,     empty,   empty,   purple,    empty,   empty],      %14
-[                      empty,    empty,    empty,   purple,   empty,   empty],           %15
-[                 empty,   empty,     empty,   empty,   purple,    empty,   empty],      %16
-[                      empty,    empty,    empty,   empty,   empty,   empty],           %17
-[                           empty,    empty,   empty,    green,   empty],               %18
+[                      empty,    empty,    empty,   empty,   empty,   empty],           %15
+[                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      %16
+[                      empty,    empty,    empty,   empty,   purple,   empty],           %17
+[                           empty,    empty,   purple,    empty,   empty],               %18
 [                      empty,    empty,    empty,   empty,   empty,   empty],           %19
 [                           empty,    empty,   empty,   empty,   empty],                %20
 [                                empty,    empty,   empty,   empty],                    %21
@@ -195,9 +195,171 @@ checkBlocked(Row-Diagonal, Board, NotAlliedColour, AlreadyVisited, Visited, Bord
         )
     ).
 
-adjacent(Row-Diagonal, Row1-Diagonal1) :-
-    Row1 == Row -2, Diagonal1 == Diagonal - 1 
+%ponto 1 é adjacente ao ponto 2
+adjacent(Row1-Diagonal1, Row2-Diagonal2) :-
+    Row1 is Row2 + 1, Diagonal1 is Diagonal2 + 1.
 
+adjacent(Row1-Diagonal1, Row2-Diagonal2) :-
+    Row1 is Row2 + 1, Diagonal1 is Diagonal2.
+
+adjacent(Row1-Diagonal1, Row2-Diagonal2) :-
+    Row1 is Row2 + 2, Diagonal1 is Diagonal2 + 1.
+
+adjacent(Row1-Diagonal1, Row2-Diagonal2) :-
+    Row1 is Row2 - 1, Diagonal1 is Diagonal2.
+
+adjacent(Row1-Diagonal1, Row2-Diagonal2) :-
+    Row1 is Row2 - 1, Diagonal1 is Diagonal2 - 1.
+
+adjacent(Row1-Diagonal1, Row2-Diagonal2) :-
+    Row1 is Row2 - 2, Diagonal1 is Diagonal2 - 1.
+
+validAdjacent(NivelAtual, RowAdj-DiagAdj, NotAlliedColour, Visitados, Board) :-
+    member(Ponto, NivelAtual),
+    adjacent(RowAdj-DiagAdj, Ponto),
+    \+member(Visitados, RowAdj-DiagAdj),
+    getCellByCoords(Board, RowAdj, DiagAdj, Cell),
+    Cell \= NotAlliedColour.
+
+checkReached([Row-Diagonal|RestoDoNivel], Predicate) :-
+    execute(Predicate, [Row,Diagonal]).
+
+checkReached([Row-Diagonal|RestoDoNivel], Predicate) :-
+    checkReached(RestoDoNivel, Predicate).
+
+
+adjacentAllied(Pontos, NotAlliedColour, Visitados, Board, Row-Diag) :-
+    member(Ponto, Pontos),
+    adjacent(Row-Diag, Ponto),
+    \+member(Row-Diag, Visitados),
+    getCellByCoords(Board, Row, Diag, Cell),
+    Cell \= NotAlliedColour,
+    Cell \= empty.
+
+getAdjList([], NotAlliedColour, Board, Lista, Resultado) :-
+    Resultado = Lista.
+
+getAdjList(Pontos, NotAlliedColour, Board, Lista, Resultado) :-
+    append(Pontos, Lista, NovaLista),
+    (
+        setof(Ponto, adjacentAllied(Pontos, NotAlliedColour, NovaLista, Board, Ponto), Adjacentes);
+        Adjacentes = []
+    ),    
+    getAdjList(Adjacentes, NotAlliedColour, Board, NovaLista, Resultado).
+
+
+% findall(Row-Diagonal, ( adjacentAllied(1-1, NotAlliedColour, Board, Row-Diagonal) ), List).
+
+newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, 0, Resultado, Board, Predicate) :-
+    % write(PontosDoNivelAtual),nl,
+    findall(Row-Diag, 
+        (member(Row-Diag, PontosDoNivelAtual), getCellByCoords(Board, Row, Diag, Cell), Cell \= NotAlliedColour, Cell \= empty)
+        , PontosAliados),
+    
+    getAdjList(PontosAliados, NotAlliedColour, Board, [], LevelZero),
+       
+    % setof(Ponto, (
+    %         member(Row-Diag, PontosDoNivelAtual),
+    %         getCellByCoords(Board, Row, Diag, Cell), 
+    %         Cell \= NotAlliedColour,
+    %         Cell \= empty,
+    %         write('Getting adj list'), nl,
+    %         getAdjList([Row-Diag], NotAlliedColour, Board, [], Resultado),
+    %         write(Resultado), nl,
+    %         member(Ponto, Resultado),
+    %         write(Ponto),nl
+    %     ), LevelZero
+    %     ),
+    % write('Exited Level 0'), nl,
+    % write(LevelZero),nl,
+    (
+        (
+            % write('Checking level zero'),nl,
+            checkReached(LevelZero, Predicate),
+            Resultado is 0
+        );
+        (
+            % write('Level 1 arrive!'), nl, 
+            (   (
+                    setof(Row-Diag, (
+                        member(Row-Diag, PontosDoNivelAtual),
+                        getCellByCoords(Board, Row, Diag, Cell), 
+                        Cell == empty      
+                    ), Part1)
+                ); Part1 = []
+            ),
+
+            append(Part1, LevelZero, Visitados),
+            (
+                setof(Ponto, validAdjacent(LevelZero, Ponto, NotAlliedColour, Visitados, Board), Part2);
+                Part2 = []
+            ),
+            append(Part1, Part2, Part3),
+            
+            % write(Part3),nl,
+            % write('STEP 1 '), nl,
+            findall(Row1-Diag1, 
+            ( 
+                validAdjacent(Part3, Row1-Diag1, NotAlliedColour, Part3, Board),
+                getCellByCoords(Board, Row1, Diag1, Cell1), Cell1 \= empty, Cell1 \= NotAlliedColour
+            ), NovoNivelAdjacentes),
+            % write('STEP 2 '), write(NovoNivelAdjacentes), nl,
+
+            getAdjList(NovoNivelAdjacentes, NotAlliedColour, Board, [], Part4),
+            % write('STEP 3 '), write(Part4), nl, 
+            append(Part3, Part4, LevelOne),
+
+            % write('Level One'), nl, write(LevelOne), nl, 
+            !, newGetDistance(LevelOne, LevelZero, NotAlliedColour, Depth, 1, Resultado, Board, Predicate)
+        )  
+    ).
+    
+
+newGetDistance( _, _, _, Depth, DistanciaAtual, Resultado, _, _) :- %nao encontrou (distancia 2000)
+    DistanciaAtual > Depth,
+    Resultado is 2000.
+
+newGetDistance(NivelAtual, _, _, _, DistanciaAtual, Resultado, _, Predicate) :- %encontrou distancia
+    % findall(Row-Diagonal, (member(NivelAtual, Row-Diagonal), execute(Predicate, [Row,Diagonal])), Chegaram),
+    % write('Checking'),nl,
+    checkReached(NivelAtual, Predicate),
+    % write('Checked!'), nl,
+    Resultado is DistanciaAtual.
+
+%no inicio tem que receber os pontos todos da borda QUE NAO TENHAM A COR NAO ALIADA
+                                %niveis anteriores
+newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, DistanciaAtual, Resultado, Board, Predicate) :-
+    % write(DistanciaAtual),nl,
+    append(PontosDoNivelAtual, JaVisitados, Visitados),
+    Depth >= DistanciaAtual,
+
+    (
+        setof(Ponto, validAdjacent(PontosDoNivelAtual, Ponto, NotAlliedColour, Visitados, Board) , Parte1); 
+        Parte1 = []
+    ),
+    % write('Part1 '), write(Parte1), nl,
+    findall(Row-Diag, (member(Row-Diag, Parte1), getCellByCoords(Board, Row, Diag, Cell), Cell \= empty, Cell \= NotAlliedColour), PontosAliados),
+    % write('PontosAliados '), write(PontosAliados), nl,
+    getAdjList(PontosAliados, NotAlliedColour, Board, [], Parte2),
+    append(Parte1, Parte2, NovoNivel),
+    % write(NovoNivel),nl,
+    
+    (
+        (
+            setof(Row-Diag, 
+            ( 
+                validAdjacent(PontosDoNivelAtual, Row-Diag, NotAlliedColour, NovoNivel, Board),
+                getCellByCoords(Board, Row, Diag, Cell), Cell \= empty, Cell \= NotAlliedColour
+            ), NovoNivelAdjacentes)
+        ); NovoNivelAdjacentes = []
+    ),
+
+    getAdjList(NovoNivelAdjacentes, NotAlliedColour, Board, [], Parte3),
+    
+    append(NovoNivel, Parte3, Nivel),
+    NovaDistancia is DistanciaAtual + 1,
+
+    newGetDistance(Nivel, Visitados, NotAlliedColour, Depth, NovaDistancia, Resultado, Board, Predicate).
 
 
 
@@ -249,12 +411,12 @@ getDistance(Row-Diagonal, Board, NotAlliedColour, AlreadyVisited, Predicate, Dis
         )
     ),
     (   
-        (NewRow1 is Row - 2, NewDiagonal1 is Diagonal - 1),
-        (NewRow2 is Row - 1, NewDiagonal2 is Diagonal),
         (NewRow3 is Row + 1, NewDiagonal3 is Diagonal + 1),
         (NewRow4 is Row + 1, NewDiagonal4 is Diagonal),
         (NewRow5 is Row + 2, NewDiagonal5 is Diagonal + 1),
-        (NewRow6 is Row - 1, NewDiagonal6 is Diagonal - 1)
+        (NewRow2 is Row - 1, NewDiagonal2 is Diagonal),
+        (NewRow6 is Row - 1, NewDiagonal6 is Diagonal - 1),
+        (NewRow1 is Row - 2, NewDiagonal1 is Diagonal - 1)
     ),
     !,
     (

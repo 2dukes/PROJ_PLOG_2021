@@ -13,7 +13,15 @@ choose_move(Board-(PurpleWon1-GreenWon1-OrangeWon1-PurpleWon2-GreenWon2-OrangeWo
             colourWonBoth(OrangeWon1, OrangeWon2, OrangeWon),
             findall(Value-Move1, ( member(Move1, ListOfMoves), updateBoard(Board, Move1, NewBoard), value(NewBoard-(PurpleWon-GreenWon-OrangeWon), Player, Value)), ValueMoveList),
             %write(ValueMoveList),
-            max_member(_-Move, ValueMoveList)
+            
+            max_member(Value-ChosenMove, ValueMoveList),
+            (
+                (
+                    Value == 0,
+                    random_member(Move, ListOfMoves)
+                );
+                Move = ChosenMove
+            )
         )
     ).
 
