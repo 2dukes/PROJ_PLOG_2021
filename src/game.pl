@@ -1,4 +1,4 @@
-max_depth(4).
+max_depth(3).
 
 
 value(Board-_, Player, Value) :-

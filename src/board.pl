@@ -298,11 +298,16 @@ newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, 0, Resul
             
             % write(Part3),nl,
             % write('STEP 1 '), nl,
-            findall(Row1-Diag1, 
-            ( 
-                validAdjacent(Part3, Row1-Diag1, NotAlliedColour, Part3, Board),
-                getCellByCoords(Board, Row1, Diag1, Cell1), Cell1 \= empty, Cell1 \= NotAlliedColour
-            ), NovoNivelAdjacentes),
+            (
+                (
+                    setof(Row1-Diag1, 
+                    ( 
+                        validAdjacent(Part3, Row1-Diag1, NotAlliedColour, Part3, Board),
+                        getCellByCoords(Board, Row1, Diag1, Cell1), Cell1 \= empty, Cell1 \= NotAlliedColour
+                    ), NovoNivelAdjacentes)
+                );
+                NovoNivelAdjacentes = []
+            ),
             % write('STEP 2 '), write(NovoNivelAdjacentes), nl,
 
             getAdjList(NovoNivelAdjacentes, NotAlliedColour, Board, [], Part4),
@@ -343,15 +348,17 @@ newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, Distanci
     getAdjList(PontosAliados, NotAlliedColour, Board, [], Parte2),
     append(Parte1, Parte2, NovoNivel),
     % write(NovoNivel),nl,
-    
+
+
     (
         (
-            setof(Row-Diag, 
+            setof(Row1-Diag1, 
             ( 
-                validAdjacent(PontosDoNivelAtual, Row-Diag, NotAlliedColour, NovoNivel, Board),
-                getCellByCoords(Board, Row, Diag, Cell), Cell \= empty, Cell \= NotAlliedColour
+                validAdjacent(NovoNivel, Row1-Diag1, NotAlliedColour, NovoNivel, Board),
+                getCellByCoords(Board, Row1, Diag1, Cell1), Cell1 \= empty, Cell1 \= NotAlliedColour
             ), NovoNivelAdjacentes)
-        ); NovoNivelAdjacentes = []
+        );
+        NovoNivelAdjacentes = []
     ),
 
     getAdjList(NovoNivelAdjacentes, NotAlliedColour, Board, [], Parte3),
