@@ -1,6 +1,6 @@
 
 choose_move(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2), Player, Level, Move) :-
-    valid_moves(Board, ListOfMoves),
+    valid_moves(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2), ListOfMoves),
     write('Length: '), length(ListOfMoves, A), write(A),nl,
     (
         (
@@ -12,7 +12,7 @@ choose_move(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWo
             colourWonBoth(PurpleWon1, PurpleWon2, PurpleWon),
             colourWonBoth(GreenWon1, GreenWon2, GreenWon),
             colourWonBoth(OrangeWon1, OrangeWon2, OrangeWon),
-            findall(Value-Move1, ( member(Move1, ListOfMoves), updateBoard(Board, Move1, NewBoard), value(NewBoard-(PurpleWon-GreenWon-OrangeWon), Player, Value) ), ValueMoveList),
+            findall(Value-Move1, ( member(Move1, ListOfMoves), updateBoard(Board, Move1, NewBoard), value(NewBoard-(PurpleWon-OrangeWon-GreenWon), Player, Value) ), ValueMoveList),
             % write(ValueMoveList),
             
 
@@ -34,15 +34,19 @@ colourWonBoth('TRUE', _, 'TRUE').
 colourWonBoth(_, 'TRUE', 'TRUE').
 colourWonBoth('FALSE', 'FALSE', 'FALSE').
 
-valid_moves(Board, ListOfMoves) :-
+valid_moves(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2), ListOfMoves) :-
     % searchBoard(NewBoard, List, 1).
     searchBoard(Board, [], List, 1),
-    findall(Move, (member(Move, List), checkValidMove(Board, Move)), ListOfMoves).
+    findall(Move, 
+        (
+            member(Move, List), 
+            checkValidMove(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2), Move)
+        ), ListOfMoves).
 
 
-checkValidMove(Board, [Row, Diagonal, Colour]) :-
+checkValidMove(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2), [Row, Diagonal, Colour]) :-
     checkEmpty([Row, Diagonal, Colour], Board),
-    checkAvailableDisc(Board, Colour).
+    checkAvailableDisc(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2), Colour).
 
 
 

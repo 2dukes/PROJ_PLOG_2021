@@ -8,7 +8,7 @@
 :- consult('menus.pl').
 
 
-checkValidPlay(Board, [Row, Diagonal, Colour]) :-
+checkValidPlay(Board-ColoursWon, [Row, Diagonal, Colour]) :-
     (
         (
             checkEmpty([Row, Diagonal, Colour], Board)
@@ -19,15 +19,15 @@ checkValidPlay(Board, [Row, Diagonal, Colour]) :-
     ),
     (
         (
-            checkAvailableDisc(Board, Colour)
+            checkAvailableDisc(Board-ColoursWon, Colour)
         ); 
         (
             write('No more '), write(Colour), write(' discs remaining!'), nl, !, fail
         )
     ).
 
-checkAvailableDisc(Board, Colour) :-
-    countDiscs(Board, O, G, P),
+checkAvailableDisc(Board-ColoursWon, Colour) :-
+    countDiscs(Board-ColoursWon, O, G, P),
     (
         (
             Colour == orange,
@@ -64,22 +64,21 @@ userPlay(GameState, NewGameState, Nplayer-(c-Level)) :-
     move(GameState, Move, NewGameState),
     print_move(Move).
 
-move(Board-_, Move, NewBoard-_) :-
-    checkValidPlay(Board, Move),
+move(Board-ColoursWon, Move, NewBoard-_) :-
+    checkValidPlay(Board-ColoursWon, Move),
     updateBoard(Board, Move, NewBoard).
 
-display_game(GameState, 0) :-
-    print_board(GameState, 1),
-    display_discs(GameState).
+display_game(Board-ColoursWon, 0) :-
+    print_board(Board, 1),
+    display_discs(Board-ColoursWon).
 
-display_game(GameState, Player) :- % Switch Player every time we end printing the board.
-    %, ,
-    print_board(GameState, 1),
-    display_discs(GameState),
+display_game(Board-ColoursWon, Player) :- % Switch Player every time we end printing the board.
+    print_board(Board, 1),
+    display_discs(Board-ColoursWon),
     display_player(Player).
 
-display_discs(Board) :-
-    countDiscs(Board, O, G, P),
+display_discs(GameState) :-
+    countDiscs(GameState, O, G, P),
     NewO is 42 - O,
     NewG is 42 - G,
     NewP is 42 - P,
@@ -89,9 +88,9 @@ display_discs(Board) :-
 
 
 display_player(Player) :-
-    write('Player '),
+    write('                      Player '),
     write(Player),
-    write(' turn'), nl, nl.
+    write('\'s turn'), nl, nl.
 
 displayColoursState(Player, 'FALSE'-'FALSE'-'FALSE') :- write('Player '), write(Player), write(' has no colours'),nl.
 
@@ -138,9 +137,9 @@ checkColours(Board, Colour, Player, 'FALSE', 'FALSE', NewColour) :-
 
 
 
-gameLoop(Board-(PurpleWon1-GreenWon1-OrangeWon1-PurpleWon2-GreenWon2-OrangeWon2), P1-P2) :-
-    % Player 1                                                                                    
-    display_game(Board, 1),
+gameLoop(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2), P1-P2) :-
+    % Player 1   
+    display_game(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2), 1),
     userPlay(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2), NewBoard-_, 1-P1),
     (
         (     
@@ -156,12 +155,12 @@ gameLoop(Board-(PurpleWon1-GreenWon1-OrangeWon1-PurpleWon2-GreenWon2-OrangeWon2)
             (       
                 (
                     game_over((NewPurpleWon1-NewOrangeWon1-NewGreenWon1)-(NewPurpleWon2-NewOrangeWon2-NewGreenWon2), Winner),
-                    display_game(NewBoard, 0),
+                    display_game(NewBoard-(NewPurpleWon1-NewOrangeWon1-NewGreenWon1-NewPurpleWon2-NewOrangeWon2-NewGreenWon2), 0),
                     write('Player '), write(Winner), write(' won!'), nl  
                 );
                 (
                     % Player 2
-                    display_game(NewBoard, 2),
+                    display_game(NewBoard-(NewPurpleWon1-NewOrangeWon1-NewGreenWon1-NewPurpleWon2-NewOrangeWon2-NewGreenWon2), 2),
                     userPlay(NewBoard-(NewPurpleWon1-NewOrangeWon1-NewGreenWon1-NewPurpleWon2-NewOrangeWon2-NewGreenWon2), FinalBoard-_, 2-P2),
                     (
                         (
@@ -177,10 +176,10 @@ gameLoop(Board-(PurpleWon1-GreenWon1-OrangeWon1-PurpleWon2-GreenWon2-OrangeWon2)
                             (
                                 (
                                     game_over((NewPurpleWon3-NewOrangeWon3-NewGreenWon3)-(NewPurpleWon4-NewOrangeWon4-NewGreenWon4), Winner),
-                                    display_game(FinalBoard, 0),
+                                    display_game(FinalBoard-(NewPurpleWon3-NewOrangeWon3-NewGreenWon3-NewPurpleWon4-NewOrangeWon4-NewGreenWon4), 0),
                                     write('Player '), write(Winner), write(' won!'), nl  
                                 );
-                                gameLoop(FinalBoard-(NewPurpleWon3-NewGreenWon3-NewOrangeWon3-NewPurpleWon4-NewGreenWon4-NewOrangeWon4), P1-P2)
+                                gameLoop(FinalBoard-(NewPurpleWon3-NewOrangeWon3-NewGreenWon3-NewPurpleWon4-NewOrangeWon4-NewGreenWon4), P1-P2)
                             )
                         )
                     )
@@ -195,21 +194,17 @@ checkColourWon(Board, Player, Colour, ColourWon) :-
     (
         (
             (
+                findall(Row-Diagonal, execute(Edge1, [Row, Diagonal]), StartPoints),
                 (
-                    findall(Row-Diagonal, execute(Edge1, [Row, Diagonal]), StartPoints),
-                    write(StartPoints),nl,
-                    once(
-                        newGetDistance(StartPoints, [], NotAlliedColour, 0, 0, Result, Board, Edge2)),
+                    (
+                        once( newGetDistance(StartPoints, [], NotAlliedColour, 0, 0, Result, Board, Edge2) ),
                         Result == 0
-                    
-                );
-                (
-                    findall(Row-Diagonal, execute(Edge1, [Row, Diagonal]), [P1,P2,P3,P4,P5]),
-                    checkBlocked(P1, Board, AlliedColour, [], _, Edge2),
-                    checkBlocked(P2, Board, AlliedColour, [], _, Edge2),
-                    checkBlocked(P3, Board, AlliedColour, [], _, Edge2),
-                    checkBlocked(P4, Board, AlliedColour, [], _, Edge2),
-                    checkBlocked(P5, Board, AlliedColour, [], _, Edge2)
+                    );
+                    (
+                        max_depth(MaxDepth),
+                        once( newGetDistance(StartPoints, [], AlliedColour, MaxDepth, 0, Result, Board, Edge2) ),
+                        Result == 3000
+                    )
                 )
             ),
             !, ColourWon = 'TRUE'

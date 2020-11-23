@@ -28,7 +28,7 @@ evaluateColour(Board-ColoursWon, Colour-NotAlliedColour, ValueColour) :-
     ), !.
 
 
-getDistanceColour(Board-(PurpleWon-GreenWon-OrangeWon), Colour-NotAlliedColour, Distance) :-
+getDistanceColour(Board-(PurpleWon-OrangeWon-GreenWon), Colour-NotAlliedColour, Distance) :-
     !,
     (    
         (

@@ -17,29 +17,29 @@ info(11, ' [O]').
 info(12, ' [O]').
 info(13, ' [P]').
 
-line(1, '                            1').
-line(2,     '                        2').
-line(3,         '                    3').
-line(4, '                4').
-line(5, '                    5').
-line(6, '                  6').
-line(7, '                 7').
-line(8, '          8').
-line(9, '                9').
-line(10, '          10').
-line(11, '                11').
-line(12, '          12').
-line(13, '                13').
-line(14, '          14').
-line(15, '                15').
-line(16, '          16').
-line(17, '                17').
-line(18, '                    18').
-line(19, '                  19').
-line(20, '                 20').
-line(21, '                     21').
-line(22, '                         22').
-line(23, '                             23').
+line(1, '                     1').
+line(2,     '                 2').
+line(3,         '             3').
+line(4,             '         4 ').
+line(5,         '             5 .________________________________________________.').
+line(6,           '           6 |        |                PLAYER 1               |').
+line(7,            '          7 |________|_______________________________________|').
+line(8,                   '   8 | Colour |   PURPLE   |    ORANGE   |   GREEN    |').
+line(9,             '         9 | Allied |   Orange   |    Green    |   Purple   |').
+line(10,                  '  10 |________|____________|_____________|____________|').
+line(11,            '        11').
+line(12,                  '  12 .________________________________________________.').
+line(13,            '        13 |        |                PLAYER 2               |').
+line(14,                  '  14 |________|_______________________________________|').
+line(15,            '        15 | Colour |   PURPLE   |    ORANGE   |   GREEN    |').
+line(16,                  '  16 | Allied |   Orange   |    Green    |   Purple   |').
+line(17,            '        17 |________|____________|_____________|____________|').
+line(18,        '            18').
+line(19,          '          19').
+line(20,           '         20').
+line(21,       '             21').
+line(22,   '                 22').
+line(23,  '                     23').
 
 startDiag(1, 1).
 startDiag(2, 1).
@@ -112,115 +112,59 @@ colourTable(2, purple-green-orange).
 colourTable(2, orange-purple-green).
 colourTable(2, green-orange-purple). % Colour | Allied | NotAllied
 
-initial([
-[                                         orange,    empty],                            %1
-[                                     orange,   empty,   empty],                         %2
-[                                purple,    orange,   empty,  green],                     %3
-[                           empty,    purple,    orange,   green,   empty],               %4
-[                      empty,    empty,    purple,   empty,   green,   empty],           %5
-[                          empty,     empty,   purple,   green,    empty],               %6
-[                      empty,    empty,    empty,   green,   empty,   empty],           %7 
-[                 empty,   empty,     empty,   green,   empty,    empty,   empty],      %8
-[                      empty,    green,    green,   empty,  empty,   empty],           %9
-[                 empty,   green,     green,    purple,   empty,    empty,   empty],      %10
-[                      empty,    green,    empty,   purple,  empty,   empty],           %11
-[                 empty,   green,     empty,   empty,     empty,    empty,   empty],      %12
-[                      green,    empty,    empty,   purple,  empty,   empty],           %13
-[                 empty,   empty,     empty,   orange,     purple,    empty,   empty],      %14
-[                      green,    green,    orange,   green,   empty,   empty],           %15
-[                 empty,   empty,     orange,   empty,     purple,    empty,   empty],      %16
-[                      green,    empty,    empty,   orange,   green,   empty],           %17
-[                           empty,    green,   purple,    orange,   empty],               %18
-[                      empty,    empty,    empty,   orange,   purple,   empty],           %19
-[                           empty,    empty,   orange,   empty,   empty],                %20
-[                                empty,    empty,   empty,   empty],                    %21
-[                                     empty,   empty,   empty],                         %22
-[                                          empty,   empty]                              %23
-]-('FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE')).
-
-
 % initial([
-%     [                                         empty,    empty],                            %1
-%     [                                     empty,   empty,   empty],                         %2
-%     [                                empty,    empty,   empty,  empty],                     %3
-%     [                           empty,    empty,    empty,   empty,   empty],               %4
-%     [                      empty,    empty,    empty,   empty,   empty,   empty],           %5
-%     [                          empty,     empty,   empty,   empty,    empty],               %6
-%     [                      empty,    empty,    empty,   empty,   empty,   empty],           %7 
-%     [                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      %8
-%     [                      empty,    empty,    empty,   empty,  empty,   empty],           %9
-%     [                 empty,   empty,     empty,    empty,   empty,    empty,   empty],      %10
-%     [                      empty,    empty,    empty,   empty,  empty,   empty],           %11
-%     [                 empty,   empty,     empty,   empty,     empty,    empty,   empty],      %12
-%     [                      empty,    empty,    empty,   empty,  empty,   empty],           %13
-%     [                 empty,   empty,     empty,   empty,     empty,    empty,   empty],      %14
-%     [                      empty,    empty,    empty,   empty,   empty,   empty],           %15
-%     [                 empty,   empty,     empty,   empty,     empty,    empty,   empty],      %16
-%     [                      empty,    empty,    empty,   empty,   empty,   empty],           %17
-%     [                           empty,    empty,   empty,    empty,   empty],               %18
-%     [                      empty,    empty,    empty,   empty,   empty,   empty],           %19
-%     [                           empty,    empty,   empty,   empty,   empty],                %20
-%     [                                empty,    empty,   empty,   empty],                    %21
-%     [                                     empty,   empty,   empty],                         %22
-%     [                                          empty,   empty]                              %23
-%     ]-('FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE')).
+% [                                         orange,    empty],                            %1
+% [                                     orange,   empty,   empty],                         %2
+% [                                purple,    orange,   empty,  green],                     %3
+% [                           empty,    purple,    orange,   green,   empty],               %4
+% [                      empty,    empty,    purple,   empty,   green,   empty],           %5
+% [                          empty,     empty,   purple,   green,    empty],               %6
+% [                      empty,    empty,    empty,   green,   empty,   empty],           %7 
+% [                 empty,   empty,     empty,   purple,   empty,    empty,   empty],      %8
+% [                      empty,    green,    empty,   empty,  empty,   empty],           %9
+% [                 empty,   green,     empty,    purple,   empty,    empty,   empty],      %10
+% [                      empty,    green,    empty,   purple,  empty,   empty],           %11
+% [                 empty,   green,     empty,   empty,     empty,    empty,   empty],      %12
+% [                      green,    empty,    empty,   purple,  empty,   empty],           %13
+% [                 empty,   empty,     empty,   orange,     purple,    empty,   empty],      %14
+% [                      green,    green,    orange,   green,   empty,   empty],           %15
+% [                 empty,   empty,     orange,   empty,     purple,    empty,   empty],      %16
+% [                      green,    empty,    empty,   orange,   green,   empty],           %17
+% [                           empty,    green,   purple,    purple,   empty],               %18
+% [                      empty,    empty,    empty,   orange,   purple,   empty],           %19
+% [                           empty,    empty,   orange,   empty,   empty],                %20
+% [                                empty,    empty,   empty,   empty],                    %21
+% [                                     empty,   empty,   empty],                         %22
+% [                                          empty,   empty]                              %23
+% ]-('FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE')).
 
 
-checkBlocked(Row-Diagonal, Board, NotAlliedColour, AlreadyVisited, Visited, _) :-
-    (
-        (
-            member([Row, Diagonal], AlreadyVisited),
-            NewVisited = AlreadyVisited
-        );
-        (  
-            (
-                getCellByCoords(Board, Row, Diagonal, Cell),
-                Cell == NotAlliedColour,
-                append(AlreadyVisited, [[Row, Diagonal]], NewVisited)
-            );
-            (
-                \+getCellByCoords(Board, Row, Diagonal, Cell),
-                NewVisited = AlreadyVisited
-            )
-        )
-    ),
-    (Visited = NewVisited).
+initial([
+    [                                         empty,    empty],                            %1
+    [                                     empty,   empty,   empty],                         %2
+    [                                empty,    empty,   empty,  empty],                     %3
+    [                           empty,    empty,    empty,   empty,   empty],               %4
+    [                      empty,    empty,    empty,   empty,   empty,   empty],           %5
+    [                          empty,     empty,   empty,   empty,    empty],               %6
+    [                      empty,    empty,    empty,   empty,   empty,   empty],           %7 
+    [                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      %8
+    [                      empty,    empty,    empty,   empty,  empty,   empty],           %9
+    [                 empty,   empty,     empty,    empty,   empty,    empty,   empty],      %10
+    [                      empty,    empty,    empty,   empty,  empty,   empty],           %11
+    [                 empty,   empty,     empty,   empty,     empty,    empty,   empty],      %12
+    [                      empty,    empty,    empty,   empty,  empty,   empty],           %13
+    [                 empty,   empty,     empty,   empty,     empty,    empty,   empty],      %14
+    [                      empty,    empty,    empty,   empty,   empty,   empty],           %15
+    [                 empty,   empty,     empty,   empty,     empty,    empty,   empty],      %16
+    [                      empty,    empty,    empty,   empty,   empty,   empty],           %17
+    [                           empty,    empty,   empty,    empty,   empty],               %18
+    [                      empty,    empty,    empty,   empty,   empty,   empty],           %19
+    [                           empty,    empty,   empty,   empty,   empty],                %20
+    [                                empty,    empty,   empty,   empty],                    %21
+    [                                     empty,   empty,   empty],                         %22
+    [                                          empty,   empty]                              %23
+    ]-('FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE')).
 
-checkBlocked(Row-Diagonal, Board, NotAlliedColour, AlreadyVisited, Visited, BorderPredicate) :-
-    (
-        \+execute(BorderPredicate, [Row, Diagonal]),
-        getCellByCoords(Board, Row, Diagonal, AnalizeCell),
-        AnalizeCell \= NotAlliedColour
-    ),
-    (
-        (
-            member([Row, Diagonal], AlreadyVisited),
-            Visited = AlreadyVisited
-        );
-        (
-            getCellByCoords(Board, Row, Diagonal, AnalizeCell),
-            AnalizeCell \= NotAlliedColour,
-            append(AlreadyVisited, [[Row, Diagonal]], NewAlreadyVisited),
-            (
-                (NewRow1 is Row - 2, NewDiagonal1 is Diagonal - 1),
-                (NewRow2 is Row - 1, NewDiagonal2 is Diagonal),
-                (NewRow3 is Row + 1, NewDiagonal3 is Diagonal + 1),
-                (NewRow4 is Row + 1, NewDiagonal4 is Diagonal),
-                (NewRow5 is Row + 2, NewDiagonal5 is Diagonal + 1),
-                (NewRow6 is Row - 1, NewDiagonal6 is Diagonal - 1)
-            ),
-            (
-                !,
-                checkBlocked(NewRow1-NewDiagonal1, Board, NotAlliedColour, NewAlreadyVisited, Visited1, BorderPredicate),!,
-                checkBlocked(NewRow2-NewDiagonal2, Board, NotAlliedColour, Visited1, Visited2, BorderPredicate),!,
-                checkBlocked(NewRow3-NewDiagonal3, Board, NotAlliedColour, Visited2, Visited3, BorderPredicate),!,
-                checkBlocked(NewRow4-NewDiagonal4, Board, NotAlliedColour, Visited3, Visited4, BorderPredicate),!,
-                checkBlocked(NewRow5-NewDiagonal5, Board, NotAlliedColour, Visited4, Visited5, BorderPredicate),!,
-                checkBlocked(NewRow6-NewDiagonal6, Board, NotAlliedColour, Visited5, Visited6, BorderPredicate),
-                Visited = Visited6
-            )
-        )
-    ).
 
 %ponto 1 é adjacente ao ponto 2
 adjacent(Row1-Diagonal1, Row2-Diagonal2) :-
@@ -368,8 +312,6 @@ newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, Distanci
     getAdjList(PontosAliados, NotAlliedColour, Board, Visitados, [], Parte2),
     append(Parte1, Parte2, NovoNivel),
     % write(NovoNivel),nl,
-
-
     (
         (
             setof(Row1-Diag1, 

@@ -38,12 +38,26 @@ execute(Function, Args) :-
     Run =.. [Function | Args], 
     Run.
 
-countDiscs([], 0, 0, 0).
-countDiscs([Line | Rest], OrangeDiscs, GreenDiscs, PurpleDiscs) :-
+incrementColourDiscWon('FALSE', NumDiscs, NumDiscs).
+incrementColourDiscWon('TRUE', NumDiscs, NewNumDiscs) :-
+    NewNumDiscs is NumDiscs + 1.
+
+countDiscs(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2), TotalOrangeDiscs, TotalGreenDiscs, TotalPurpleDiscs) :-
+    % countTotalDiscs(Board, TotalOrangeDiscs, TotalGreenDiscs, TotalPurpleDiscs).
+    countTotalDiscs(Board, OrangeDiscs, GreenDiscs, PurpleDiscs),
+    colourWonBoth(PurpleWon1, PurpleWon2, PurpleWon),
+    colourWonBoth(GreenWon1, GreenWon2, GreenWon),
+    colourWonBoth(OrangeWon1, OrangeWon2, OrangeWon),
+    incrementColourDiscWon(PurpleWon, PurpleDiscs, TotalPurpleDiscs),
+    incrementColourDiscWon(GreenWon, GreenDiscs, TotalGreenDiscs),
+    incrementColourDiscWon(OrangeWon, OrangeDiscs, TotalOrangeDiscs).
+
+countTotalDiscs([], 0, 0, 0).
+countTotalDiscs([Line | Rest], OrangeDiscs, GreenDiscs, PurpleDiscs) :-
     countOccurrence(Line, orange, AuxOrangeDiscs),
     countOccurrence(Line, green, AuxGreenDiscs),
     countOccurrence(Line, purple, AuxPurpleDiscs),
-    countDiscs(Rest, Oranges, Greens, Purples),
+    countTotalDiscs(Rest, Oranges, Greens, Purples),
     OrangeDiscs is Oranges + AuxOrangeDiscs,
     GreenDiscs is Greens + AuxGreenDiscs,
     PurpleDiscs is Purples + AuxPurpleDiscs.
