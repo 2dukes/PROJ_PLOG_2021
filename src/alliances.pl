@@ -93,7 +93,7 @@ display_player(Player) :-
     write(Player),
     write(' turn'), nl, nl.
 
-displayColoursState(Player, 'FALSE'-'FALSE'-'FALSE') :- write('No colours'),nl.
+displayColoursState(Player, 'FALSE'-'FALSE'-'FALSE') :- write('Player '), write(Player), write(' has no colours'),nl.
 
 displayColoursState(Player, PurpleWon-OrangeWon-GreenWon) :-
     write('Player '), write(Player), write(' has colour(s): '), 
