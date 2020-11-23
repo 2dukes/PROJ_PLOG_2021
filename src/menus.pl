@@ -26,13 +26,16 @@ checkInput(Input) :-
             askMenuOption,
             getNewInt(Input),
             Input >= 0,
-            Input =< 4,!
+            Input =< 5,!
         );
         (
             nl, write('ERROR: Invalid Option!'), nl, nl, 
             fail
         )
     ).
+
+askMenuOption :-
+    write('> Insert your option ').   
 
 mode('R', random).
 mode('G', greedy).
@@ -69,9 +72,19 @@ manageInput(4, GameState) :- % Computer vs Computer
     pickMode(Mode1, 'Computer1'), pickMode(Mode2, 'Computer2'), 
     gameLoop(GameState, (c-Mode1)-(c-Mode2)).
 
-askMenuOption :-
-    write('> Insert your option ').                                      
-
+manageInput(5, _) :-
+    nl,
+    write('._______________________________________________________________.'), nl,
+    write('|                                                               |'), nl,                                        
+    write('|                          HOW TO PLAY                          |'), nl,  
+    write('|===============================================================|'), nl,              
+    write('|    Each player has to use the colored discs to connect two    |'), nl,
+    write('|    borders for each color. Allied colours can also be used    |'), nl,
+    write('|          according to each player\'s colour table.             |'), nl,
+    write('|                                                               |'), nl,
+    write('|     The first player to get two different colours, wins!      |'), nl, 
+    write('|_______________________________________________________________|'), nl,
+    getChar(_).
 
 printMainMenu :-
     nl, nl,
@@ -94,6 +107,7 @@ printMainMenu :-
     write('|                    3. Computer vs  Player                      |'), nl,
     write('|                    4. Computer vs  Computer                    |'), nl,
     write('|                                                                |'), nl,
+    write('|                         5. How to play                         |'), nl,
     write('|                            0. Exit                             |'), nl,     
     write('|________________________________________________________________|'), nl.                                                                 
 

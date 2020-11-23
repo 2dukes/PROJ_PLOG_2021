@@ -192,10 +192,10 @@ validAdjacent(NivelAtual, RowAdj-DiagAdj, NotAlliedColour, Visitados, Board) :-
     getCellByCoords(Board, RowAdj, DiagAdj, Cell),
     Cell \= NotAlliedColour.
 
-checkReached([Row-Diagonal|RestoDoNivel], Predicate) :-
+checkReached([Row-Diagonal| _ ], Predicate) :-
     execute(Predicate, [Row,Diagonal]).
 
-checkReached([Row-Diagonal|RestoDoNivel], Predicate) :-
+checkReached([_|RestoDoNivel], Predicate) :-
     checkReached(RestoDoNivel, Predicate).
 
 
@@ -207,7 +207,7 @@ adjacentAllied(Pontos, NotAlliedColour, Visitados, Board, Row-Diag) :-
     Cell \= NotAlliedColour,
     Cell \= empty.
 
-getAdjList([], NotAlliedColour, Visited, Board, Lista, Resultado) :-
+getAdjList([], _, _, _, Lista, Resultado) :-
     Resultado = Lista.
 
 getAdjList(Pontos, NotAlliedColour, Visited, Board, Lista, Resultado) :-

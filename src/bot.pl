@@ -4,6 +4,7 @@ choose_move(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWo
     write('Length: '), length(ListOfMoves, A), write(A),nl,
     (
         (
+            % sleep(2),
             Level == 'random',
             random_member(Move, ListOfMoves)
         );
@@ -16,17 +17,11 @@ choose_move(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWo
             % write(ValueMoveList),
             
 
-            max_member(Value1-ChosenMove, ValueMoveList),
+            max_member(ValueMax-_, ValueMoveList),
+            findall(Value1-MoveBest, (member(Value1-MoveBest, ValueMoveList), Value1 == ValueMax), BestMoves),
+            random_member(_-ChosenMove, BestMoves),
             write('Length: '), length(ValueMoveList, Length), write(Length),nl,
-
-            % write(Value1),nl,
-            (
-                (
-                    Value == 0,
-                    random_member(Move, ListOfMoves)
-                );
-                Move = ChosenMove
-            )
+            Move = ChosenMove
         )
     ).
 
