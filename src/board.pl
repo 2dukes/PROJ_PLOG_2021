@@ -112,58 +112,58 @@ colourTable(2, purple-green-orange).
 colourTable(2, orange-purple-green).
 colourTable(2, green-orange-purple). % Colour | Allied | NotAllied
 
-% initial([
-% [                                         orange,    empty],                            %1
-% [                                     orange,   empty,   empty],                         %2
-% [                                purple,    orange,   empty,  empty],                     %3
-% [                           empty,    purple,    orange,   empty,   empty],               %4
-% [                      empty,    empty,    empty,   empty,   green,   empty],           %5
-% [                          empty,     empty,   empty,   green,    empty],               %6
-% [                      empty,    empty,    empty,   green,   empty,   empty],           %7 
-% [                 empty,   empty,     empty,   green,   empty,    empty,   empty],      %8
-% [                      empty,    green,    empty,   empty,  empty,   empty],           %9
-% [                 empty,   green,     empty,    empty,   empty,    empty,   empty],      %10
-% [                      empty,    green,    empty,   purple,  empty,   empty],           %11
-% [                 empty,   green,     empty,   empty,     empty,    empty,   empty],      %12
-% [                      empty,    empty,    empty,   purple,  empty,   empty],           %13
-% [                 empty,   empty,     empty,   orange,     purple,    empty,   empty],      %14
-% [                      empty,    green,    orange,   green,   empty,   empty],           %15
-% [                 empty,   empty,     orange,   empty,     empty,    empty,   empty],      %16
-% [                      empty,    empty,    empty,   orange,   green,   empty],           %17
-% [                           empty,    green,   purple,    empty,   empty],               %18
-% [                      empty,    empty,    empty,   orange,   empty,   empty],           %19
-% [                           empty,    empty,   orange,   empty,   empty],                %20
-% [                                empty,    empty,   empty,   empty],                    %21
-% [                                     empty,   empty,   empty],                         %22
-% [                                          empty,   empty]                              %23
-% ]-('FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE')).
-
-
 initial([
-    [                                         empty,    empty],                            %1
-    [                                     empty,   empty,   empty],                         %2
-    [                                empty,    empty,   empty,  empty],                     %3
-    [                           empty,    empty,    empty,   empty,   empty],               %4
-    [                      empty,    empty,    empty,   empty,   empty,   empty],           %5
-    [                          empty,     empty,   empty,   empty,    empty],               %6
-    [                      empty,    empty,    empty,   empty,   empty,   empty],           %7 
-    [                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      %8
-    [                      empty,    empty,    empty,   empty,  empty,   empty],           %9
-    [                 empty,   empty,     empty,    empty,   empty,    empty,   empty],      %10
-    [                      empty,    empty,    empty,   empty,  empty,   empty],           %11
-    [                 empty,   empty,     empty,   empty,     empty,    empty,   empty],      %12
-    [                      empty,    empty,    empty,   empty,  empty,   empty],           %13
-    [                 empty,   empty,     empty,   empty,     empty,    empty,   empty],      %14
-    [                      empty,    empty,    empty,   empty,   empty,   empty],           %15
-    [                 empty,   empty,     empty,   empty,     empty,    empty,   empty],      %16
-    [                      empty,    empty,    empty,   empty,   empty,   empty],           %17
-    [                           empty,    empty,   empty,    empty,   empty],               %18
-    [                      empty,    empty,    empty,   empty,   empty,   empty],           %19
-    [                           empty,    empty,   empty,   empty,   empty],                %20
-    [                                empty,    empty,   empty,   empty],                    %21
-    [                                     empty,   empty,   empty],                         %22
-    [                                          empty,   empty]                              %23
-    ]-('FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE')).
+[                                         orange,    empty],                            %1
+[                                     orange,   empty,   empty],                         %2
+[                                purple,    orange,   empty,  empty],                     %3
+[                           empty,    purple,    orange,   empty,   empty],               %4
+[                      empty,    empty,    empty,   empty,   green,   empty],           %5
+[                          empty,     empty,   empty,   green,    empty],               %6
+[                      empty,    empty,    empty,   green,   empty,   empty],           %7 
+[                 empty,   empty,     empty,   green,   empty,    empty,   empty],      %8
+[                      empty,    green,    empty,   empty,  empty,   empty],           %9
+[                 empty,   green,     empty,    empty,   empty,    empty,   empty],      %10
+[                      empty,    green,    empty,   purple,  empty,   empty],           %11
+[                 empty,   green,     empty,   empty,     empty,    empty,   empty],      %12
+[                      empty,    empty,    empty,   purple,  empty,   empty],           %13
+[                 empty,   empty,     empty,   orange,     purple,    empty,   empty],      %14
+[                      empty,    green,    orange,   green,   empty,   empty],           %15
+[                 empty,   empty,     orange,   empty,     empty,    empty,   empty],      %16
+[                      empty,    empty,    empty,   orange,   green,   empty],           %17
+[                           empty,    green,   purple,    empty,   empty],               %18
+[                      empty,    empty,    empty,   orange,   empty,   empty],           %19
+[                           empty,    empty,   orange,   empty,   empty],                %20
+[                                empty,    empty,   empty,   empty],                    %21
+[                                     empty,   empty,   empty],                         %22
+[                                          empty,   empty]                              %23
+]-('FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE')).
+
+
+% initial([
+%     [                                         empty,    empty],                            %1
+%     [                                     empty,   empty,   empty],                         %2
+%     [                                empty,    empty,   empty,  empty],                     %3
+%     [                           empty,    empty,    empty,   empty,   empty],               %4
+%     [                      empty,    empty,    empty,   empty,   empty,   empty],           %5
+%     [                          empty,     empty,   empty,   empty,    empty],               %6
+%     [                      empty,    empty,    empty,   empty,   empty,   empty],           %7 
+%     [                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      %8
+%     [                      empty,    empty,    empty,   empty,  empty,   empty],           %9
+%     [                 empty,   empty,     empty,    empty,   empty,    empty,   empty],      %10
+%     [                      empty,    empty,    empty,   empty,  empty,   empty],           %11
+%     [                 empty,   empty,     empty,   empty,     empty,    empty,   empty],      %12
+%     [                      empty,    empty,    empty,   empty,  empty,   empty],           %13
+%     [                 empty,   empty,     empty,   empty,     empty,    empty,   empty],      %14
+%     [                      empty,    empty,    empty,   empty,   empty,   empty],           %15
+%     [                 empty,   empty,     empty,   empty,     empty,    empty,   empty],      %16
+%     [                      empty,    empty,    empty,   empty,   empty,   empty],           %17
+%     [                           empty,    empty,   empty,    empty,   empty],               %18
+%     [                      empty,    empty,    empty,   empty,   empty,   empty],           %19
+%     [                           empty,    empty,   empty,   empty,   empty],                %20
+%     [                                empty,    empty,   empty,   empty],                    %21
+%     [                                     empty,   empty,   empty],                         %22
+%     [                                          empty,   empty]                              %23
+%     ]-('FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE')).
 
 
 checkBlocked(Row-Diagonal, Board, NotAlliedColour, AlreadyVisited, Visited, _) :-
@@ -506,7 +506,7 @@ updateBoard(Board, [Row, Diagonal, Colour], NewBoard) :-
     IndexDiagonal is (Diagonal - StartDiagonal),
     replaceNth(Line, IndexDiagonal, Colour, NewLine),
     RowToUpdate is Row - 1,
-    replaceNth(Board, RowToUpdate, NewLine, NewBoard).
+    replaceNth(Board, RowToUpdate, NewLine, NewBoard), !.
 
 checkEmpty([Row, Diagonal, _], Board) :-
     getCellByCoords(Board, Row, Diagonal, Cell),

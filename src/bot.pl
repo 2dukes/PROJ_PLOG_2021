@@ -1,6 +1,7 @@
 
 choose_move(Board-(PurpleWon1-GreenWon1-OrangeWon1-PurpleWon2-GreenWon2-OrangeWon2), Player, Level, Move) :-
     valid_moves(Board, ListOfMoves),
+    write('Length: '), length(ListOfMoves, A), write(A),nl,
     (
         (
             Level == 'random',
@@ -11,7 +12,7 @@ choose_move(Board-(PurpleWon1-GreenWon1-OrangeWon1-PurpleWon2-GreenWon2-OrangeWo
             colourWonBoth(PurpleWon1, PurpleWon2, PurpleWon),
             colourWonBoth(GreenWon1, GreenWon2, GreenWon),
             colourWonBoth(OrangeWon1, OrangeWon2, OrangeWon),
-            findall(Value-Move1, ( member(Move1, ListOfMoves), updateBoard(Board, Move1, NewBoard), value(NewBoard-(PurpleWon-GreenWon-OrangeWon), Player, Value)), ValueMoveList),
+            findall(Value-Move1, ( member(Move1, ListOfMoves), updateBoard(Board, Move1, NewBoard), value(NewBoard-(PurpleWon-GreenWon-OrangeWon), Player, Value) ), ValueMoveList),
             % write(ValueMoveList),
             
 
