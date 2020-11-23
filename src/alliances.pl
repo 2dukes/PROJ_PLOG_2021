@@ -128,14 +128,12 @@ game_over(_-Colours2, Winner) :-
 
 % checkColours(Colour, Player, ColourPlayer, ColourOther, NewColour)
 
-checkColours(_, _, _, 'TRUE', _, NewColour) :-
-    NewColour = 'TRUE'.
+checkColours(_, _, _, 'TRUE', _, 'TRUE').
 
-checkColours(_, _, _, ColourPlayer, 'TRUE', NewColour) :-
-    NewColour = ColourPlayer.
+checkColours(_, _, _, 'FALSE', 'TRUE', 'FALSE').
 
-checkColours(Board, Colour, Player, ColourPlayer, _, NewColour) :-
-    checkColourWon(Board, 1, purple, ColourWon),
+checkColours(Board, Colour, Player, 'FALSE', 'FALSE', NewColour) :-
+    checkColourWon(Board, Player, Colour, ColourWon),
     NewColour = ColourWon.
 
 
@@ -143,40 +141,15 @@ checkColours(Board, Colour, Player, ColourPlayer, _, NewColour) :-
 gameLoop(Board-(PurpleWon1-GreenWon1-OrangeWon1-PurpleWon2-GreenWon2-OrangeWon2), P1-P2) :-
     % Player 1                                                                                    
     display_game(Board, 1),
-    userPlay(Board-_, NewBoard-_, 1-P1),
+    userPlay(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2), NewBoard-_, 1-P1),
     (
         (     
-            write(PurpleWon1), write(PurpleWon1), write(OrangeWon1),nl,
-            % checkColours(NewBoard, purple, 1, PurpleWon1, PurpleWon2, NewPurpleWon1),
-            % checkColours(NewBoard, orange, 1, OrangeWon1, OrangeWon2, NewOrangeWon1),
-            % checkColours(NewBoard, green, 1, GreenWon1, GreenWon2, NewGreenWon1),
-            % checkColours(NewBoard, purple, 2, PurpleWon2, NewPurpleWon1, NewPurpleWon2),
-            % checkColours(NewBoard, orange, 2, OrangeWon2, NewOrangeWon1, NewOrangeWon2),
-            % checkColours(NewBoard, green, 2, GreenWon2, NewGreenWon1, NewGreenWon2),
-            (
-                ((PurpleWon1 == 'TRUE'; PurpleWon2 == 'TRUE'), (NewPurpleWon1 = PurpleWon1));
-                checkColourWon(NewBoard, 1, purple, NewPurpleWon1)
-            ), 
-            (
-                ((OrangeWon1 == 'TRUE'; OrangeWon2 == 'TRUE'), (NewOrangeWon1 = OrangeWon1));
-                checkColourWon(NewBoard, 1, orange, NewOrangeWon1)
-            ),
-            (
-                ((GreenWon1 == 'TRUE'; GreenWon2 == 'TRUE') , (NewGreenWon1 = GreenWon1));
-                checkColourWon(NewBoard, 1, green, NewGreenWon1)
-            ),
-            (
-                ((PurpleWon2 == 'TRUE'; NewPurpleWon1 == 'TRUE'), (NewPurpleWon2 = PurpleWon2));
-                checkColourWon(NewBoard, 2, purple, NewPurpleWon2)
-            ),
-            ( 
-                ((OrangeWon2 == 'TRUE'; NewOrangeWon1 == 'TRUE'), (NewOrangeWon2 = OrangeWon2));
-                checkColourWon(NewBoard, 2, orange, NewOrangeWon2)
-            ),
-            ( 
-                ((GreenWon2 == 'TRUE'; NewGreenWon1 == 'TRUE'), (NewGreenWon2 = GreenWon2));
-                checkColourWon(NewBoard, 2, green, NewGreenWon2)
-            ),
+            checkColours(NewBoard, purple, 1, PurpleWon1, PurpleWon2, NewPurpleWon1),
+            checkColours(NewBoard, orange, 1, OrangeWon1, OrangeWon2, NewOrangeWon1),
+            checkColours(NewBoard, green, 1, GreenWon1, GreenWon2, NewGreenWon1),
+            checkColours(NewBoard, purple, 2, PurpleWon2, NewPurpleWon1, NewPurpleWon2),
+            checkColours(NewBoard, orange, 2, OrangeWon2, NewOrangeWon1, NewOrangeWon2),
+            checkColours(NewBoard, green, 2, GreenWon2, NewGreenWon1, NewGreenWon2),
             
             displayColoursState(1, NewPurpleWon1-NewOrangeWon1-NewGreenWon1),
             displayColoursState(2, NewPurpleWon2-NewOrangeWon2-NewGreenWon2),
@@ -189,40 +162,15 @@ gameLoop(Board-(PurpleWon1-GreenWon1-OrangeWon1-PurpleWon2-GreenWon2-OrangeWon2)
                 (
                     % Player 2
                     display_game(NewBoard, 2),
-                    userPlay(NewBoard-_, FinalBoard-_, 2-P2),
+                    userPlay(NewBoard-(NewPurpleWon1-NewOrangeWon1-NewGreenWon1-NewPurpleWon2-NewOrangeWon2-NewGreenWon2), FinalBoard-_, 2-P2),
                     (
                         (
-                            % checkColours(FinalBoard, purple, 2, NewPurpleWon2, NewPurpleWon1, NewPurpleWon4),
-                            % checkColours(FinalBoard, orange, 2, NewOrangeWon2, NewOrangeWon1, NewOrangeWon4),
-                            % checkColours(FinalBoard, green, 2, NewGreenWon2, NewGreenWon1, NewGreenWon4),
-                            % checkColours(FinalBoard, purple, 1, NewPurpleWon1, NewPurpleWon4, NewPurpleWon3),
-                            % checkColours(FinalBoard, orange, 1, NewOrangeWon1, NewOrangeWon4, NewOrangeWon3),
-                            % checkColours(FinalBoard, green, 1, NewGreenWon1, NewGreenWon4, NewGreenWon3),
-                            (
-                                ((NewPurpleWon2 == 'TRUE'; NewPurpleWon1 == 'TRUE'), (NewPurpleWon4 = NewPurpleWon2));
-                                checkColourWon(FinalBoard, 2, purple, NewPurpleWon4)
-                            ),
-                            ( 
-                                ((NewOrangeWon2 == 'TRUE'; NewOrangeWon1 == 'TRUE'), (NewOrangeWon4 = NewOrangeWon2));
-                                checkColourWon(FinalBoard, 2, orange, NewOrangeWon4)
-                                
-                            ),
-                            ( 
-                                ((NewGreenWon2 == 'TRUE'; NewGreenWon1 == 'TRUE'), (NewGreenWon4 = NewGreenWon2));
-                                checkColourWon(FinalBoard, 2, green, NewGreenWon4)
-                            ),
-                            (
-                                ((NewPurpleWon1 == 'TRUE'; NewPurpleWon4 == 'TRUE'), (NewPurpleWon3 = NewPurpleWon1));
-                                checkColourWon(FinalBoard, 1, purple, NewPurpleWon3)
-                            ), 
-                            (
-                                ((NewOrangeWon1 == 'TRUE'; NewOrangeWon4 == 'TRUE'), (NewOrangeWon3 = NewOrangeWon1));
-                                checkColourWon(FinalBoard, 1, orange, NewOrangeWon3)
-                            ),
-                            (
-                                ((NewGreenWon1 == 'TRUE'; NewGreenWon4 == 'TRUE') , (NewGreenWon3 = NewGreenWon1));
-                                checkColourWon(FinalBoard, 1, green, NewGreenWon3)
-                            ),
+                            checkColours(FinalBoard, purple, 2, NewPurpleWon2, NewPurpleWon1, NewPurpleWon4),
+                            checkColours(FinalBoard, orange, 2, NewOrangeWon2, NewOrangeWon1, NewOrangeWon4),
+                            checkColours(FinalBoard, green, 2, NewGreenWon2, NewGreenWon1, NewGreenWon4),
+                            checkColours(FinalBoard, purple, 1, NewPurpleWon1, NewPurpleWon4, NewPurpleWon3),
+                            checkColours(FinalBoard, orange, 1, NewOrangeWon1, NewOrangeWon4, NewOrangeWon3),
+                            checkColours(FinalBoard, green, 1, NewGreenWon1, NewGreenWon4, NewGreenWon3),
 
                             displayColoursState(1, NewPurpleWon3-NewOrangeWon3-NewGreenWon3),
                             displayColoursState(2, NewPurpleWon4-NewOrangeWon4-NewGreenWon4),
@@ -231,7 +179,6 @@ gameLoop(Board-(PurpleWon1-GreenWon1-OrangeWon1-PurpleWon2-GreenWon2-OrangeWon2)
                                     game_over((NewPurpleWon3-NewOrangeWon3-NewGreenWon3)-(NewPurpleWon4-NewOrangeWon4-NewGreenWon4), Winner),
                                     display_game(FinalBoard, 0),
                                     write('Player '), write(Winner), write(' won!'), nl  
-                                    
                                 );
                                 gameLoop(FinalBoard-(NewPurpleWon3-NewGreenWon3-NewOrangeWon3-NewPurpleWon4-NewGreenWon4-NewOrangeWon4), P1-P2)
                             )
@@ -249,9 +196,12 @@ checkColourWon(Board, Player, Colour, ColourWon) :-
         (
             (
                 (
-                    execute(Edge1, [Row, Diagonal]),
-                    getDistance(Row-Diagonal, Board, NotAlliedColour, [], Edge2, 'FALSE', 0, 0, Result),
-                    Result == 0
+                    findall(Row-Diagonal, execute(Edge1, [Row, Diagonal]), StartPoints),
+                    write(StartPoints),nl,
+                    once(
+                        newGetDistance(StartPoints, [], NotAlliedColour, 0, 0, Result, Board, Edge2)),
+                        Result == 0
+                    
                 );
                 (
                     findall(Row-Diagonal, execute(Edge1, [Row, Diagonal]), [P1,P2,P3,P4,P5]),

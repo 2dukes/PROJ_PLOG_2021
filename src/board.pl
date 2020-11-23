@@ -115,23 +115,23 @@ colourTable(2, green-orange-purple). % Colour | Allied | NotAllied
 initial([
 [                                         orange,    empty],                            %1
 [                                     orange,   empty,   empty],                         %2
-[                                purple,    orange,   empty,  empty],                     %3
-[                           empty,    purple,    orange,   empty,   empty],               %4
-[                      empty,    empty,    empty,   empty,   green,   empty],           %5
-[                          empty,     empty,   empty,   green,    empty],               %6
+[                                purple,    orange,   empty,  green],                     %3
+[                           empty,    purple,    orange,   green,   empty],               %4
+[                      empty,    empty,    purple,   empty,   green,   empty],           %5
+[                          empty,     empty,   purple,   green,    empty],               %6
 [                      empty,    empty,    empty,   green,   empty,   empty],           %7 
 [                 empty,   empty,     empty,   green,   empty,    empty,   empty],      %8
-[                      empty,    green,    empty,   empty,  empty,   empty],           %9
-[                 empty,   green,     empty,    empty,   empty,    empty,   empty],      %10
+[                      empty,    green,    green,   empty,  empty,   empty],           %9
+[                 empty,   green,     green,    purple,   empty,    empty,   empty],      %10
 [                      empty,    green,    empty,   purple,  empty,   empty],           %11
 [                 empty,   green,     empty,   empty,     empty,    empty,   empty],      %12
-[                      empty,    empty,    empty,   purple,  empty,   empty],           %13
+[                      green,    empty,    empty,   purple,  empty,   empty],           %13
 [                 empty,   empty,     empty,   orange,     purple,    empty,   empty],      %14
-[                      empty,    green,    orange,   green,   empty,   empty],           %15
-[                 empty,   empty,     orange,   empty,     empty,    empty,   empty],      %16
-[                      empty,    empty,    empty,   orange,   green,   empty],           %17
-[                           empty,    green,   purple,    empty,   empty],               %18
-[                      empty,    empty,    empty,   orange,   empty,   empty],           %19
+[                      green,    green,    orange,   green,   empty,   empty],           %15
+[                 empty,   empty,     orange,   empty,     purple,    empty,   empty],      %16
+[                      green,    empty,    empty,   orange,   green,   empty],           %17
+[                           empty,    green,   purple,    orange,   empty],               %18
+[                      empty,    empty,    empty,   orange,   purple,   empty],           %19
 [                           empty,    empty,   orange,   empty,   empty],                %20
 [                                empty,    empty,   empty,   empty],                    %21
 [                                     empty,   empty,   empty],                         %22
@@ -285,21 +285,6 @@ newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, 0, Resul
         , PontosAliados),
     
     getAdjList(PontosAliados, NotAlliedColour, JaVisitados, Board, [], LevelZero),
-    % nl, write('Level Zero'), write(LevelZero), nl,
-    % setof(Ponto, (
-    %         member(Row-Diag, PontosDoNivelAtual),
-    %         getCellByCoords(Board, Row, Diag, Cell), 
-    %         Cell \= NotAlliedColour,
-    %         Cell \= empty,
-    %         write('Getting adj list'), nl,
-    %         getAdjList([Row-Diag], NotAlliedColour, Board, [], Resultado),
-    %         write(Resultado), nl,
-    %         member(Ponto, Resultado),
-    %         write(Ponto),nl
-    %     ), LevelZero
-    %     ),
-    % write('Exited Level 0'), nl,
-    % write(LevelZero),nl,
     (
         (
             % write('Checking level zero'),nl,
@@ -356,6 +341,9 @@ newGetDistance( _, _, _, Depth, DistanciaAtual, Resultado, _, _) :- %nao encontr
     DistanciaAtual > Depth,
     Resultado is 2000.
 
+newGetDistance([], _, _, _, _, Resultado, _, _) :- %nao encontrou (distancia 2000)
+    Resultado is 3000.
+
 newGetDistance(NivelAtual, _, _, _, DistanciaAtual, Resultado, _, Predicate) :- %encontrou distancia
     % findall(Row-Diagonal, (member(NivelAtual, Row-Diagonal), execute(Predicate, [Row,Diagonal])), Chegaram),
     % write('Checking'),nl,
@@ -400,105 +388,6 @@ newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, Distanci
 
     newGetDistance(Nivel, Visitados, NotAlliedColour, Depth, NovaDistancia, Resultado, Board, Predicate).
 
-
-
-getDistance(Row-Diagonal, Board, NotAlliedColour, _,  Predicate, DistanceFind, Depth, Distance, Result) :- 
-    execute(Predicate, [Row , Diagonal]), 
-    getCellByCoords(Board, Row, Diagonal, Cell),
-    Cell \= NotAlliedColour,
-    !,
-    (
-        (
-          DistanceFind == 'FALSE',
-          Cell \= empty
-        ); 
-        DistanceFind == 'TRUE'
-    ),
-    (
-        (
-            Cell == empty,
-            Distance < Depth,
-            Result is Distance + 1
-        );
-        (
-            Cell \= empty,
-            Distance =< Depth,
-            Result is Distance
-        )
-    ).
-
-getDistance(Row-Diagonal, Board, NotAlliedColour, AlreadyVisited, Predicate, DistanceFind, Depth, Distance, Result) :-
-    \+ member([Row, Diagonal], AlreadyVisited),
-    getCellByCoords(Board, Row, Diagonal, AnalizeCell),
-    AnalizeCell \= NotAlliedColour,
-    Distance =< Depth,
-    (
-        (   
-            DistanceFind == 'FALSE',
-            AnalizeCell \= empty,
-            NewDistance is Distance
-        );
-        (
-            DistanceFind == 'TRUE',
-            (
-                (
-                    AnalizeCell == empty,
-                    NewDistance is Distance + 1
-                );
-                NewDistance is Distance
-            )
-        )
-    ),
-    (   
-        (NewRow3 is Row + 1, NewDiagonal3 is Diagonal + 1),
-        (NewRow4 is Row + 1, NewDiagonal4 is Diagonal),
-        (NewRow5 is Row + 2, NewDiagonal5 is Diagonal + 1),
-        (NewRow2 is Row - 1, NewDiagonal2 is Diagonal),
-        (NewRow6 is Row - 1, NewDiagonal6 is Diagonal - 1),
-        (NewRow1 is Row - 2, NewDiagonal1 is Diagonal - 1)
-    ),
-    !,
-    (
-        
-        (
-            (
-                append(AlreadyVisited, [[Row, Diagonal],
-                    [NewRow1, NewDiagonal1],[NewRow2, NewDiagonal2],[NewRow4, NewDiagonal4],[NewRow5, NewDiagonal5],[NewRow6, NewDiagonal6]], 
-                    NewAlreadyVisited3),
-                getDistance(NewRow3-NewDiagonal3, Board, NotAlliedColour, NewAlreadyVisited3, Predicate, DistanceFind, Depth, NewDistance, Result)
-            );
-            (
-                append(AlreadyVisited, [[Row, Diagonal],
-                    [NewRow1, NewDiagonal1],[NewRow2, NewDiagonal2],[NewRow3, NewDiagonal3],[NewRow5, NewDiagonal5],[NewRow6, NewDiagonal6]], 
-                    NewAlreadyVisited4),
-                getDistance(NewRow4-NewDiagonal4, Board, NotAlliedColour, NewAlreadyVisited4, Predicate, DistanceFind, Depth, NewDistance, Result)
-            );
-            (
-                append(AlreadyVisited, [[Row, Diagonal],
-                    [NewRow1, NewDiagonal1],[NewRow2, NewDiagonal2],[NewRow3, NewDiagonal3],[NewRow4, NewDiagonal4],[NewRow6, NewDiagonal6]], 
-                    NewAlreadyVisited5),
-                getDistance(NewRow5-NewDiagonal5, Board, NotAlliedColour, NewAlreadyVisited5, Predicate, DistanceFind, Depth, NewDistance, Result)
-            );
-            (
-                append(AlreadyVisited, [[Row, Diagonal],
-                    [NewRow1, NewDiagonal1],[NewRow3, NewDiagonal3],[NewRow4, NewDiagonal4],[NewRow5, NewDiagonal5],[NewRow6, NewDiagonal6]], 
-                    NewAlreadyVisited2),
-                getDistance(NewRow2-NewDiagonal2, Board, NotAlliedColour, NewAlreadyVisited2, Predicate, DistanceFind, Depth, NewDistance, Result)
-            );
-            (
-                append(AlreadyVisited, [[Row, Diagonal],
-                    [NewRow1, NewDiagonal1],[NewRow2, NewDiagonal2],[NewRow3, NewDiagonal3],[NewRow4, NewDiagonal4],[NewRow5, NewDiagonal5]], 
-                    NewAlreadyVisited6),
-                getDistance(NewRow6-NewDiagonal6, Board, NotAlliedColour, NewAlreadyVisited6, Predicate, DistanceFind, Depth, NewDistance, Result)
-            );
-            (
-                append(AlreadyVisited, [[Row, Diagonal],
-                    [NewRow2, NewDiagonal2],[NewRow3, NewDiagonal3],[NewRow4, NewDiagonal4],[NewRow5, NewDiagonal5],[NewRow6, NewDiagonal6]], 
-                    NewAlreadyVisited1),
-                getDistance(NewRow1-NewDiagonal1, Board, NotAlliedColour, NewAlreadyVisited1, Predicate, DistanceFind, Depth, NewDistance, Result)
-            )
-        )
-    ).
 
 updateBoard(Board, [Row, Diagonal, Colour], NewBoard) :-
     nth1(Row, Board, Line),

@@ -1,5 +1,5 @@
 
-choose_move(Board-(PurpleWon1-GreenWon1-OrangeWon1-PurpleWon2-GreenWon2-OrangeWon2), Player, Level, Move) :-
+choose_move(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2), Player, Level, Move) :-
     valid_moves(Board, ListOfMoves),
     write('Length: '), length(ListOfMoves, A), write(A),nl,
     (
@@ -30,11 +30,9 @@ choose_move(Board-(PurpleWon1-GreenWon1-OrangeWon1-PurpleWon2-GreenWon2-OrangeWo
         )
     ).
 
-colourWonBoth(Colour1, Colour2, Result) :-
-    (Colour1 =='TRUE'; Colour2 == 'TRUE'), Result = 'TRUE'.
-
-colourWonBoth(_, _, Result) :-
-    Result = 'FALSE'.
+colourWonBoth('TRUE', _, 'TRUE').
+colourWonBoth(_, 'TRUE', 'TRUE').
+colourWonBoth('FALSE', 'FALSE', 'FALSE').
 
 valid_moves(Board, ListOfMoves) :-
     % searchBoard(NewBoard, List, 1).
