@@ -257,7 +257,7 @@ newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, 0, Resul
         (member(Row-Diag, PontosDoNivelAtual), getCellByCoords(Board, Row, Diag, Cell), Cell \= NotAlliedColour, Cell \= empty)
         , PontosAliados),
     
-    getAdjList(PontosAliados, NotAlliedColour, Board, [], LevelZero),
+    getAdjList(PontosAliados, NotAlliedColour, JaVisitados, Board, [], LevelZero),
     % nl, write('Level Zero'), write(LevelZero), nl,
     % setof(Ponto, (
     %         member(Row-Diag, PontosDoNivelAtual),
@@ -350,7 +350,7 @@ newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, Distanci
     % write('Part1 '), write(Parte1), nl,
     findall(Row-Diag, (member(Row-Diag, Parte1), getCellByCoords(Board, Row, Diag, Cell), Cell \= empty, Cell \= NotAlliedColour), PontosAliados),
     % write('PontosAliados '), write(PontosAliados), nl,
-    getAdjList(PontosAliados, NotAlliedColour, Board, [], Parte2),
+    getAdjList(PontosAliados, NotAlliedColour, Board, Visitados, [], Parte2),
     append(Parte1, Parte2, NovoNivel),
     % write(NovoNivel),nl,
 
@@ -366,7 +366,7 @@ newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, Distanci
         NovoNivelAdjacentes = []
     ),
 
-    getAdjList(NovoNivelAdjacentes, NotAlliedColour, Board, [], Parte3),
+    getAdjList(NovoNivelAdjacentes, NotAlliedColour, Board, NovoNivel, [], Parte3),
     
     append(NovoNivel, Parte3, Nivel),
     NovaDistancia is DistanciaAtual + 1,
