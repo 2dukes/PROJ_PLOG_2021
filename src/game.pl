@@ -6,7 +6,8 @@ value(Board-_, Player, Value) :-
     % write(ColourTables),
     findall(ValueColour, ( member(Colour2-_-NotAlliedColour2, ColourTables), 
         % write(Colour2),nl,
-        evaluateColour(Board, Colour2-NotAlliedColour2, ValueColour) ), ValueColours),
+        evaluateColour(Board, Colour2-NotAlliedColour2, ValueColour) ), 
+        ValueColours),
     sumlist(ValueColours, Value).
     % write(ValueColours),nl,
     
