@@ -369,37 +369,34 @@ print_board([L | Board], Line) :-
     NewLine is Line + 1,
     print_board(Board, NewLine).
 
+ % Imprime o board na consola (primeira linha)
+print_line1(_, 1) :-
+    printSpaces(21), write('[P]___  1  ___ 2'), printLineInfo(2), nl.
+print_line1(_, _).
+    
 print_line([Cell | Line], Nline) :-
-    ( 
-        (
-            Nline == 1,
-            printSpaces(21), write('[P]___  1  ___ 2'), printLineInfo(2), nl % Imprime o board na consola (primeira linha)
-        );
-        true
-    ),
+    print_line1(_, Nline),
+    getSpaces(Spaces, Nline, Colour),
+    printSpaces(Spaces),
+    printColour(Colour),
     (
-        getSpaces(Spaces, Nline, Colour),
-        printSpaces(Spaces),
-        printColour(Colour),
         (
             (
-                (
-                    Nline =< 4; Nline == 7
-                ),
-                print_case1([Cell | Line], Nline)
-            );
-            (
-                member(Nline, [5, 8, 10, 12, 14, 16, 19]),
-                print_case2([Cell | Line], 0, Nline)
-            );
-            (
-                member(Nline, [6, 9, 11, 13, 15, 17, 18, 20, 21, 22, 23]),
-                print_case3([Cell | Line], Nline)   
-            )
-        ),
-        printLineNumber(Nline),
-        nl
-    ).
+                Nline =< 4; Nline == 7
+            ),
+            print_case1([Cell | Line], Nline)
+        );  
+        (
+            member(Nline, [5, 8, 10, 12, 14, 16, 19]),
+            print_case2([Cell | Line], 0, Nline)
+        );
+        (
+            member(Nline, [6, 9, 11, 13, 15, 17, 18, 20, 21, 22, 23]),
+            print_case3([Cell | Line], Nline)   
+        )
+    ),
+    printLineNumber(Nline),
+    nl.
 
 % Obtém os espaços de cada linha
 getSpaces(Spaces, Nline, Colour) :-
@@ -418,14 +415,11 @@ printSpaces(Nspaces) :-
 % 1º Tipo de linha hexagonal
 print_case1([], Nline) :- 
     write('___'), 
-    (
-        (
-            Nline =< 5,
-            Diagonal is Nline + 2, 
-            write(Diagonal), printLineInfo(Diagonal)
-        )
-    ); true.
-    
+    Nline =< 5,
+    Diagonal is Nline + 2, 
+    write(Diagonal), printLineInfo(Diagonal).
+print_case1([], _).
+
 print_case1([Cell | Line], Nline) :- % partes de cima
     write('___'),
     put_code(9585),
@@ -437,70 +431,43 @@ print_case1([Cell | Line], Nline) :- % partes de cima
     print_case1(Line, Nline).
 
 % 2º Tipo de linha hexagonal
-print_case2([], _, Nline) :-
-    (
-        Nline \= 5,
-        (
-            Nline == 10, write('9'), printLineInfo(9)
-        );
-        (
-            Nline == 12, write('10'), printLineInfo(10)
-        );
-        (
-            Nline == 14, write('11'), printLineInfo(11)
-        );
-        (
-            Nline == 16, write('12'), printLineInfo(12)
-        );
-        (
-            Nline == 19, write('13')
-        );
-        (
-            Nline == 8, write('8'), printLineInfo(8)
-        )
-    ); true.
+print_case2([], _, 10) :- write('9'), printLineInfo(9).
+print_case2([], _, 12) :- write('10'), printLineInfo(10).
+print_case2([], _, 14) :- write('11'), printLineInfo(11).
+print_case2([], _, 16) :- write('12'), printLineInfo(12).
+print_case2([], _, 19) :- write('13').
+print_case2([], _, 8) :- write('8'), printLineInfo(8).
+print_case2([], _, _).
 
 print_case2([Cell | Line], Col, Nline) :- %parte sem lados
-    (
-        (
-            Col == 0,
-            put_code(9585),  %  / c \
-            write(' '),
-            code(Cell, P),
-            write(P),            
-            write(' '),       
-            put_code(9586)    
-        );
-        (
-            write('___'),
-            put_code(9585),
-            write(' '),
-            code(Cell, P),     % ___/ c \
-            write(P),
-            write(' '),
-            put_code(9586)
-        )
-    ),
+    print_case_2_aux(Cell, Col),
     NewCol is Col + 1,
     print_case2(Line, NewCol, Nline).
+
+print_case_2_aux(Cell, 0) :-
+    put_code(9585),  %  / c \
+    write(' '),
+    code(Cell, P),
+    write(P),            
+    write(' '),       
+    put_code(9586).
+
+print_case_2_aux(Cell, _) :-
+    write('___'),
+    put_code(9585),
+    write(' '),
+    code(Cell, P),     % ___/ c \
+    write(P),
+    write(' '),
+    put_code(9586).
 
 % 3º Tipo de linha hexagonal
 print_case3([], Nline) :- 
     put_code(9586), 
     write('___'),
     put_code(9585),
-    (
-        (
-            Nline == 6, 
-            write(' 7')
-        );
-        (
-            Nline >= 19,
-            write('[P]')
-        );
-        true
-    ).
-    
+    print_case_3_aux(Nline).
+
 print_case3([Cell | Line], Nline) :- % partes de baixo
     put_code(9586),
     write('___'),
@@ -510,3 +477,8 @@ print_case3([Cell | Line], Nline) :- % partes de baixo
     write(P),
     write(' '),
     print_case3(Line, Nline).
+
+print_case_3_aux(6) :- write(' 7').
+print_case_3_aux(Nline) :- Nline >= 19, write('[P]').
+print_case_3_aux(_).
+

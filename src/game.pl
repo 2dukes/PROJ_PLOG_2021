@@ -1,6 +1,10 @@
 % Depth máxima que o algoritmo greedy suporta (cobre todos os caminhos possíveis)
 max_depth(2000).
 
+% Current Player | Other Player
+other_player(1, 2).
+other_player(2, 1).
+
 % Dado um Board, unifica em Value o seu valor, sendo depois o mesmo utilizado para definir a melhor jogada no momento
 value(Board-ColoursWon, Player, Value) :-
     findall(Colour1-AlliedColour1-NotAlliedColour1, colourTable(Player, Colour1-AlliedColour1-NotAlliedColour1), ColourTables),
@@ -20,7 +24,7 @@ evaluateColourDistance(Distance, ValueColour) :-
 
 evaluateColourDistance(Distance, ValueColour) :-
     NewDistance is Distance + 1,
-    ValueColour is 20 / NewDistance.
+    ValueColour is 1 / (NewDistance ** 2).
 
 % Verifica se uma cor já foi ou não ganha; se não então computa a distância que o jogador demora para a encontrar.
 getDistanceColour(Board-ColourState, Colour-NotAlliedColour, Distance) :-
@@ -29,7 +33,7 @@ getDistanceColour(Board-ColourState, Colour-NotAlliedColour, Distance) :-
     max_depth(MaxDepth),
     newGetDistance(StartPoints, [], NotAlliedColour, MaxDepth, 0, Distance, Board, Predicate).
 
-getDistanceColour(_, _, 2000).
+getDistanceColour(_, _, 2000). % No caso de não haver caminho de uma borda à outra (cor bloqueada) a distância é avaliada em 2000
 
 getColourStartingPoints(orange, _-'FALSE'-_, StartPoints, orange2) :-
     findall(Row-Diagonal, orange1(Row, Diagonal), StartPoints).

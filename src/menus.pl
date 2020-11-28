@@ -1,16 +1,16 @@
-% Menu Princiapl
+% Menu Principal
 mainMenu(GameState) :-
     repeat,
     (
         checkInput(Input),
-        \+ manageInput(Input, GameState)
+        \+manageInput(Input, GameState) 
     ).
 
 % Verifica se o input do menu é válido
 checkInput(Input) :-
     printMainMenu,
     repeat,
-    checkInputAux(Input). 
+    (checkInputAux(Input)), !. 
 
 checkInputAux(Input) :-
     askMenuOption,
@@ -29,13 +29,13 @@ askMenuOption :-
 % Game Levels
 mode('R', random).
 mode('G', greedy).
+mode('H', greedy_hard).
 
 % Escolhe o modo de jogo (Random / Greedy)
 pickMode(Mode, N) :- 
     repeat,
-    write('Choose Mode ('), write(N), write(') - Random(R) or Greedy(G): '),
-    inputPickMode(Mode),
-    pickMode(Mode, N).
+    write('Choose Mode ('), write(N), write(') - Random(R) or Greedy(G) or Greedy-HardMode(H): '),
+    inputPickMode(Mode). 
 
 inputPickMode(Mode) :-
     getChar(Input),

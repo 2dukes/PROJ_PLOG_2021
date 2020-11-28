@@ -9,15 +9,15 @@ getCoordinates(Row, Diagonal) :-
     (
         getRow(Row),
         getDiagonal(Diagonal)
-    ),
-    ( 
-        verifyCoordinates(Row, Diagonal); 
-        (
-            !, 
-            write('Invalid coordinates!'), nl,
-            fail
-        )
-    ).
+    ), !,
+    getCoordinatesAux(Row, Diagonal).
+
+getCoordinatesAux(Row, Diagonal) :-
+    verifyCoordinates(Row, Diagonal).
+
+getCoordinatesAux(_, _) :-
+    write('Invalid coordinates!'), nl,
+    fail.
 
 % Input da Row
 getRow(Row) :-
@@ -32,26 +32,21 @@ getDiagonal(Diagonal) :-
 % Input da Colour
 getColour(ColourAtom) :-
     repeat,
-    (
-        (
-            write('Insert Colour [G, O, P]: '),
-            getChar(Colour),
-            verifyColour(Colour),
-            code(ColourAtom, Colour)
-        );
-        (
-            write('Invalid Colour!'), nl,
-            fail
-        )
-    ).
+    getColourAux(ColourAtom).
+
+getColourAux(ColourAtom) :-
+    write('Insert Colour [G, O, P]: '),
+    getChar(Colour),
+    verifyColour(Colour),
+    code(ColourAtom, Colour).
+
+getColourAux(_) :- write('Invalid Colour!'), nl, fail.
 
 % Verifica se a Colour obedece aos padrões definidos
-verifyColour(Colour) :-
-    %write(Colour),
-    Colour = 'G';
-    Colour = 'P';
-    Colour = 'O'.
-
+verifyColour('G').
+verifyColour('P').
+verifyColour('O').
+    
 % Verifica se as coordenadas são válidas
 verifyCoordinates(Row, Diagonal) :-       
     verifyRow(Row),
