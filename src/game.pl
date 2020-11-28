@@ -94,7 +94,7 @@ checkColours(Board, Colour, Player, 'FALSE', 'FALSE', NewColour) :-
     NewColour = ColourWon.
 
 % Ciclo principal do jogo (Jogada dos dois players com verificações de cores ganhas; término de jogo e displays de informação)
-gameLoop(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2), P1-P2, 1) :-
+gameLoop(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2), P1-_, 1) :-
     % Player 1   
     display_game(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2), 1),
     userPlay(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2), NewBoard-_, 1-P1),
@@ -107,40 +107,34 @@ gameLoop(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2)
     
     displayColoursState(1, NewPurpleWon1-NewOrangeWon1-NewGreenWon1),
     displayColoursState(2, NewPurpleWon2-NewOrangeWon2-NewGreenWon2),
-    !, game_over((NewPurpleWon1-NewOrangeWon1-NewGreenWon1)-(NewPurpleWon2-NewOrangeWon2-NewGreenWon2), Winner),
+
+    game_over((NewPurpleWon1-NewOrangeWon1-NewGreenWon1)-(NewPurpleWon2-NewOrangeWon2-NewGreenWon2), Winner),
     display_game(NewBoard-(NewPurpleWon1-NewOrangeWon1-NewGreenWon1-NewPurpleWon2-NewOrangeWon2-NewGreenWon2), 0),
     write('Player '), write(Winner), write(' won!'), nl.
 
-gameLoop(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2), P1-P2, 2) :-
-                (
-                    % Player 2
-                    display_game(NewBoard-(NewPurpleWon1-NewOrangeWon1-NewGreenWon1-NewPurpleWon2-NewOrangeWon2-NewGreenWon2), 2),
-                    userPlay(NewBoard-(NewPurpleWon1-NewOrangeWon1-NewGreenWon1-NewPurpleWon2-NewOrangeWon2-NewGreenWon2), FinalBoard-_, 2-P2),
-                    (
-                        (
-                            checkColours(FinalBoard, purple, 2, NewPurpleWon2, NewPurpleWon1, NewPurpleWon4),
-                            checkColours(FinalBoard, orange, 2, NewOrangeWon2, NewOrangeWon1, NewOrangeWon4),
-                            checkColours(FinalBoard, green, 2, NewGreenWon2, NewGreenWon1, NewGreenWon4),
-                            checkColours(FinalBoard, purple, 1, NewPurpleWon1, NewPurpleWon4, NewPurpleWon3),
-                            checkColours(FinalBoard, orange, 1, NewOrangeWon1, NewOrangeWon4, NewOrangeWon3),
-                            checkColours(FinalBoard, green, 1, NewGreenWon1, NewGreenWon4, NewGreenWon3),
+gameLoop(NewBoard-(NewPurpleWon1-NewOrangeWon1-NewGreenWon1-NewPurpleWon2-NewOrangeWon2-NewGreenWon2), _-P2, 2) :-
 
-                            displayColoursState(1, NewPurpleWon3-NewOrangeWon3-NewGreenWon3),
-                            displayColoursState(2, NewPurpleWon4-NewOrangeWon4-NewGreenWon4),
-                            (
-                                (
-                                    game_over((NewPurpleWon3-NewOrangeWon3-NewGreenWon3)-(NewPurpleWon4-NewOrangeWon4-NewGreenWon4), Winner),
-                                    display_game(FinalBoard-(NewPurpleWon3-NewOrangeWon3-NewGreenWon3-NewPurpleWon4-NewOrangeWon4-NewGreenWon4), 0),
-                                    write('Player '), write(Winner), write(' won!'), nl  
-                                );
-                                gameLoop(FinalBoard-(NewPurpleWon3-NewOrangeWon3-NewGreenWon3-NewPurpleWon4-NewOrangeWon4-NewGreenWon4), P1-P2)
-                            )
-                        )
-                    )
-                )
-            )
-        )
-    ).
+    % Player 2
+    display_game(NewBoard-(NewPurpleWon1-NewOrangeWon1-NewGreenWon1-NewPurpleWon2-NewOrangeWon2-NewGreenWon2), 2),
+    userPlay(NewBoard-(NewPurpleWon1-NewOrangeWon1-NewGreenWon1-NewPurpleWon2-NewOrangeWon2-NewGreenWon2), FinalBoard-_, 2-P2),
+
+    checkColours(FinalBoard, purple, 2, NewPurpleWon2, NewPurpleWon1, NewPurpleWon4),
+    checkColours(FinalBoard, orange, 2, NewOrangeWon2, NewOrangeWon1, NewOrangeWon4),
+    checkColours(FinalBoard, green, 2, NewGreenWon2, NewGreenWon1, NewGreenWon4),
+    checkColours(FinalBoard, purple, 1, NewPurpleWon1, NewPurpleWon4, NewPurpleWon3),
+    checkColours(FinalBoard, orange, 1, NewOrangeWon1, NewOrangeWon4, NewOrangeWon3),
+    checkColours(FinalBoard, green, 1, NewGreenWon1, NewGreenWon4, NewGreenWon3),
+
+    displayColoursState(1, NewPurpleWon3-NewOrangeWon3-NewGreenWon3),
+    displayColoursState(2, NewPurpleWon4-NewOrangeWon4-NewGreenWon4),
+
+    game_over((NewPurpleWon3-NewOrangeWon3-NewGreenWon3)-(NewPurpleWon4-NewOrangeWon4-NewGreenWon4), Winner),
+    display_game(FinalBoard-(NewPurpleWon3-NewOrangeWon3-NewGreenWon3-NewPurpleWon4-NewOrangeWon4-NewGreenWon4), 0),
+    write('Player '), write(Winner), write(' won!'), nl.
+             
+gameLoop(FinalBoard-(NewPurpleWon3-NewOrangeWon3-NewGreenWon3-NewPurpleWon4-NewOrangeWon4-NewGreenWon4), P1-P2, _) :-
+    gameLoop(FinalBoard-(NewPurpleWon3-NewOrangeWon3-NewGreenWon3-NewPurpleWon4-NewOrangeWon4-NewGreenWon4), P1-P2, 1).    
+
 
 % Verifica se uma determinada Colour foi ganha pelo Player
 checkColourWon(Board, Player, Colour, ColourWon) :-
