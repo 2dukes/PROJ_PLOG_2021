@@ -1,3 +1,5 @@
+% Depth máxima que o algoritmo greedy suporta (cobre todos os caminhos possíveis)
+max_depth(2000).
 
 % Escolhe a jogada a efetuar pelo computador para o nível Level (Random ou Greedy)
 choose_move(GameState, Player, Level, Move) :-
