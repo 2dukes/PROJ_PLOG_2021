@@ -3,28 +3,24 @@ mainMenu(GameState) :-
     repeat,
     (
         checkInput(Input),
-        (
-            \+ manageInput(Input, GameState);
-            fail
-        )
+        \+ manageInput(Input, GameState)
     ).
 
 % Verifica se o input do menu é válido
 checkInput(Input) :-
     printMainMenu,
     repeat,
-    (
-        (
-            askMenuOption,
-            getNewInt(Input),
-            Input >= 0,
-            Input =< 5,!
-        );
-        (
-            nl, write('ERROR: Invalid Option!'), nl, nl, 
-            fail
-        )
-    ).
+    checkInputAux(Input). 
+
+checkInputAux(Input) :-
+    askMenuOption,
+    getNewInt(Input),
+    Input >= 0,
+    Input =< 5,!.
+
+checkInputAux(_) :- 
+    nl, write('ERROR: Invalid Option!'), nl, nl, 
+    fail.
 
 % Prompt da nova opção a inserir
 askMenuOption :-
@@ -37,17 +33,17 @@ mode('G', greedy).
 % Escolhe o modo de jogo (Random / Greedy)
 pickMode(Mode, N) :- 
     repeat,
-    (
-        write('Choose Mode ('), write(N), write(') - Random(R) or Greedy(G): '),
-        (
-            getChar(Input),
-            mode(Input, Mode)
-        );
-        (
-            nl, write('ERROR: Invalid Mode!'), nl, nl, 
-            fail
-        )
-    ).
+    write('Choose Mode ('), write(N), write(') - Random(R) or Greedy(G): '),
+    inputPickMode(Mode),
+    pickMode(Mode, N).
+
+inputPickMode(Mode) :-
+    getChar(Input),
+    mode(Input, Mode).
+
+inputPickMode(_) :-
+    nl, write('ERROR: Invalid Mode!'), nl, nl, 
+    fail.
 
 % Exit
 manageInput(0, _) :-

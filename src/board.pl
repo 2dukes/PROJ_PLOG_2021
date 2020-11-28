@@ -34,7 +34,7 @@ line(12,                  '  12 ._______________________________________________
 line(13,            '        13 |        |                PLAYER 2               |').
 line(14,                  '  14 |________|_______________________________________|').
 line(15,            '        15 | Colour |   PURPLE   |    ORANGE   |   GREEN    |').
-line(16,                  '  16 | Allied |   Orange   |    Green    |   Purple   |').
+line(16,                  '  16 | Allied |   Green    |    Purple   |   Orange   |').
 line(17,            '        17 |________|____________|_____________|____________|').
 line(18,        '            18').
 line(19,          '          19').
@@ -226,12 +226,12 @@ getAdjList([], _, _, _, Lista, Resultado) :-
 getAdjList(Pontos, NotAlliedColour, Visited, Board, Lista, Resultado) :-
     append(Pontos, Lista, NovaLista),
     append(NovaLista, Visited, NovaLista1),
-    (
-        setof(Ponto, adjacentAllied(Pontos, NotAlliedColour, NovaLista1, Board, Ponto), Adjacentes);
-        Adjacentes = []
-    ),    
+    setof(Ponto, adjacentAllied(Pontos, NotAlliedColour, NovaLista1, Board, Ponto), Adjacentes),   
     getAdjList(Adjacentes, NotAlliedColour, Visited, Board, NovaLista, Resultado).
 
+getAdjList(Pontos, NotAlliedColour, Visited, Board, Lista, Resultado) :-
+    append(Pontos, Lista, NovaLista),
+    getAdjList([], NotAlliedColour, Visited, Board, NovaLista, Resultado).
 
 % Computa o nível 0 (0 jogadas de distância) e o nível 1 (1 jogada de distância) para os algoritmos do bot. 
 newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, 0, Resultado, Board, Predicate) :-
@@ -389,34 +389,11 @@ print_line([Cell | Line], Nline) :-
                 print_case1([Cell | Line], Nline)
             );
             (
-                %member(Nline, [5, 8, 10, 12, 14, 16, 19]),
-                (
-                    (Nline == 5);
-                    (
-                        Nline >= 8,
-                        Nline =< 16, 
-                        Mod is mod(Nline, 2),
-                        Mod == 0
-                    );
-                    (Nline == 19)
-                ),
+                member(Nline, [5, 8, 10, 12, 14, 16, 19]),
                 print_case2([Cell | Line], 0, Nline)
             );
             (
-                %member(Nline, [6, 9, 11, 13, 15, 17, 18, 20, 21, 22, 23]),
-                (
-                    (
-                        Nline >= 17,
-                        Nline \= 19
-                    );
-                    (Nline == 6);
-                    (
-                        Nline >= 9,
-                        Nline =< 15,
-                        Mod is mod(Nline, 2),
-                        Mod == 1
-                    )
-                ),
+                member(Nline, [6, 9, 11, 13, 15, 17, 18, 20, 21, 22, 23]),
                 print_case3([Cell | Line], Nline)   
             )
         ),

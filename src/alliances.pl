@@ -10,43 +10,37 @@
 
 % Verifica se a jogada é válida, isto é se a célula a jogar está vazia e se existem discos disponíveis para efetuar a jogada
 checkValidPlay(Board-ColoursWon, [Row, Diagonal, Colour]) :-
-    (
-        (
-            checkEmpty([Row, Diagonal, Colour], Board)
-        ); 
-        (
-            write('Cell not empty!'), nl, fail
-        )
-    ),
-    (
-        (
-            checkAvailableDisc(Board-ColoursWon, Colour)
-        ); 
-        (
-            write('No more '), write(Colour), write(' discs remaining!'), nl, !, fail
-        )
-    ).
+    checkEmptyPlay([Row, Diagonal, Colour], Board),
+    checkAvailableDiscAux(Board-ColoursWon, Colour). 
 
+checkEmptyPlay(Move, Board) :-
+    checkEmpty(Move, Board),!.
+
+checkEmptyPlay(_, _) :-
+    write('Cell not empty!'), nl, fail.
+
+checkAvailableDiscAux(Board-ColoursWon, Colour) :-
+    checkAvailableDisc(Board-ColoursWon, Colour), !.  
+
+checkAvailableDiscAux(_, Colour) :-
+    write('No more '), write(Colour), write(' discs remaining!'), nl, fail.
+    
 % Parse dos discos disponíveis para jogar
 checkAvailableDisc(Board-ColoursWon, Colour) :-
     countDiscs(Board-ColoursWon, O, G, P),
-    (
-        (
-            Colour == orange,
-            NewO is 42 - O,
-            NewO > 0
-        );
-        (
-            Colour == green,
-            NewG is 42 - G,
-            NewG > 0
-        );
-        (
-            Colour == purple,
-            NewP is 42 - P,
-            NewP > 0
-        )
-    ).
+    checkColourDiscs(Colour, P-O-G).
+
+checkColourDiscs(orange, _-Existing-_) :-
+    Available is 42 - Existing,
+    Available > 0.
+
+checkColourDiscs(green, _-_-Existing) :-
+    Available is 42 - Existing,
+    Available > 0.
+
+checkColourDiscs(purple, Existing-_-_) :-
+    Available is 42 - Existing,
+    Available > 0.
 
 % Imprime a jogada efetuada
 print_move([Row, Diagonal, Colour]) :-
@@ -201,28 +195,22 @@ gameLoop(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2)
 checkColourWon(Board, Player, Colour, ColourWon) :-
     colourTable(Player, Colour-AlliedColour-NotAlliedColour),
     colourEdges(Colour, Edge1, Edge2),
-    (
-        (
-            (
-                findall(Row-Diagonal, execute(Edge1, [Row, Diagonal]), StartPoints),
-                (
-                    (
-                        once( newGetDistance(StartPoints, [], NotAlliedColour, 0, 0, Result, Board, Edge2) ),
-                        Result == 0
-                    );
-                    (
-                        max_depth(MaxDepth),
-                        once( newGetDistance(StartPoints, [], AlliedColour, MaxDepth, 0, Result, Board, Edge2) ),
-                        Result == 3000
-                    )
-                )
-            ),
-            !, ColourWon = 'TRUE'
-        );
-        (
-            !, ColourWon = 'FALSE'
-        )
-    ).
+    auxCheckColourWon(Board, AlliedColour-NotAlliedColour, Edge1-Edge2, ColourWon).
+
+auxCheckColourWon(Board, AlliedColour-NotAlliedColour, Edge1-Edge2, 'TRUE') :-
+    findall(Row-Diagonal, execute(Edge1, [Row, Diagonal]), StartPoints),
+    colourWonOrFence(StartPoints, AlliedColour, NotAlliedColour, 0, 0, Board, Edge2), !.
+
+auxCheckColourWon(_, _, _, 'FALSE').    
+
+colourWonOrFence(StartPoints, _, NotAlliedColour, Depth, DistanciaAtual, Board, Edge2) :-
+    once( newGetDistance(StartPoints, [], NotAlliedColour, Depth, DistanciaAtual, Result, Board, Edge2) ),
+    Result == 0.
+
+colourWonOrFence(StartPoints, AlliedColour, _, _, DistanciaAtual, Board, Edge2) :-
+    max_depth(MaxDepth),
+    once( newGetDistance(StartPoints, [], AlliedColour, MaxDepth, DistanciaAtual, Result, Board, Edge2) ),
+    Result == 3000.
 
 % Start Game (Direciona para o Menu principal)
 startGame(GameState) :-
