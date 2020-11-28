@@ -40,7 +40,7 @@ execute(Function, Args) :-
 
 incrementColourDiscWon('FALSE', NumDiscs, NumDiscs).
 incrementColourDiscWon('TRUE', NumDiscs, NewNumDiscs) :-
-    NewNumDiscs is NumDiscs + 1.
+    NewNumDiscs is mod(NumDiscs + 1, 43).
 
 countDiscs(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2), TotalOrangeDiscs, TotalGreenDiscs, TotalPurpleDiscs) :-
     % countTotalDiscs(Board, TotalOrangeDiscs, TotalGreenDiscs, TotalPurpleDiscs).
