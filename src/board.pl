@@ -1,9 +1,10 @@
-
+% Tipos de células
 code(empty, ' ').
 code(orange, 'O').
 code(purple, 'P').
 code(green, 'G').
 
+% Nº Diagonal | Cor
 info(1, ' [G]').
 info(2, ' [G]').
 info(3, ' [G]').
@@ -17,6 +18,7 @@ info(11, ' [O]').
 info(12, ' [O]').
 info(13, ' [P]').
 
+% Display da direita do board 
 line(1, '                     1').
 line(2,     '                 2').
 line(3,         '             3').
@@ -41,6 +43,7 @@ line(21,       '             21').
 line(22,   '                 22').
 line(23,  '                     23').
 
+% Line | Start Diagonal   
 startDiag(1, 1).
 startDiag(2, 1).
 startDiag(3, 1).
@@ -65,53 +68,60 @@ startDiag(21, 10).
 startDiag(22, 11).
 startDiag(23, 12).
 
+% Purple Upper Border
 purple1(1,1).
 purple1(2,1).
 purple1(3,1).
 purple1(4,1).
 purple1(5,1).
 
+% Purple Lower Border
 purple2(19,13).
 purple2(20,13).
 purple2(21,13).
 purple2(22,13).
 purple2(23,13).
 
+% Green Upper Border
 green2(1,2).
 green2(2,3).
 green2(3,4).
 green2(4,5).
 green2(5,6).
 
+% Green Lower Border
 green1(19,8).
 green1(20,9).
 green1(21,10).
 green1(22,11).
 green1(23,12).
 
+% Orange Left Border
 orange1(8, 2).
 orange1(10,3).
 orange1(12,4).
 orange1(14,5).
 orange1(16,6).
 
+% Orange Right Border
 orange2(8, 8).
 orange2(10,9).
 orange2(12,10).
 orange2(14,11).
 orange2(16,12).
 
+% Predicados associados às borders de cada cor
 colourEdges(purple, purple1, purple2).
 colourEdges(orange, orange1, orange2).
 colourEdges(green, green1, green2).
 
-colourTable(1, purple-orange-green). % Colour | Allied | NotAllied
+% Colour | Allied | NotAllied
+colourTable(1, purple-orange-green). 
 colourTable(1, orange-green-purple).
 colourTable(1, green-purple-orange).
 colourTable(2, purple-green-orange).
 colourTable(2, orange-purple-green).
-colourTable(2, green-orange-purple). % Colour | Allied | NotAllied
-
+colourTable(2, green-orange-purple). 
 % initial([
 % [                                         orange,    empty],                            %1
 % [                                     orange,   empty,   empty],                         %2
@@ -138,7 +148,7 @@ colourTable(2, green-orange-purple). % Colour | Allied | NotAllied
 % [                                          empty,   empty]                              %23
 % ]-('FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE')).
 
-
+% Initial Game State
 initial([
     [                                         empty,    empty],                            %1
     [                                     empty,   empty,   empty],                         %2
@@ -166,7 +176,7 @@ initial([
     ]-('FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE')).
 
 
-%ponto 1 é adjacente ao ponto 2
+% Pontos Adjacentes
 adjacent(Row1-Diagonal1, Row2-Diagonal2) :-
     Row1 is Row2 + 1, Diagonal1 is Diagonal2 + 1.
 
@@ -185,6 +195,7 @@ adjacent(Row1-Diagonal1, Row2-Diagonal2) :-
 adjacent(Row1-Diagonal1, Row2-Diagonal2) :-
     Row1 is Row2 - 2, Diagonal1 is Diagonal2 - 1.
 
+% Adjacentes de um dado nível de profundidade (inclui empty)
 validAdjacent(NivelAtual, RowAdj-DiagAdj, NotAlliedColour, Visitados, Board) :-
     member(Ponto, NivelAtual),
     adjacent(RowAdj-DiagAdj, Ponto),
@@ -192,13 +203,14 @@ validAdjacent(NivelAtual, RowAdj-DiagAdj, NotAlliedColour, Visitados, Board) :-
     getCellByCoords(Board, RowAdj, DiagAdj, Cell),
     Cell \= NotAlliedColour.
 
+% Verifica se a célula corresponde à colour border
 checkReached([Row-Diagonal| _ ], Predicate) :-
     execute(Predicate, [Row,Diagonal]).
 
 checkReached([_|RestoDoNivel], Predicate) :-
     checkReached(RestoDoNivel, Predicate).
 
-
+% Adjacentes aliados (própria cor + cor aliada)
 adjacentAllied(Pontos, NotAlliedColour, Visitados, Board, Row-Diag) :-
     member(Ponto, Pontos),
     adjacent(Row-Diag, Ponto),
@@ -207,6 +219,7 @@ adjacentAllied(Pontos, NotAlliedColour, Visitados, Board, Row-Diag) :-
     Cell \= NotAlliedColour,
     Cell \= empty.
 
+% Lista de adjacentes total para um dado nível
 getAdjList([], _, _, _, Lista, Resultado) :-
     Resultado = Lista.
 
@@ -220,10 +233,8 @@ getAdjList(Pontos, NotAlliedColour, Visited, Board, Lista, Resultado) :-
     getAdjList(Adjacentes, NotAlliedColour, Visited, Board, NovaLista, Resultado).
 
 
-% findall(Row-Diagonal, ( adjacentAllied(1-1, NotAlliedColour, Board, Row-Diagonal) ), List).
-
+% Computa o nível 0 (0 jogadas de distância) e o nível 1 (1 jogada de distância) para os algoritmos do bot. 
 newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, 0, Resultado, Board, Predicate) :-
-    % write(PontosDoNivelAtual),nl,
     findall(Row-Diag, 
         (member(Row-Diag, PontosDoNivelAtual), getCellByCoords(Board, Row, Diag, Cell), Cell \= NotAlliedColour, Cell \= empty)
         , PontosAliados),
@@ -231,12 +242,10 @@ newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, 0, Resul
     getAdjList(PontosAliados, NotAlliedColour, JaVisitados, Board, [], LevelZero),
     (
         (
-            % write('Checking level zero'),nl,
             checkReached(LevelZero, Predicate),
             Resultado is 0
         );
         (
-            % write('Level 1 arrive!'), nl, 
             (   (
                     setof(Row-Diag, (
                         member(Row-Diag, PontosDoNivelAtual),
@@ -245,7 +254,6 @@ newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, 0, Resul
                     ), Part1)
                 ); Part1 = []
             ),
-            % write('Part1'), write(Part1),nl,
             append(LevelZero, Part1, Visitados),
             (
                 setof(Ponto, validAdjacent(LevelZero, Ponto, NotAlliedColour, Visitados, Board), Part2);
@@ -254,8 +262,6 @@ newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, 0, Resul
             append(Part1, Part2, Part3),
             
 
-            % write('Part3'),write(Part3),nl,
-            % write('STEP 1 '), nl,
             (
                 (
                     setof(Row1-Diag1, 
@@ -266,39 +272,27 @@ newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, 0, Resul
                 );
                 NovoNivelAdjacentes = []
             ),
-            % write('STEP 2 '), write(NovoNivelAdjacentes), nl,
-            % write(NovoNivelAdjacentes),nl,
             append(LevelZero, Part3, Visited1),
             getAdjList(NovoNivelAdjacentes, NotAlliedColour, Visited1, Board, [], Part4),
-            % write('STEP 3 '), write(Part4), nl, 
             append(Part3, Part4, LevelOne),
-
-            % write('Level One'), nl, write(LevelOne), nl, 
-            % write('not allied: '), write(NotAlliedColour), nl,
-            % nl, write('Level One'), write(LevelOne), nl,
             !, newGetDistance(LevelOne, LevelZero, NotAlliedColour, Depth, 1, Resultado, Board, Predicate)
         )  
     ).
     
 
-newGetDistance( _, _, _, Depth, DistanciaAtual, Resultado, _, _) :- %nao encontrou (distancia 2000)
+newGetDistance( _, _, _, Depth, DistanciaAtual, Resultado, _, _) :- % nao encontrou (distancia 2000)
     DistanciaAtual > Depth,
     Resultado is 2000.
 
-newGetDistance([], _, _, _, _, Resultado, _, _) :- %nao encontrou (distancia 2000)
+newGetDistance([], _, _, _, _, Resultado, _, _) :- % nao encontrou (distancia 2000)
     Resultado is 3000.
 
-newGetDistance(NivelAtual, _, _, _, DistanciaAtual, Resultado, _, Predicate) :- %encontrou distancia
-    % findall(Row-Diagonal, (member(NivelAtual, Row-Diagonal), execute(Predicate, [Row,Diagonal])), Chegaram),
-    % write('Checking'),nl,
+newGetDistance(NivelAtual, _, _, _, DistanciaAtual, Resultado, _, Predicate) :- % encontrou distancia
     checkReached(NivelAtual, Predicate),
-    % write('Checked!'), nl,
     Resultado is DistanciaAtual.
 
-%no inicio tem que receber os pontos todos da borda QUE NAO TENHAM A COR NAO ALIADA
-                                %niveis anteriores
+% Computa os restantes níveis de profundidade
 newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, DistanciaAtual, Resultado, Board, Predicate) :-
-    % write(DistanciaAtual),nl,
     append(PontosDoNivelAtual, JaVisitados, Visitados),
     Depth >= DistanciaAtual,
 
@@ -306,12 +300,9 @@ newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, Distanci
         setof(Ponto, validAdjacent(PontosDoNivelAtual, Ponto, NotAlliedColour, Visitados, Board) , Parte1); 
         Parte1 = []
     ),
-    % write('Part1 '), write(Parte1), nl,
     findall(Row-Diag, (member(Row-Diag, Parte1), getCellByCoords(Board, Row, Diag, Cell), Cell \= empty, Cell \= NotAlliedColour), PontosAliados),
-    % write('PontosAliados '), write(PontosAliados), nl,
     getAdjList(PontosAliados, NotAlliedColour, Board, Visitados, [], Parte2),
     append(Parte1, Parte2, NovoNivel),
-    % write(NovoNivel),nl,
     (
         (
             setof(Row1-Diag1, 
@@ -330,7 +321,7 @@ newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, Distanci
 
     newGetDistance(Nivel, Visitados, NotAlliedColour, Depth, NovaDistancia, Resultado, Board, Predicate).
 
-
+% Update ao Board no ato de uma nova jogada
 updateBoard(Board, [Row, Diagonal, Colour], NewBoard) :-
     nth1(Row, Board, Line),
     startDiag(Row, StartDiagonal),
@@ -339,10 +330,12 @@ updateBoard(Board, [Row, Diagonal, Colour], NewBoard) :-
     RowToUpdate is Row - 1,
     replaceNth(Board, RowToUpdate, NewLine, NewBoard), !.
 
+% Verifica se uma determinada célula está empty
 checkEmpty([Row, Diagonal, _], Board) :-
     getCellByCoords(Board, Row, Diagonal, Cell),
     Cell == 'empty'.
 
+% Unifica em Cell a célula com as coordenadas definidas 
 getCellByCoords(Board, Row, Diagonal, Cell) :-
     verifyCoordinates(Row, Diagonal),
     nth1(Row, Board, Line),
@@ -350,21 +343,27 @@ getCellByCoords(Board, Row, Diagonal, Cell) :-
     Index is (Diagonal - StartDiagonal),
     nth0(Index, Line, Cell).
 
-% spaces([17, 13, 9, 5, 4, 4, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 8, 12, 16]).
+% Espaços do lado esquerdo para cada linha e respetiva informação
 spaces([[17, '[P]'], [13,'[P]'], [9, '[P]'], [5, '[P]'], [4, '   '], [4, '   '], [1, '   '], [0, '[O]'], [0, '   '], [0, '[O]'], [0, '   '], [0, '[O]'], [0, '   '], [0, '[O]'], [0, '   '], [0, '[O]'], [0, '   '], [4, '   '], [4, '   '], [4, '[G]'], [8, '[G]'], [12, '[G]'], [16, '[G]']]).
 
+% Imprime a Info de cada linha
 printLineInfo(Nline) :-
     info(Nline, Info),
     write(Info).
 
+% Imprime a Info de cada linha e número
 printLineNumber(Nline) :-
     line(Nline, Info),
     write(Info).
 
+% Imprime a cor de uma célula
 printColour(Colour) :- write(Colour).
 
+% Imprime o board na consola (última linha)
 print_board([], _) :- 
     printSpaces(20), write('[G]'), put_code(9586), write('___'), put_code(9585), write('   '), put_code(9586), write('___'), put_code(9585), write('[P]'), nl.
+
+% Imprime o board na consola 
 print_board([L | Board], Line) :-
     print_line(L, Line),
     NewLine is Line + 1,
@@ -374,13 +373,12 @@ print_line([Cell | Line], Nline) :-
     ( 
         (
             Nline == 1,
-            printSpaces(21), write('[P]___  1  ___ 2'), printLineInfo(2), nl
+            printSpaces(21), write('[P]___  1  ___ 2'), printLineInfo(2), nl % Imprime o board na consola (primeira linha)
         );
         true
     ),
     (
         getSpaces(Spaces, Nline, Colour),
-        %nth1(Nline, Spaces, E),
         printSpaces(Spaces),
         printColour(Colour),
         (
@@ -426,19 +424,21 @@ print_line([Cell | Line], Nline) :-
         nl
     ).
 
+% Obtém os espaços de cada linha
 getSpaces(Spaces, Nline, Colour) :-
     spaces(Aux),
     nth1(Nline, Aux, AuxSpaces),
     nth0(0, AuxSpaces, Spaces),
     nth0(1, AuxSpaces, Colour).
 
+% Imprime os espaços da esquerda de cada linha
 printSpaces(0).
 printSpaces(Nspaces) :-
     write(' '),
     NewNspaces is Nspaces - 1,
     printSpaces(NewNspaces).
     
-
+% 1º Tipo de linha hexagonal
 print_case1([], Nline) :- 
     write('___'), 
     (
@@ -449,7 +449,7 @@ print_case1([], Nline) :-
         )
     ); true.
     
-print_case1([Cell | Line], Nline) :- %partes de cima
+print_case1([Cell | Line], Nline) :- % partes de cima
     write('___'),
     put_code(9585),
     write(' '),  
@@ -459,7 +459,7 @@ print_case1([Cell | Line], Nline) :- %partes de cima
     put_code(9586),
     print_case1(Line, Nline).
 
-
+% 2º Tipo de linha hexagonal
 print_case2([], _, Nline) :-
     (
         Nline \= 5,
@@ -507,6 +507,7 @@ print_case2([Cell | Line], Col, Nline) :- %parte sem lados
     NewCol is Col + 1,
     print_case2(Line, NewCol, Nline).
 
+% 3º Tipo de linha hexagonal
 print_case3([], Nline) :- 
     put_code(9586), 
     write('___'),
@@ -522,6 +523,7 @@ print_case3([], Nline) :-
         );
         true
     ).
+    
 print_case3([Cell | Line], Nline) :- % partes de baixo
     put_code(9586),
     write('___'),

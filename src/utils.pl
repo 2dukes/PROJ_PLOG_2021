@@ -1,3 +1,4 @@
+% Lê um inteiro com deteção de erros
 getInt(Int) :- 
     repeat,
     (
@@ -13,6 +14,16 @@ getInt(Int) :-
         )
     ).
 
+% Lê um inteiro sem deteção de erros
+getNewInt(Int) :-
+    (
+        catch(read(Int), _, true),
+        read_line(_),
+        integer(Int),
+        nl
+    ).
+
+% Lê um carater
 getChar(Char) :-
     get_char(Char),
     read_line(_),
@@ -34,14 +45,17 @@ countOccurrence([H|T], H2, Count):-
     H \= H2, 
     countOccurrence(T,H2,Count).
 
+% Utilizado sobretudo na verificação se uma célula pertence a uma border (através do predicado correto)
 execute(Function, Args) :-
     Run =.. [Function | Args], 
     Run.
 
+% Se uma cor for ganha, então é retirado um disco 
 incrementColourDiscWon('FALSE', NumDiscs, NumDiscs).
 incrementColourDiscWon('TRUE', NumDiscs, NewNumDiscs) :-
     NewNumDiscs is mod(NumDiscs + 1, 43).
 
+% Conta quantos discos há de cada cor com avaliação se a mesma já foi ganha (implica menos 1 disco)
 countDiscs(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2), TotalOrangeDiscs, TotalGreenDiscs, TotalPurpleDiscs) :-
     % countTotalDiscs(Board, TotalOrangeDiscs, TotalGreenDiscs, TotalPurpleDiscs).
     countTotalDiscs(Board, OrangeDiscs, GreenDiscs, PurpleDiscs),
@@ -52,6 +66,7 @@ countDiscs(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon
     incrementColourDiscWon(GreenWon, GreenDiscs, TotalGreenDiscs),
     incrementColourDiscWon(OrangeWon, OrangeDiscs, TotalOrangeDiscs).
 
+% Conta quantos discos há de cada cor
 countTotalDiscs([], 0, 0, 0).
 countTotalDiscs([Line | Rest], OrangeDiscs, GreenDiscs, PurpleDiscs) :-
     countOccurrence(Line, orange, AuxOrangeDiscs),
@@ -62,7 +77,7 @@ countTotalDiscs([Line | Rest], OrangeDiscs, GreenDiscs, PurpleDiscs) :-
     GreenDiscs is Greens + AuxGreenDiscs,
     PurpleDiscs is Purples + AuxPurpleDiscs.
 
-
+% Unifica uma lista List com todas as células do board 
 searchBoard(_, List, ResultAll, LineCounter) :- LineCounter == 24, ResultAll = List.
 searchBoard(Board, List, ResultAll, LineCounter) :-
     LineCounter =< 23,
@@ -74,6 +89,7 @@ searchBoard(Board, List, ResultAll, LineCounter) :-
     NewLineCounter is LineCounter + 1,
     searchBoard(Board, NewList, ResultAll, NewLineCounter).
 
+% Garante que cada uma dessas células têm 3 cores possíveis de jogada (Orange, Green, Purple)
 lookUpLine(_, _, LineLength, List, Result, Index) :- Index == LineLength, Result = List.
 lookUpLine(LineCounter, StartDiagonal, LineLength, List, Result, Index) :-
     Index < LineLength,

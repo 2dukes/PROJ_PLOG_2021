@@ -1,9 +1,9 @@
-
+% Parse do input do utilizador pelas coordenadas e pela cor 
 getUserInput(Row, Diagonal, Colour) :- 
     getCoordinates(Row, Diagonal),
     getColour(Colour), !.
 
-
+% Recebe o input das coordenadas e verifica a existência de erros
 getCoordinates(Row, Diagonal) :-
     repeat,
     (
@@ -19,14 +19,17 @@ getCoordinates(Row, Diagonal) :-
         )
     ).
 
+% Input da Row
 getRow(Row) :-
     write('Insert Row [1 - 23]: '),
     getInt(Row).
 
+% Input da Diagonal
 getDiagonal(Diagonal) :-
     write('Insert Diagonal [1 - 13]: '),
     getInt(Diagonal).
 
+% Input da Colour
 getColour(ColourAtom) :-
     repeat,
     (
@@ -42,27 +45,30 @@ getColour(ColourAtom) :-
         )
     ).
 
+% Verifica se a Colour obedece aos padrões definidos
 verifyColour(Colour) :-
     %write(Colour),
     Colour = 'G';
     Colour = 'P';
     Colour = 'O'.
 
-
-
-verifyCoordinates(Row, Diagonal) :-       %passar para outro ficheiro
+% Verifica se as coordenadas são válidas
+verifyCoordinates(Row, Diagonal) :-       
     verifyRow(Row),
     verifyDiagonal(Diagonal),
     verifyRowDiagonal(Row, Diagonal).
 
+% Verifica se a Row é válida
 verifyRow(Row) :-
     Row >= 1,
     Row =< 23.
 
+% Verifica se a Diagonal é válida
 verifyDiagonal(Diagonal) :-
     Diagonal >= 1,
     Diagonal =< 13.
 
+% Verifica se o conjunto Row + Diagonal é válido
 verifyRowDiagonal(Row, Diagonal) :-
     initial(Board-_),
     startDiag(Row, StartDiagonal),

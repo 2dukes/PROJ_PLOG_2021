@@ -1,3 +1,4 @@
+% Menu Princiapl
 mainMenu(GameState) :-
     repeat,
     (
@@ -7,17 +8,8 @@ mainMenu(GameState) :-
             fail
         )
     ).
-    
 
-getNewInt(Int) :-
-    (
-        catch(read(Int), _, true),
-        read_line(_),
-        integer(Int),
-        nl
-    ).
-    
-
+% Verifica se o input do menu é válido
 checkInput(Input) :-
     printMainMenu,
     repeat,
@@ -34,12 +26,15 @@ checkInput(Input) :-
         )
     ).
 
+% Prompt da nova opção a inserir
 askMenuOption :-
     write('> Insert your option ').   
 
+% Game Levels
 mode('R', random).
 mode('G', greedy).
 
+% Escolhe o modo de jogo (Random / Greedy)
 pickMode(Mode, N) :- 
     repeat,
     (
@@ -54,6 +49,7 @@ pickMode(Mode, N) :-
         )
     ).
 
+% Exit
 manageInput(0, _) :-
     write('\nExiting...\n\n'), fail.
 
@@ -72,6 +68,7 @@ manageInput(4, GameState) :- % Computer vs Computer
     pickMode(Mode1, 'Computer1'), pickMode(Mode2, 'Computer2'), 
     gameLoop(GameState, (c-Mode1)-(c-Mode2)).
 
+% How To Play Menu
 manageInput(5, _) :-
     nl,
     write('._______________________________________________________________.'), nl,
@@ -86,6 +83,7 @@ manageInput(5, _) :-
     write('|_______________________________________________________________|'), nl,
     getChar(_).
 
+% Menu Principal
 printMainMenu :-
     nl, nl,
     write(' ________________________________________________________________ '), nl,

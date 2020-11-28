@@ -8,7 +8,7 @@
 :- consult('game.pl').
 :- consult('menus.pl').
 
-
+% Verifica se a jogada é válida, isto é se a célula a jogar está vazia e se existem discos disponíveis para efetuar a jogada
 checkValidPlay(Board-ColoursWon, [Row, Diagonal, Colour]) :-
     (
         (
@@ -27,6 +27,7 @@ checkValidPlay(Board-ColoursWon, [Row, Diagonal, Colour]) :-
         )
     ).
 
+% Parse dos discos disponíveis para jogar
 checkAvailableDisc(Board-ColoursWon, Colour) :-
     countDiscs(Board-ColoursWon, O, G, P),
     (
@@ -46,12 +47,14 @@ checkAvailableDisc(Board-ColoursWon, Colour) :-
             NewP > 0
         )
     ).
-    
+
+% Imprime a jogada efetuada
 print_move([Row, Diagonal, Colour]) :-
     write('Played R:'), write(Row),
     write(', D:'), write(Diagonal),
     write(', '), write(Colour), nl.
 
+% Jogada de um Player
 userPlay(GameState, NewGameState, _-p) :-
     repeat,
     (
@@ -60,15 +63,18 @@ userPlay(GameState, NewGameState, _-p) :-
         %print_move([Row, Diagonal, Colour])
     ).
 
+% Jogada de um Computador
 userPlay(GameState, NewGameState, Nplayer-(c-Level)) :-
     choose_move(GameState, Nplayer, Level, Move),
     move(GameState, Move, NewGameState),
     print_move(Move).
 
+% Efetua um move no Board com verificação de jogada válida
 move(Board-ColoursWon, Move, NewBoard-_) :-
     checkValidPlay(Board-ColoursWon, Move),
     updateBoard(Board, Move, NewBoard).
 
+% Imprime toda a informação do jogo
 display_game(Board-ColoursWon, 0) :-
     print_board(Board, 1),
     display_discs(Board-ColoursWon).
@@ -78,6 +84,7 @@ display_game(Board-ColoursWon, Player) :- % Switch Player every time we end prin
     display_discs(Board-ColoursWon),
     display_player(Player).
 
+% Imprime número de discos disponíveis
 display_discs(GameState) :-
     countDiscs(GameState, O, G, P),
     NewO is 42 - O,
@@ -87,12 +94,13 @@ display_discs(GameState) :-
     write(' | Green discs: '), write(NewG),
     write(' | Purple discs: '), write(NewP),nl.
 
-
+% Imprime a vez do próximo Jogador
 display_player(Player) :-
     write('                      Player '),
     write(Player),
     write('\'s turn'), nl, nl.
 
+% Imprime as cores que cada jogador já arrecadou
 displayColoursState(Player, 'FALSE'-'FALSE'-'FALSE') :- write('Player '), write(Player), write(' has no colours'),nl.
 
 displayColoursState(Player, PurpleWon-OrangeWon-GreenWon) :-
@@ -102,12 +110,13 @@ displayColoursState(Player, PurpleWon-OrangeWon-GreenWon) :-
     displayColourWon('GREEN', GreenWon),
     nl, nl.
 
+% Display de cor ganha
 displayColourWon(_, 'FALSE').
 
 displayColourWon(Colour, 'TRUE') :-
     write(Colour), write(' ').
 
-
+% Verifica se um jogador ganhou o jogo
 checkPlayerWinner(Purple-Orange-_) :-
     Purple == 'TRUE', Orange == 'TRUE'.
 
@@ -117,7 +126,7 @@ checkPlayerWinner(Purple-_-Green) :-
 checkPlayerWinner(_-Orange-Green) :-
     Orange == 'TRUE', Green == 'TRUE'.
 
-
+% Verifica a situação de Game Over
 game_over(Colours1-_, Winner) :-
     checkPlayerWinner(Colours1),
     Winner is 1.
@@ -126,8 +135,7 @@ game_over(_-Colours2, Winner) :-
     checkPlayerWinner(Colours2),
     Winner is 2.
 
-% checkColours(Colour, Player, ColourPlayer, ColourOther, NewColour)
-
+% Verifica se uma cor já foi ganha por algum player
 checkColours(_, _, _, 'TRUE', _, 'TRUE').
 
 checkColours(_, _, _, 'FALSE', 'TRUE', 'FALSE').
@@ -137,7 +145,7 @@ checkColours(Board, Colour, Player, 'FALSE', 'FALSE', NewColour) :-
     NewColour = ColourWon.
 
 
-
+% Ciclo principal do jogo (Jogada dos dois players com verificações de cores ganhas; término de jogo e displays de informação)
 gameLoop(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2), P1-P2) :-
     % Player 1   
     display_game(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2), 1),
@@ -189,6 +197,7 @@ gameLoop(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2)
         )
     ).
 
+% Verifica se uma determinada Colour foi ganha pelo Player
 checkColourWon(Board, Player, Colour, ColourWon) :-
     colourTable(Player, Colour-AlliedColour-NotAlliedColour),
     colourEdges(Colour, Edge1, Edge2),
@@ -215,9 +224,11 @@ checkColourWon(Board, Player, Colour, ColourWon) :-
         )
     ).
 
+% Start Game (Direciona para o Menu principal)
 startGame(GameState) :-
     mainMenu(GameState).
 
+% Mother predicate
 play :-
     initial(GameState),
     startGame(GameState).
