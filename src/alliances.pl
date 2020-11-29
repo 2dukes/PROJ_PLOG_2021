@@ -5,7 +5,7 @@
 :- consult('input.pl').
 :- consult('utils.pl').
 :- consult('bot.pl').
-:- consult('game.pl').
+:- consult('logic.pl').
 :- consult('menus.pl').
 :- consult('display.pl').
 

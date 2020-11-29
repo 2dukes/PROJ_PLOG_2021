@@ -110,12 +110,13 @@ orange2(12,10).
 orange2(14,11).
 orange2(16,12).
 
-% Predicados associados às borders de cada cor
+% Nomes dos predicados associados às borders de cada cor
+%            Cor | Borda 1 | Borda 2
 colourEdges(purple, purple1, purple2).
 colourEdges(orange, orange1, orange2).
 colourEdges(green, green1, green2).
 
-% Colour | Allied | NotAllied
+%    Player | Cor | Cor Aliada | Cor Não Aliada
 colourTable(1, purple-orange-green). 
 colourTable(1, orange-green-purple).
 colourTable(1, green-purple-orange).
@@ -219,7 +220,7 @@ adjacentAllied(Pontos, NotAlliedColour, Visitados, Board, Row-Diag) :-
     Cell \= NotAlliedColour,
     Cell \= empty.
 
-% Lista de adjacentes total para um dado nível
+% Lista de células adjacentes total para um dado nível
 getAdjList([], _, _, _, Lista, Resultado) :-
     Resultado = Lista.
 
@@ -279,19 +280,19 @@ newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, 0, Resul
         )  
     ).
     
-
-newGetDistance( _, _, _, Depth, DistanciaAtual, Resultado, _, _) :- % nao encontrou (distancia 2000)
+% Quando a profundidade máxima é atingida ou o próximo nível está vazio, a distância é considerada como 2000
+newGetDistance( _, _, _, Depth, DistanciaAtual, Resultado, _, _) :- 
     DistanciaAtual > Depth,
     Resultado is 2000.
 
-newGetDistance([], _, _, _, _, Resultado, _, _) :- % nao encontrou (distancia 2000)
-    Resultado is 3000.
+newGetDistance([], _, _, _, _, Resultado, _, _) :- 
+    Resultado is 2000.
 
 newGetDistance(NivelAtual, _, _, _, DistanciaAtual, Resultado, _, Predicate) :- % encontrou distancia
     checkReached(NivelAtual, Predicate),
     Resultado is DistanciaAtual.
 
-% Computa os restantes níveis de profundidade
+% Computa os restantes níveis de profundidade recursivamente
 newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, DistanciaAtual, Resultado, Board, Predicate) :-
     append(PontosDoNivelAtual, JaVisitados, Visitados),
     Depth >= DistanciaAtual,
@@ -330,12 +331,12 @@ updateBoard(Board, [Row, Diagonal, Colour], NewBoard) :-
     RowToUpdate is Row - 1,
     replaceNth(Board, RowToUpdate, NewLine, NewBoard), !.
 
-% Verifica se uma determinada célula está empty
+% Verifica se uma determinada célula está vazia
 checkEmpty([Row, Diagonal, _], Board) :-
     getCellByCoords(Board, Row, Diagonal, Cell),
     Cell == 'empty'.
 
-% Unifica em Cell a célula com as coordenadas definidas 
+% Unifica em Cell a célula com as coordenadas definidas, falha se as coordenadas estiverem fora do tabuleiro
 getCellByCoords(Board, Row, Diagonal, Cell) :-
     verifyCoordinates(Row, Diagonal),
     nth1(Row, Board, Line),
@@ -369,34 +370,36 @@ print_board([L | Board], Line) :-
     NewLine is Line + 1,
     print_board(Board, NewLine).
 
- % Imprime o board na consola (primeira linha)
+% Imprime o board na consola (primeira linha)
 print_line1(_, 1) :-
     printSpaces(21), write('[P]___  1  ___ 2'), printLineInfo(2), nl.
 print_line1(_, _).
     
+% Imprime uma linha do tabuleiro 
 print_line([Cell | Line], Nline) :-
     print_line1(_, Nline),
     getSpaces(Spaces, Nline, Colour),
     printSpaces(Spaces),
     printColour(Colour),
-    (
-        (
-            (
-                Nline =< 4; Nline == 7
-            ),
-            print_case1([Cell | Line], Nline)
-        );  
-        (
-            member(Nline, [5, 8, 10, 12, 14, 16, 19]),
-            print_case2([Cell | Line], 0, Nline)
-        );
-        (
-            member(Nline, [6, 9, 11, 13, 15, 17, 18, 20, 21, 22, 23]),
-            print_case3([Cell | Line], Nline)   
-        )
-    ),
+    specificPrint_line(Cell, Line, Nline),
     printLineNumber(Nline),
     nl.
+
+% Casos de linhas específicas
+specificPrint_line(Cell, Line, Nline) :-
+    Nline =< 4,
+    print_case1([Cell | Line], Nline).
+
+specificPrint_line(Cell, Line, 7) :-
+    print_case1([Cell | Line], 7).
+
+specificPrint_line(Cell, Line, Nline) :-
+    member(Nline, [5, 8, 10, 12, 14, 16, 19]),
+    print_case2([Cell | Line], 0, Nline).
+
+specificPrint_line(Cell, Line, Nline) :-
+    member(Nline, [6, 9, 11, 13, 15, 17, 18, 20, 21, 22, 23]),
+    print_case3([Cell | Line], Nline).
 
 % Obtém os espaços de cada linha
 getSpaces(Spaces, Nline, Colour) :-

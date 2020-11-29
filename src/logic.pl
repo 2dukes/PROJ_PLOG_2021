@@ -46,18 +46,20 @@ print_move([Row, Diagonal, Colour]) :-
     write(', '), write(Colour), nl.
 
 % Jogada de um Player
-userPlay(GameState, NewGameState, _-p) :-
+userPlay(GameState, NewGameState, Nplayer-p) :-
     repeat,
     (
         getUserInput(Row, Diagonal, Colour),
-        move(GameState, [Row, Diagonal, Colour], NewGameState),
+        move(GameState, [Row, Diagonal, Colour], NewGameStateBoard),
+        updateColours(NewGameStateBoard, NewGameState, Nplayer),
         print_move([Row, Diagonal, Colour])
     ).
 
 % Jogada de um Computador
 userPlay(GameState, NewGameState, Nplayer-(c-Level)) :-
     choose_move(GameState, Nplayer, Level, Move),
-    move(GameState, Move, NewGameState),
+    move(GameState, Move, NewGameStateBoard),
+    updateColours(NewGameStateBoard, NewGameState, Nplayer),
     print_move(Move).
 
 % Efetua um move no Board com verificação de jogada válida
@@ -80,6 +82,16 @@ game_over(_-(Purple-Orange-Green-_-_-_), Winner) :-
 game_over(_-(_-_-_-Purple-Orange-Green), Winner) :-
     checkPlayerWinner(Purple-Orange-Green),
     Winner is 2.
+
+% Apresenta no ecrã o vencedor se o jogo acabar
+check_over(GameState, _, _) :-
+    game_over(GameState, Winner),
+    display_game(GameState, 0),
+    write('Player '), write(Winner), write(' won!'), nl.
+    
+check_over(GameState, Players, Player) :-
+    other_player(Player, Next),
+    gameLoop(GameState, Players, Next).
 
 % Verifica se uma cor já foi ganha por algum player
 checkColours(_, _, _, 'TRUE', _, 'TRUE').
@@ -119,25 +131,14 @@ updateColours(GameState, NewGameState, 2) :-
 gameLoop(GameState, P1-P2, 1) :-
     % Player 1   
     display_game(GameState, 1),
-    userPlay(GameState, NewGameStateBoard, 1-P1),
-    updateColours(NewGameStateBoard, NewGameState, 1),
+    userPlay(GameState, NewGameState, 1-P1),
     check_over(NewGameState, P1-P2, 1).
 
 gameLoop(GameState, P1-P2, 2) :-
     % Player 2
     display_game(GameState, 2),
-    userPlay(GameState, NewGameStateBoard, 2-P2),
-    updateColours(NewGameStateBoard, NewGameState, 2),
+    userPlay(GameState, NewGameState, 2-P2),
     check_over(NewGameState, P1-P2, 2).
-         
-check_over(GameState, _, _) :-
-    game_over(GameState, Winner),
-    display_game(GameState, 0),
-    write('Player '), write(Winner), write(' won!'), nl.
-    
-check_over(GameState, Players, Player) :-
-    other_player(Player, Next),
-    gameLoop(GameState, Players, Next).
 
 % Verifica se uma determinada Colour foi ganha pelo Player
 checkColourWon(Board, Player, Colour, ColourWon) :-
@@ -172,14 +173,12 @@ value(Board-ColoursWon, Player, Value) :-
         evaluateColour(Board-ColoursWon, Colour2-NotAlliedColour2, ValueColour1), transformValue(ValueColour1, ValueColour)), 
         ValueColours),
     sumlist(ValueColours, Value).
-    % transformValue(Value1, Value).
     
 % Avalia a distância para obter uma determinada Colour, unificando ValueColour
 evaluateColour(Board-ColoursWon, Colour-NotAlliedColour, ValueColour) :-
     getDistanceColour(Board-ColoursWon, Colour-NotAlliedColour, ValueColour), !.
 
-% Atribui o Valor a uma cor de acordo com a sua distância (menor valor, maior distância). Quando a cor está bloqueada o valor é 0
-
+% Atribui o Valor a uma cor de acordo com a sua distância (menor distância, maior valor). Quando a cor está bloqueada o valor é 0
 transformValue(2000, 0).
 
 transformValue(Value, NewValue) :-
@@ -187,7 +186,7 @@ transformValue(Value, NewValue) :-
     NewValue is 100/Value1.
     %NewValue is 1 / (Value ** 3).
 
-% Verifica se uma cor já foi ou não ganha; se não então computa a distância que o jogador demora para a encontrar.
+% Verifica se uma cor já foi ganha; se não então computa a distância a que o jogador se encontra para a completar
 getDistanceColour(Board-ColourState, Colour-NotAlliedColour, Distance) :-
     !,    
     getColourStartingPoints(Colour, ColourState, StartPoints, Predicate),
@@ -196,6 +195,7 @@ getDistanceColour(Board-ColourState, Colour-NotAlliedColour, Distance) :-
     newGetDistance(StartPoints, [], NotAlliedColour, MaxDepth, 0, Distance, Board, Predicate).
     %write(Distance),nl.
 
+% Obtém as células localizadas numa das bordas da cor pretendida, usadas para calcular a distância entre as bordas
 getColourStartingPoints(purple, 'FALSE'-_-_, StartPoints, purple2) :-
     findall(Row-Diagonal, purple1(Row, Diagonal), StartPoints).
     

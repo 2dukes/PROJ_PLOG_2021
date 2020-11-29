@@ -10,7 +10,8 @@
 | 3      | Davide António Ferreira Castro   | 201806512 |
 | 3      | Rui Filipe Mendes Pinto          | 201806441 |
 
-<br />
+### Intalação e execução ###
+Para executar o jogo basta fazer consult ao ficheiro '/src/alliances.pl' no terminal do SICStus Prolog e executar o predicado play/0.
 
 
 # O Jogo: *Alliances*
@@ -66,69 +67,58 @@
 
 Link para a página de regras do jogo: https://nestorgames.com/rulebooks/ALLIANCES_EN.pdf
 
+# Lógica do Jogo #
+## Representação do Estado do Jogo ##
 
-# Representação do Estado do Jogo
+O estado do jogo é representado internamente por dois componentes: 
+- uma lista de listas para o tabuleiro, organizada por linhas e diagonais, contendo um átomo em cada célula para indicar o seu estado; 
+- um argumento composto com o estado de cor atual para cada jogador ('TRUE' ou 'FALSE'), indicando se o jogador ganhou a cor.
 
-### Átomos 
-**nodef** - Espaço fora do tabuleiro\
-**space** - Meio espaço fora do tabuleiro\
+### Átomos ###
 **orange** - Peça laranja\
 **green** - Peça verde\
 **purple** - Peça roxa\
-**empty** - Espaço do tabuleiro sem peça
-**orangeEnd** - Espaço no limite da extremidade laranja
-**greenEnd** - Espaço no limite da extremidade verde
-**purpleeEnd** - Espaço no limite da extremidade roxa
-**orangeEndSpace** - Meio espaço no limite da extremidade laranja
-**greenEndSpace** - Meio espaço no limite da extremidade verde
-**purpleEndSpace** - Meio espaço no limite da extremidade roxa
+**empty** - Célula sem peça
+
+
+### Player Atual ###
+O player atual é passado por argumento no predicado do ciclo do jogo, que é efetuado recursivamente durante todo o decorrer de uma partida.
+
+
+### Peças por jogar ###
+O número de peças disponíveis para jogar é calculado em cada ciclo de jogo, obtendo-se o número de peças de cada cor já no tabuleiro e subtraindo ao máximo de peças.
+
+
+#### Estado Inicial ####
+>**initial**([
+    [                                         empty,    empty],                            
+    [                                     empty,   empty,   empty],                         
+    [                                empty,    empty,   empty,  empty],                     
+    [                           empty,    empty,    empty,   empty,   empty],               
+    [                      empty,    empty,    empty,   empty,   empty,   empty],           
+    [                          empty,     empty,   empty,   empty,    empty],               
+    [                      empty,    empty,    empty,   empty,   empty,   empty],           
+    [                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      
+    [                      empty,    empty,    empty,   empty,  empty,   empty],           
+    [                 empty,   empty,     empty,    empty,   empty,    empty,   empty],      
+    [                      empty,    empty,    empty,   empty,  empty,   empty],           
+    [                 empty,   empty,     empty,   empty,     empty,    empty,   empty],      
+    [                      empty,    empty,    empty,   empty,  empty,   empty],           
+    [                 empty,   empty,     empty,   empty,     empty,    empty,   empty],      
+    [                      empty,    empty,    empty,   empty,   empty,   empty],           
+    [                 empty,   empty,     empty,   empty,     empty,    empty,   empty],      
+    [                      empty,    empty,    empty,   empty,   empty,   empty],           
+    [                           empty,    empty,   empty,    empty,   empty],               
+    [                      empty,    empty,    empty,   empty,   empty,   empty],           
+    [                           empty,    empty,   empty,   empty,   empty],                
+    [                                empty,    empty,   empty,   empty],                    
+    [                                     empty,   empty,   empty],                         
+    [                                          empty,   empty]                              
+    ]-('FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE')).
 
 <br />
 
-### Player Atual
-```
-:- dynamic player/1.
-player(1). % First Player.
-```
-
-<br />
-
-### Peças por jogar
-```
-:- dynamic green/1.
-:- dynamic orange/1.
-:- dynamic purple/1.
-
-orange(42).
-purple(42).
-green(42).
-```
-
-<br />
-
-### Tabuleiro
-#### Estado Inicial
->**initial**([\
-    [nodef, nodef, nodef, nodef, space, purpleEnd, purpleEnd, purpleEnd, purpleEnd, purpleEnd      ],\
-    [nodef, nodef, nodef, nodef, space,                          empty, empty, empty, empty, empty                 ],\
-    [nodef, nodef, orangeEnd,                          empty, empty, empty, empty, empty, empty, empty, empty,          greenEndSpace],\
-    [nodef, nodef, orangeEndSpace,                empty, empty, empty, empty, empty, empty, empty, empty, empty,          greenEndSpace],\
-    [nodef, orangeEnd,                          empty, empty, empty, empty, empty, empty, empty, empty, empty, empty,          greenEndSpace],\
-    [nodef, orangeEndSpace,                  empty, empty, empty, empty, empty, empty, empty, empty, empty, empty, empty,           greenEndSpace],\
-    [orangeEnd,                          empty, empty, empty, empty, empty, empty, empty, empty, empty, empty, empty, empty,           greenEndSpace],\
-    [nodef, space,                          empty, empty, empty, empty, empty, empty, empty, empty, empty, empty, empty                          ],\
-    [greenEnd,                           empty, empty, empty, empty, empty, empty, empty, empty, empty, empty, empty, empty,           orangeEndSpace],\
-    [nodef, greenEndSpace,                   empty, empty, empty, empty, empty, empty, empty, empty, empty, empty, empty,           orangeEndSpace],\
-    [nodef, greenEnd,                           empty, empty, empty, empty, empty, empty, empty, empty, empty, empty,           orangeEndSpace],\
-    [nodef, nodef, greenEndSpace,                 empty, empty, empty, empty, empty, empty, empty, empty, empty,          orangeEndSpace],\
-    [nodef, nodef, greenEnd,                           empty, empty, empty, empty, empty, empty, empty, empty,           orangeEndSpace],\
-    [nodef, nodef, nodef, nodef, space,                          empty, empty, empty, empty, empty                                     ],\
-    [nodef, nodef, nodef, nodef, space, purpleEnd, purpleEnd, purpleEnd, purpleEnd, purpleEnd]\
-]).
-
-<br />
-
-#### Estado Intermédio
+<!-- #### Estado Intermédio
 >**mid**([\
     [nodef, nodef, nodef, nodef, space, purpleEnd, purpleEnd, purpleEnd, purpleEnd, purpleEnd      ],\
     [nodef, nodef, nodef, nodef, space,                          empty, purple, empty, empty, empty                 ],\
@@ -176,7 +166,7 @@ green(42).
     <i>Tabuleiro no Estado Intermédio</i><br /> <br /><br />
     <img src="images/FinalBoard.png" /><br />
     <i>Tabuleiro no Estado Final</i><br /> <br />
-</p>
+</p> -->
 
 # Visualização do estado de jogo ##
 Para visualizar o tabuleiro usamos o predicado display_game/2 que imprime uma linha do tabuleiro (print_line/1) e continua recursivamente até imprimir todas as linhas. 
@@ -185,4 +175,4 @@ Se uma célula conter um átomo de 'end' imprime a cor daquela extremidade; se f
 No final da recursividade são também apresentados os números de discos disponíveis para jogar (display_discs/0) e o número do jogador atual (display_player/1).
 
 
->Nota: Para uma correta visualização do jogo as fontes recomendadas a utilizar são a DejaVu Sans Mono (https://www.fontsquirrel.com/fonts/dejavu-sans-mono)  ou Consolas (https://docs.microsoft.com/en-us/typography/font-list/consolas).
+>Nota: Para uma correta visualização do jogo as fontes recomendadas a utilizar são a DejaVu Sans Mono (https://www.fontsquirrel.com/fonts/dejavu-sans-mono)  ou Consolas (https://freefontsdownload.net/free-consolas-font-33098.htm).
