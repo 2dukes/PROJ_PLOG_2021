@@ -39,7 +39,7 @@ displayColoursStateAux(Player, PurpleWon-OrangeWon-GreenWon) :-
     displayColourWon('PURPLE', PurpleWon),
     displayColourWon('ORANGE', OrangeWon),
     displayColourWon('GREEN', GreenWon),
-    nl, nl.
+    nl.
 
 % Display de cor ganha
 displayColourWon(_, 'FALSE').

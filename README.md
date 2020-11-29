@@ -65,12 +65,10 @@ O estado do jogo é representado internamente por dois componentes:
 - Um argumento composto com o estado de cor atual para cada jogador ('TRUE' ou 'FALSE'), indicando se o jogador ganhou a cor.
 
 ### Átomos ###
-```prolog
-code(empty, ' ').  % Empty
-code(orange, 'O'). % Orange
-code(purple, 'P'). % Purple
-code(green, 'G').  % Green
-```
+- **orange** - Célula com peça laranja
+- **purple** - Célula com peça roxa
+- **green**  - Célula com peça verde
+- **empty**  - Célula sem peça
 
 ### Player Atual ###
 O player atual é passado por argumento no predicado do ciclo do jogo, que é efetuado recursivamente durante todo o decorrer de uma partida, alternando os jogadores em cada ciclo.
