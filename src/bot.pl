@@ -16,9 +16,10 @@ getMove(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2),
     colourWonBoth(OrangeWon1, OrangeWon2, OrangeWon),
     
     getMoveAux(Board-(PurpleWon-OrangeWon-GreenWon), Player, ListOfMoves, Level, ValueMoveList),
-    
+    % write(ValueMoveList), nl, nl, 
     max_member(ValueMax-_, ValueMoveList),
     findall(Value1-MoveBest, (member(Value1-MoveBest, ValueMoveList), Value1 == ValueMax), BestMoves),
+    % write(BestMoves),nl,
     random_member(_-ChosenMove, BestMoves),
     Move = ChosenMove.
 
@@ -34,7 +35,7 @@ getMoveAux(Board-ColoursWon, Player, ListOfMoves, greedy_hard, ValueMoveList) :-
     other_player(Player, OtherPlayer),
     findall(ValueTotal-Move1, ( 
         member(Move1, ListOfMoves), updateBoard(Board, Move1, NewBoard), value(NewBoard-ColoursWon, Player, Value1),
-        value(NewBoard-ColoursWon, OtherPlayer, Value2), ValueTotal is Value1 - Value2
+        value(NewBoard-ColoursWon, OtherPlayer, Value2), ValueTotal is Value1 - Value2**2
     ), ValueMoveList).
 
 
