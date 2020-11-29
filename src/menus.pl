@@ -45,24 +45,41 @@ inputPickMode(_) :-
     nl, write('ERROR: Invalid Mode!'), nl, nl, 
     fail.
 
+% Verifica se o argumento recebido é um número de jogador válido
+checkPlayer(1).
+checkPlayer(2).
+checkPlayer(_) :- write('Invalid player! Please try again (1/2)'), nl, fail.
+
+% Escolher qual o jogador a efetuar a primeira jogada
+pickStartPlayer(PlayerN) :-
+    write('Which player starts? (1/2): '),
+    repeat, (
+        getNewInt(PlayerN),
+        checkPlayer(PlayerN)
+    ).
+
 % Exit
 manageInput(0, _) :-
     write('\nExiting...\n\n'), fail.
 
 manageInput(1, GameState) :- % Player vs Player
-    gameLoop(GameState, [p,p], 1).
+    pickStartPlayer(PlayerN),
+    gameLoop(GameState, [p,p], PlayerN).
 
 manageInput(2, GameState) :- % Player vs Computer
     pickMode(Mode, 'Computer2'), 
-    gameLoop(GameState, [p,c-Mode], 1).
+    pickStartPlayer(PlayerN),
+    gameLoop(GameState, [p,c-Mode], PlayerN).
 
 manageInput(3, GameState) :- % Computer vs Player
     pickMode(Mode, 'Computer1'), 
-    gameLoop(GameState, [c-Mode,p], 1).
+    pickStartPlayer(PlayerN),
+    gameLoop(GameState, [c-Mode,p], PlayerN).
 
 manageInput(4, GameState) :- % Computer vs Computer
     pickMode(Mode1, 'Computer1'), pickMode(Mode2, 'Computer2'), 
-    gameLoop(GameState, [c-Mode1,c-Mode2], 1).
+    pickStartPlayer(PlayerN),
+    gameLoop(GameState, [c-Mode1,c-Mode2], PlayerN).
 
 % How To Play Menu
 manageInput(5, _) :-
