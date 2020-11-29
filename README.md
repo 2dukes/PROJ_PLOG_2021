@@ -340,6 +340,8 @@ Uma possível melhoria relativamente ao projeto, seria o desenvolvimento de um a
     
 # Bibliografia #
 
-https://nestorgames.com/rulebooks/ALLIANCES_EN.pdf
+Página de regras do jogo Alliances - https://nestorgames.com/rulebooks/ALLIANCES_EN.pdf
 
-https://www.swi-prolog.org/pldoc/man?section=lists
+Documentação de bibliotecas do Prolog - https://www.swi-prolog.org/
+
+Questões sobre pesquisa em largura em Prolog - https://stackoverflow.com/questions/34082799/breadth-first-search-in-prolog
