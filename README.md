@@ -190,11 +190,11 @@ display_game(Board-ColoursWon, Player) :-
 
 Junto com o tabuleiro, o jogador atual, o estado das cores e dos discos, é também imprimido do lado direito do tabuleiro, a tabela de cores para cada jogador, para estes consultarem as suas cores aliadas.
 
-![estado do jogo](images/gameState_view.png)
+![estado do jogo](images/gameState_view.PNG)
 
 Antes do decorrer da partida, é também apresentado um sistema de menus ao utilizador, onde pode consultar instruções sobre o jogo, escolher o modo de jogo e, para os modos com computador, escolher o seu nível de dificuldade.
 
-![menus](images/menus.png)
+![menus](images/menus.PNG)
 
 
 >Nota: Para uma correta visualização do jogo as fontes recomendadas a utilizar são a DejaVu Sans Mono (https://www.fontsquirrel.com/fonts/dejavu-sans-mono)  ou Consolas (https://freefontsdownload.net/free-consolas-font-33098.htm).
