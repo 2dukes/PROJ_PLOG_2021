@@ -1,6 +1,10 @@
 % Neste ficheiro estão presentes os predicados principais para o funcionamento do jogo, incluindo o game loop para executar jogadas 
 % e atualizar o estado do jogo
 
+% Jogador Atual | Outro Jogador
+other_player(1, 2).
+other_player(2, 1).
+
 % Start Game (Direciona para o Menu principal)
 startGame(GameState) :-
     mainMenu(GameState).
@@ -69,9 +73,7 @@ move(Board-ColoursWon, Move, NewBoard-ColoursWon) :-
 
 % Verifica se um jogador ganhou o jogo
 checkPlayerWinner('TRUE'-'TRUE'-_).
-
 checkPlayerWinner('TRUE'-_-'TRUE').
-
 checkPlayerWinner(_-'TRUE'-'TRUE').
 
 % Verifica a situação de Game Over
@@ -111,8 +113,6 @@ updateColours(GameState, NewGameState, 1) :-
     checkColours(NewBoard, purple, 2, PurpleWon2, NewPurpleWon1, NewPurpleWon2),
     checkColours(NewBoard, orange, 2, OrangeWon2, NewOrangeWon1, NewOrangeWon2),
     checkColours(NewBoard, green, 2, GreenWon2, NewGreenWon1, NewGreenWon2),
-    displayColoursState(1, NewPurpleWon1-NewOrangeWon1-NewGreenWon1),
-    displayColoursState(2, NewPurpleWon2-NewOrangeWon2-NewGreenWon2),
     NewGameState = NewBoard-(NewPurpleWon1-NewOrangeWon1-NewGreenWon1-NewPurpleWon2-NewOrangeWon2-NewGreenWon2).
 
 updateColours(GameState, NewGameState, 2) :-
@@ -123,22 +123,14 @@ updateColours(GameState, NewGameState, 2) :-
     checkColours(FinalBoard, purple, 1, NewPurpleWon1, NewPurpleWon4, NewPurpleWon3),
     checkColours(FinalBoard, orange, 1, NewOrangeWon1, NewOrangeWon4, NewOrangeWon3),
     checkColours(FinalBoard, green, 1, NewGreenWon1, NewGreenWon4, NewGreenWon3),
-    displayColoursState(1, NewPurpleWon3-NewOrangeWon3-NewGreenWon3),
-    displayColoursState(2, NewPurpleWon4-NewOrangeWon4-NewGreenWon4),
     NewGameState = FinalBoard-(NewPurpleWon3-NewOrangeWon3-NewGreenWon3-NewPurpleWon4-NewOrangeWon4-NewGreenWon4).
 
 % Ciclo principal do jogo (Jogada dos dois players com verificações de cores ganhas; término de jogo e displays de informação)
-gameLoop(GameState, P1-P2, 1) :-
-    % Player 1   
-    display_game(GameState, 1),
-    userPlay(GameState, NewGameState, 1-P1),
-    check_over(NewGameState, P1-P2, 1).
-
-gameLoop(GameState, P1-P2, 2) :-
-    % Player 2
-    display_game(GameState, 2),
-    userPlay(GameState, NewGameState, 2-P2),
-    check_over(NewGameState, P1-P2, 2).
+gameLoop(GameState, PlayersMode, Player) :-
+    display_game(GameState, Player),
+    nth1(Player, PlayersMode, Mode),
+    userPlay(GameState, NewGameState, Player-Mode),
+    check_over(NewGameState, PlayersMode, Player).
 
 % Verifica se uma determinada Colour foi ganha pelo Player
 checkColourWon(Board, Player, Colour, ColourWon) :-
@@ -153,47 +145,34 @@ auxCheckColourWon(Board, AlliedColour-NotAlliedColour, Edge1-Edge2, 'TRUE') :-
 auxCheckColourWon(_, _, _, 'FALSE').    
 
 colourWonOrFence(StartPoints, _, NotAlliedColour, Depth, DistanciaAtual, Board, Edge2) :-
-    once( newGetDistance(StartPoints, [], NotAlliedColour, Depth, DistanciaAtual, Result, Board, Edge2) ),
+    once( getDistance(StartPoints, [], NotAlliedColour, Depth, DistanciaAtual, Result, Board, Edge2) ),
     Result == 0.
 
 colourWonOrFence(StartPoints, AlliedColour, _, _, DistanciaAtual, Board, Edge2) :-
     max_depth(MaxDepth),
-    once( newGetDistance(StartPoints, [], AlliedColour, MaxDepth, DistanciaAtual, Result, Board, Edge2) ),
+    once( getDistance(StartPoints, [], AlliedColour, MaxDepth, DistanciaAtual, Result, Board, Edge2) ),
     Result == 3000.
 
-
-% Current Player | Other Player
-other_player(1, 2).
-other_player(2, 1).
-
-% Dado um Board, unifica em Value o seu valor, sendo depois o mesmo utilizado para definir a melhor jogada no momento
-value(Board-ColoursWon, Player, Value) :-
-    findall(Colour1-AlliedColour1-NotAlliedColour1, colourTable(Player, Colour1-AlliedColour1-NotAlliedColour1), ColourTables),
+% Dado um tabuleiro Board, unifica em Value o seu valor, sendo depois o mesmo utilizado para definir a melhor jogada no momento
+value(GameState, Player, Value) :-
+    findall(ColourTable, colourTable(Player, ColourTable), ColourTables),
     findall(ValueColour, ( member(Colour2-_-NotAlliedColour2, ColourTables), 
-        evaluateColour(Board-ColoursWon, Colour2-NotAlliedColour2, ValueColour1), transformValue(ValueColour1, ValueColour)), 
+        getDistanceColour(GameState, Colour2-NotAlliedColour2, ValueColour1), transformValue(ValueColour1, ValueColour)), 
         ValueColours),
     sumlist(ValueColours, Value).
-    
-% Avalia a distância para obter uma determinada Colour, unificando ValueColour
-evaluateColour(Board-ColoursWon, Colour-NotAlliedColour, ValueColour) :-
-    getDistanceColour(Board-ColoursWon, Colour-NotAlliedColour, ValueColour), !.
 
 % Atribui o Valor a uma cor de acordo com a sua distância (menor distância, maior valor). Quando a cor está bloqueada o valor é 0
 transformValue(2000, 0).
 
 transformValue(Value, NewValue) :-
     Value1 is Value + 1,
-    NewValue is 100/Value1.
-    %NewValue is 1 / (Value ** 3).
+    NewValue is 1 / (Value1 ** 3).
 
 % Verifica se uma cor já foi ganha; se não então computa a distância a que o jogador se encontra para a completar
-getDistanceColour(Board-ColourState, Colour-NotAlliedColour, Distance) :-
-    !,    
+getDistanceColour(Board-ColourState, Colour-NotAlliedColour, Distance) :-  
     getColourStartingPoints(Colour, ColourState, StartPoints, Predicate),
     max_depth(MaxDepth),
-    % write(StartPoints),
-    newGetDistance(StartPoints, [], NotAlliedColour, MaxDepth, 0, Distance, Board, Predicate).
-    %write(Distance),nl.
+    getDistance(StartPoints, [], NotAlliedColour, MaxDepth, 0, Distance, Board, Predicate), !.
 
 % Obtém as células localizadas numa das bordas da cor pretendida, usadas para calcular a distância entre as bordas
 getColourStartingPoints(purple, 'FALSE'-_-_, StartPoints, purple2) :-

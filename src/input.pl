@@ -55,13 +55,11 @@ verifyCoordinates(Row, Diagonal) :-
 
 % Verifica se a Row é válida
 verifyRow(Row) :-
-    Row >= 1,
-    Row =< 23.
+    between(1, 23, Row).
 
 % Verifica se a Diagonal é válida
 verifyDiagonal(Diagonal) :-
-    Diagonal >= 1,
-    Diagonal =< 13.
+    between(1, 13, Diagonal).
 
 % Verifica se o conjunto Row + Diagonal é válido
 verifyRowDiagonal(Row, Diagonal) :-

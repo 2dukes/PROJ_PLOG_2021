@@ -50,19 +50,19 @@ manageInput(0, _) :-
     write('\nExiting...\n\n'), fail.
 
 manageInput(1, GameState) :- % Player vs Player
-    gameLoop(GameState, p-p, 1).
+    gameLoop(GameState, [p,p], 1).
 
 manageInput(2, GameState) :- % Player vs Computer
     pickMode(Mode, 'Computer2'), 
-    gameLoop(GameState, p-(c-Mode), 1).
+    gameLoop(GameState, [p,c-Mode], 1).
 
 manageInput(3, GameState) :- % Computer vs Player
     pickMode(Mode, 'Computer1'), 
-    gameLoop(GameState, (c-Mode)-p, 1).
+    gameLoop(GameState, [c-Mode,p], 1).
 
 manageInput(4, GameState) :- % Computer vs Computer
     pickMode(Mode1, 'Computer1'), pickMode(Mode2, 'Computer2'), 
-    gameLoop(GameState, (c-Mode1)-(c-Mode2), 1).
+    gameLoop(GameState, [c-Mode1,c-Mode2], 1).
 
 % How To Play Menu
 manageInput(5, _) :-

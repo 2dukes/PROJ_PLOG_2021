@@ -1,11 +1,14 @@
-% Imprime toda a informação do jogo
+% Imprime toda a informação do jogo - Caso em que o jogo foi ganho
 display_game(Board-ColoursWon, 0) :-
     print_board(Board, 1),
-    display_discs(Board-ColoursWon).
+    display_discs(Board-ColoursWon),
+    displayColoursState(ColoursWon).
 
-display_game(Board-ColoursWon, Player) :- % Switch Player every time we end printing the board.
+% Imprime toda a informação do jogo - Incluindo o próximo player a jogar
+display_game(Board-ColoursWon, Player) :-
     print_board(Board, 1),
     display_discs(Board-ColoursWon),
+    displayColoursState(ColoursWon),
     display_player(Player).
 
 % Imprime número de discos disponíveis
@@ -25,10 +28,14 @@ display_player(Player) :-
     write('\'s turn'), nl, nl.
 
 % Imprime as cores que cada jogador já arrecadou
-displayColoursState(Player, 'FALSE'-'FALSE'-'FALSE') :- write('Player '), write(Player), write(' has no colours'),nl.
+displayColoursState(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2) :-
+    displayColoursStateAux(1, PurpleWon1-OrangeWon1-GreenWon1),
+    displayColoursStateAux(2, PurpleWon2-OrangeWon2-GreenWon2).
 
-displayColoursState(Player, PurpleWon-OrangeWon-GreenWon) :-
-    write('Player '), write(Player), write(' has colour(s): '), 
+displayColoursStateAux(Player, 'FALSE'-'FALSE'-'FALSE') :- write('                  Player '), write(Player), write(' has no colours'),nl.
+
+displayColoursStateAux(Player, PurpleWon-OrangeWon-GreenWon) :-
+    write('                  Player '), write(Player), write(' has colour(s): '), 
     displayColourWon('PURPLE', PurpleWon),
     displayColourWon('ORANGE', OrangeWon),
     displayColourWon('GREEN', GreenWon),

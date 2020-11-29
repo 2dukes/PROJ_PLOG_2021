@@ -11,7 +11,7 @@
 | 3      | Rui Filipe Mendes Pinto          | 201806441 |
 
 ### Intalação e execução ###
-Para executar o jogo basta fazer consult ao ficheiro '/src/alliances.pl' no terminal do SICStus Prolog e executar o predicado play/0.
+Para executar o jogo basta fazer consult ao ficheiro 'src/alliances.pl' no terminal do SICStus Prolog e executar o predicado play/0.
 
 
 # O Jogo: *Alliances*
@@ -47,17 +47,7 @@ Para executar o jogo basta fazer consult ao ficheiro '/src/alliances.pl' no term
     <i>Cor roxa completada pelo jogador de baixo (cor aliada verde)</i> <br /><br />
 </p>
 
-
-
 - Se um movimento torna impossível para qualquer jogador conectar uma cor particular (cercando-a), então o jogador adversário bloqueado ganha essa cor.
-
-
-<p align="center">
-    <img src="images/fence.png" /><br />
-     <i>Cerco à cor laranja permite ao jogador de baixo ganhar a mesma, pois o de cima, com as cores verde e laranja, não consegue completá-la</i>
-</p>
-
-<br />
 
  - Cada cor só poderá ser ganha por um jogador; aquele que alcança a mesma primeiro. No caso de um jogador formar uma conexão para ambos os jogadores, durante uma jogada, a primeira cor completada pertencerá ao jogador que efetuou a jogada.
 
@@ -71,18 +61,19 @@ Link para a página de regras do jogo: https://nestorgames.com/rulebooks/ALLIANC
 ## Representação do Estado do Jogo ##
 
 O estado do jogo é representado internamente por dois componentes: 
-- uma lista de listas para o tabuleiro, organizada por linhas e diagonais, contendo um átomo em cada célula para indicar o seu estado; 
-- um argumento composto com o estado de cor atual para cada jogador ('TRUE' ou 'FALSE'), indicando se o jogador ganhou a cor.
+- Uma lista de listas para o tabuleiro, organizada por linhas e diagonais, contendo um átomo em cada célula para indicar o seu estado; 
+- Um argumento composto com o estado de cor atual para cada jogador ('TRUE' ou 'FALSE'), indicando se o jogador ganhou a cor.
 
 ### Átomos ###
-**orange** - Peça laranja\
-**green** - Peça verde\
-**purple** - Peça roxa\
-**empty** - Célula sem peça
-
+```prolog
+code(empty, ' ').  % Empty
+code(orange, 'O'). % Orange
+code(purple, 'P'). % Purple
+code(green, 'G').  % Green
+```
 
 ### Player Atual ###
-O player atual é passado por argumento no predicado do ciclo do jogo, que é efetuado recursivamente durante todo o decorrer de uma partida.
+O player atual é passado por argumento no predicado do ciclo do jogo, que é efetuado recursivamente durante todo o decorrer de uma partida, alternando os jogadores em cada ciclo.
 
 
 ### Peças por jogar ###
@@ -90,89 +81,267 @@ O número de peças disponíveis para jogar é calculado em cada ciclo de jogo, 
 
 
 #### Estado Inicial ####
->**initial**([
+```
+initial([
     [                                         empty,    empty],                            
     [                                     empty,   empty,   empty],                         
-    [                                empty,    empty,   empty,  empty],                     
+    [                                empty,    empty,   empty,   empty],                     
     [                           empty,    empty,    empty,   empty,   empty],               
     [                      empty,    empty,    empty,   empty,   empty,   empty],           
     [                          empty,     empty,   empty,   empty,    empty],               
     [                      empty,    empty,    empty,   empty,   empty,   empty],           
     [                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      
-    [                      empty,    empty,    empty,   empty,  empty,   empty],           
-    [                 empty,   empty,     empty,    empty,   empty,    empty,   empty],      
-    [                      empty,    empty,    empty,   empty,  empty,   empty],           
-    [                 empty,   empty,     empty,   empty,     empty,    empty,   empty],      
-    [                      empty,    empty,    empty,   empty,  empty,   empty],           
-    [                 empty,   empty,     empty,   empty,     empty,    empty,   empty],      
     [                      empty,    empty,    empty,   empty,   empty,   empty],           
-    [                 empty,   empty,     empty,   empty,     empty,    empty,   empty],      
+    [                 empty,   empty,     empty,    empty,  empty,    empty,   empty],      
     [                      empty,    empty,    empty,   empty,   empty,   empty],           
-    [                           empty,    empty,   empty,    empty,   empty],               
+    [                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      
     [                      empty,    empty,    empty,   empty,   empty,   empty],           
-    [                           empty,    empty,   empty,   empty,   empty],                
+    [                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      
+    [                      empty,    empty,    empty,   empty,   empty,   empty],           
+    [                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      
+    [                      empty,    empty,    empty,   empty,   empty,   empty],           
+    [                           empty,    empty,   empty,   empty,    empty],               
+    [                      empty,    empty,    empty,   empty,   empty,   empty],           
+    [                           empty,    empty,   empty,   empty,    empty],                
     [                                empty,    empty,   empty,   empty],                    
     [                                     empty,   empty,   empty],                         
     [                                          empty,   empty]                              
     ]-('FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE')).
-
+```
 <br />
 
-<!-- #### Estado Intermédio
->**mid**([\
-    [nodef, nodef, nodef, nodef, space, purpleEnd, purpleEnd, purpleEnd, purpleEnd, purpleEnd      ],\
-    [nodef, nodef, nodef, nodef, space,                          empty, purple, empty, empty, empty                 ],\
-    [nodef, nodef, orangeEnd,                          empty, empty, purple, empty, empty, empty, empty, empty,          greenEndSpace],\
-    [nodef, nodef, orangeEndSpace,                empty, empty, empty, empty, empty, empty, empty, empty, empty,          greenEndSpace],\
-    [nodef, orangeEnd,                          empty, empty, empty, empty, empty, empty, empty, empty, empty, empty,          greenEndSpace],\
-    [nodef, orangeEndSpace,                  empty, empty, green, empty, empty, empty, empty, empty, empty, empty, empty,           greenEndSpace],\
-    [orangeEnd,                          empty, empty, empty, empty, empty, empty, orange, empty, empty, empty, empty, empty,           greenEndSpace],\
-    [nodef, space,                          empty, empty, empty, empty, empty, empty, green, empty, empty, empty, empty                          ],\
-    [greenEnd,                           empty, empty, empty, empty, empty, empty, empty, empty, empty, empty, empty, empty,            orangeEndSpace],\
-    [nodef, greenEndSpace,                   empty, empty, empty, empty, empty, empty, empty, empty, empty, empty, empty,           orangeEndSpace],\
-    [nodef, greenEnd,                           empty, empty, empty, empty, orange, empty, empty, empty, empty, empty,         orangeEndSpace],\
-    [nodef, nodef, greenEndSpace,                 empty, empty, empty, empty, empty\, empty, empty, empty, empty,          orangeEndSpace],\
-    [nodef, nodef, greenEnd,                           empty, empty, empty, empty, empty, empty, empty, empty,           orangeEndSpace],\
-    [nodef, nodef, nodef, nodef, space,                          empty, empty, empty, empty, empty                                     ],\
-    [nodef, nodef, nodef, nodef, space, purpleEnd, purpleEnd, purpleEnd, purpleEnd, purpleEnd]\
-]).
-
+#### Estado Intermédio
+```
+mid([
+    [                                         empty,    empty],                            
+    [                                     empty,   empty,    empty],                         
+    [                                empty,    empty,   empty,   green],                     
+    [                           green,    empty,    empty,   purple,  empty],               
+    [                      empty,    green,    empty,   green,   empty,   empty],           
+    [                          empty,     purple,   green,   empty,   green],               
+    [                      empty,    empty,    green,   empty,   empty,   empty],           
+    [                 empty,   empty,     empty,    empty,   empty,   empty,  empty],      
+    [                      empty,    empty,    green,   empty,   empty,   empty],           
+    [                 empty,   empty,     empty,    empty,   empty,   empty,  empty],      
+    [                      empty,    empty,    green,   empty,   empty,   empty],           
+    [                 empty,   empty,     empty,    empty,   empty,   empty,  empty],      
+    [                      empty,    empty,    purple,  empty,   empty,   empty],           
+    [                 empty,   empty,     empty,    empty,   empty,   empty,  empty],      
+    [                      empty,    empty,    purple,  empty,   purple,  empty],           
+    [                 empty,   empty,     empty,    empty,   empty,   empty,  empty],      
+    [                      empty,    empty,    green,   empty,   empty,   empty],           
+    [                           empty,    empty,    empty,   empty,   empty],               
+    [                      empty,    empty,    purple,  empty,   empty,   empty],           
+    [                           empty,    empty,    empty,   empty,   empty],                
+    [                                empty,    green,   empty,   empty],                    
+    [                                     purple,   green,   empty],                         
+    [                                          empty,   green]                              
+    ]-('FALSE'-'FALSE'-'TRUE'-'TRUE'-'FALSE'-'FALSE')).
+```
 <br />
 
 #### Estado Final
->**final**([\
-    [nodef, nodef, nodef, nodef, space, purpleEnd, purpleEnd, purpleEnd, purpleEnd, purpleEnd      ],\
-    [nodef, nodef, nodef, nodef, space,                          empty, purple, empty, empty, empty                 ],\
-    [nodef, nodef, orangeEnd,                          empty, empty, purple, empty, empty, empty, empty, empty,          greenEndSpace],\
-    [nodef, nodef, orangeEndSpace,                empty, empty, purple, empty, empty, empty, empty, empty, green,          greenEndSpace],\
-    [nodef, orangeEnd,                          empty, empty, empty, purple, empty, empty, empty, empty, green, empty,          greenEndSpace],\
-    [nodef, orangeEndSpace,                  empty, empty, green, purple, empty, empty, empty, empty, green, empty, empty,           greenEndSpace],\
-    [orangeEnd,                          empty, empty, empty, empty, purple, green, orange, empty, green, empty, empty, empty,           greenEndSpace],\
-    [nodef, space,                          empty, empty, empty, purple, empty, empty, green, green, empty, empty, empty                          ],\
-    [greenEnd,                           empty, empty, empty, empty, purple, empty, green, green, empty, empty, empty, empty,            orangeEndSpace],\
-    [nodef, greenEndSpace,                   empty, empty, empty, purple, empty, green, empty, empty, empty, empty, empty,           orangeEndSpace],\
-    [nodef, greenEnd,                           empty, empty, empty, purple, green, orange, empty, empty, empty, empty,         orangeEndSpace],\
-    [nodef, nodef, greenEndSpace,                 empty, green, purple, green, empty, empty, empty, empty, empty,           orangeEndSpace],\
-    [nodef, nodef, greenEnd,                           green, green, purple, empty, empty, empty, empty, empty,           orangeEndSpace],\
-    [nodef, nodef, nodef, nodef, space,                          purple, empty, empty, empty, empty                                     ],\
-    [nodef, nodef, nodef, nodef, space, purpleEnd, purpleEnd, purpleEnd, purpleEnd, purpleEnd]\
-]).
-
-<br /><br />
-<p align="center">
-    <img src="images/InitialBoard.png" /><br />
-    <i>Tabuleiro no Estado Inicial</i><br /> <br /><br />
-    <img src="images/MidBoard.png" /><br />
-    <i>Tabuleiro no Estado Intermédio</i><br /> <br /><br />
-    <img src="images/FinalBoard.png" /><br />
-    <i>Tabuleiro no Estado Final</i><br /> <br />
-</p> -->
+```
+final([
+    [                                          empty,   empty],                            
+    [                                     empty,   empty,   empty],                         
+    [                                empty,    empty,   empty,   green],                     
+    [                          green,    green,    empty,   purple,   empty],               
+    [                      orange,   green,    green,   green,   empty,   empty],           
+    [                          empty,     purple,  green,   empty,    green],               
+    [                      orange,   empty,    green,   green,   orange,  green],           
+    [                 green,   empty,     empty,   empty,   orange,   empty,   green],      
+    [                      empty,    empty,    green,   empty,   empty,   empty],           
+    [                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      
+    [                      empty,    empty,    green,   empty,   empty,   empty],           
+    [                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      
+    [                      empty,    orange,   purple,  empty,   empty,   empty],           
+    [                 purple,  orange,    empty,   empty,   empty,    empty,   orange],      
+    [                      empty,    empty,    purple,  purple,  purple,  orange],           
+    [                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      
+    [                      empty,    empty,    green,   empty,   empty,   empty],           
+    [                          empty,     empty,   green,   empty,    empty],               
+    [                      empty,    empty,    purple,  empty,   empty,   empty],           
+    [                          empty,     empty,   empty,   empty,    empty],                
+    [                                empty,    green,   empty,   empty],                    
+    [                                     purple,  green,   empty],                         
+    [                                          empty,   green]                              
+    ]-('FALSE'-'TRUE'-'TRUE'-'TRUE'-'FALSE'-'FALSE')).
+```
+<br>
 
 # Visualização do estado de jogo ##
-Para visualizar o tabuleiro usamos o predicado display_game/2 que imprime uma linha do tabuleiro (print_line/1) e continua recursivamente até imprimir todas as linhas. 
-Através do predicado print_line/1 imprimimos no ecrã cada linha dividida por três partes(print_top, print_mid, print_bot), para conseguirmos as formas dos hexágonos com a letra da cor correspondente no centro. 
-Se uma célula conter um átomo de 'end' imprime a cor daquela extremidade; se for 'space' ou 'nodef' imprime espaços completamente vazios(não fazem parte do tabuleiro). Apenas quando contém o código de uma cor válida ou 'empty' imprime o hexágono com o disco correspondente ou vazio.
-No final da recursividade são também apresentados os números de discos disponíveis para jogar (display_discs/0) e o número do jogador atual (display_player/1).
+Para visualizar o tabuleiro usamos o predicado **display_game/2**, recebendo o estado do jogo e o player atual.
+Este predicado chama **print_board/2**, **display_discs/1**, **display_player/1** e **displayColoursState/1**, que imprimem o tabuleiro, o número de discos disponíveis, o jogador do turno seguinte e as cores ganhas de cada jogador, respetivamente. 
+Através do predicado print_line/2, usado em print_board, imprimimos no ecrã cada linha dividida por três casos (print_case1, print_case2, print_case3) para conseguirmos as formas dos hexágonos com a letra da cor correspondente no centro. Adicionalmente, consideramos também dois casos específicos para a primeira e última linhas do tabuleiro.
+ 
+ ```prolog
+ % Imprime toda a informação do jogo - Caso em que o jogo foi ganho
+display_game(Board-ColoursWon, 0) :-
+    print_board(Board, 1),
+    display_discs(Board-ColoursWon).
+
+% Imprime toda a informação do jogo - Incluindo o próximo player a jogar
+display_game(Board-ColoursWon, Player) :-
+    print_board(Board, 1),
+    display_discs(Board-ColoursWon),
+    display_player(Player).
+```
+
+Junto com o tabuleiro, o jogador atual, o estado das cores e dos discos, é também imprimido do lado direito do tabuleiro, a tabela de cores para cada jogador, para estes consultarem as suas cores aliadas.
+
+![estado do jogo](images/gameState_view.png)
+
+Antes do decorrer da partida, é também apresentado um sistema de menus ao utilizador, onde pode consultar instruções sobre o jogo, escolher o modo de jogo e, para os modos com computador, escolher o seu nível de dificuldade.
+
+![menus](images/menus.png)
 
 
 >Nota: Para uma correta visualização do jogo as fontes recomendadas a utilizar são a DejaVu Sans Mono (https://www.fontsquirrel.com/fonts/dejavu-sans-mono)  ou Consolas (https://freefontsdownload.net/free-consolas-font-33098.htm).
+
+<br>
+
+## Lista de Jogadas Válidas ##
+
+Uma jogada é considerada válida quando a célula de destino está vazia, ou seja, ainda não contém qualquer peça. A lista de jogadas válidas é obtida a partir do predicado valid_moves/2, que verifica se a condição referida anteriormente está satisfeita e, se existem discos disponíveis para efetuar cada jogada.
+É usado um *findall* para construir a lista de todas as jogadas que obedecem a todas as condições.
+
+```prolog
+valid_moves(Board-ColoursWon, ListOfMoves) :-
+    searchBoard(Board, [], List, 1),
+    findall(Move, 
+        (
+            member(Move, List), 
+            checkValidMove(Board-ColoursWon, Move)
+        ), 
+    ListOfMoves).
+```
+
+**searchBoard** - Dado o tabuleiro do jogo, unifica com o seu 3º argumento uma lista contendo todos os movimentos possíveis inicialmente, cada um na forma [Linha, Diagonal, Cor].
+
+**checkValidMove** - Dada uma jogada possível (Linha, Diagonal, Cor), verifica se a célula alvo está vazia e se existem discos suficientes da sua "Cor" para efetuar a mesma.
+
+<br>
+
+## Execução de Jogadas ##
+
+Durante cada turno, o jogador tem que fazer apenas uma jogada, que consiste em colocar um disco de qualquer cor, de entre as três disponíveis, em qualquer casa que estiver atualmente vazia.
+
+Inicialmente, em cada jogada, é chamado o predicado **userPlay/4**, onde é inserido o *input* relativo à jogada (predicado **getUserInput/3**) e verificado se as coordenadas inseridas pelo jogador são válidas, para o conjunto Linha + Diagonal + Cor. No caso desta condição ser satisfeita, é utilizado o predicado **move(+GameState, +Move, -NewGameStateBoard)**, que após verificação se as coordenadas fornecidas equivalem a uma célula válida, atualiza o tabuleiro, substituindo a célula que anteriormente estava vazia pela cor da jogada efetuada. Por fim, no predicado **updateColours/3**, é verificado se a jogada contribuiu para que o jogador completasse uma cor. Nesse caso, o *GameState* é alterado, passando a **TRUE** o estado da cor ganha que antes estava a **FALSE**, por ainda não ter sido obtida. Por fim, é imprimida a jogada efetuada através do predicado **print_move/1**. Todo o predicado **userPlay** está envolvido num *repeat* para no caso de existirem erros nos *inputs* fornecidos pelo jogador, voltar-se atrás e pedir-se nova inserção dos mesmos.
+
+```prolog
+userPlay(GameState, NewGameState, Nplayer-p) :-
+    repeat,
+    (
+        getUserInput(Row, Diagonal, Colour),
+        move(GameState, [Row, Diagonal, Colour], NewGameStateBoard),
+        updateColours(NewGameStateBoard, NewGameState, Nplayer),
+        print_move([Row, Diagonal, Colour])
+    ).
+```
+
+## Final do Jogo ##
+
+O predicado **game_over(+GameState, -Winner)** é responsável pela verificação do término do jogo.  Em *GameState* recebe entre outras coisas, o estado das cores do respetivo jogador e verifica se pelo menos duas foram ganhas, no predicado **checkPlayerWinner/1**. Caso o mesmo suceda, significa que o jogador ganhou sendo portanto retornado em *Winner* e o jogo termina.
+
+```prolog
+game_over(_-(Purple-Orange-Green-_-_-_), Winner) :-
+    checkPlayerWinner(Purple-Orange-Green),
+    Winner is 1.
+
+game_over(_-(_-_-_-Purple-Orange-Green), Winner) :-
+    checkPlayerWinner(Purple-Orange-Green),
+    Winner is 2.
+
+checkPlayerWinner('TRUE'-'TRUE'-_).
+checkPlayerWinner('TRUE'-_-'TRUE').
+checkPlayerWinner(_-'TRUE'-'TRUE').
+```
+
+> Programação declarativa utilizada no caso do jogador 1 e 2.
+
+<br>
+
+## Avaliação do Tabuleiro ##
+
+O predicado utilizado na avaliação do tabuleiro é o **value(+GameState, +Player, -Value)**. O mesmo retorna em *Value*, o valor do tabuleiro para um dado *Player*. Quanto maior o *Value*, mais favorável o estado do tabuleiro para o jogador atual. 
+
+```prolog
+value(GameState, Player, Value) :-
+    findall(ColourTable, colourTable(Player, ColourTable), ColourTables),
+    findall(ValueColour, ( member(Colour2-_-NotAlliedColour2, ColourTables), 
+        getDistanceColour(GameState, Colour2-NotAlliedColour2, ValueColour1), transformValue(ValueColour1, ValueColour)), 
+        ValueColours),
+    sumlist(ValueColours, Value).
+```
+
+Primeiramente, obtém-se a tabela de cores para o player atual, na forma Cor-CorAliada-CorNaoAliada. Conseguimos então, com essa tabela, a cor não aliada do jogador para cada cor. Para obter todas as tabelas é usado um *findall*, que verifica as tabelas para esse player e cria uma lista ColourTables, contendo-as. 
+
+De seguida, avaliamos o tabuleiro considerando cada uma das cores. Neste caso, usamos o predicado **getDistanceColour(+GameState, +ColourAndNotAllied, -Distance)**, que calcula a distância a que o jogador está de ligar a cor recebida, unificando-a em *Distance*.
+
+```prolog
+getDistanceColour(Board-ColourState, Colour-NotAlliedColour, Distance) :-  
+    getColourStartingPoints(Colour, ColourState, StartPoints, Predicate),
+    max_depth(MaxDepth),
+    getDistance(StartPoints, [], NotAlliedColour, MaxDepth, 0, Distance, Board, Predicate), !.
+```
+
+Neste predicado, é usado o **getColourStartingPoints(+Colour, +ColourState, -StartPoints, -EndPredicate)**, que, recebendo a cor e o estado das cores, unifica em StartPoints uma lista com os pontos de uma das bordas da cor pretendida, e em EndPredicate o nome do predicado que sucede nos pontos da borda oposta. Por exemplo, para a cor 'orange' são retornados os pontos da borda 'orange1' e EndPredicate é unificado com 'orange2'.
+
+```prolog
+getColourStartingPoints(purple, 'FALSE'-_-_, StartPoints, purple2) :-
+    findall(Row-Diagonal, purple1(Row, Diagonal), StartPoints).
+    
+getColourStartingPoints(orange, _-'FALSE'-_, StartPoints, orange2) :-
+    findall(Row-Diagonal, orange1(Row, Diagonal), StartPoints).
+
+getColourStartingPoints(green, _-_-'FALSE', StartPoints, green2) :-
+    findall(Row-Diagonal, green1(Row, Diagonal), StartPoints).
+```
+
+De seguida, usando a profundidade máxima definida no programa, executa-se **getDistance/8**, que, no código acima, devolve em *Distance* a distância para fazer a cor que tem uma borda em *StartPoint* e a outra na borda com nome *Predicate*. A distância é avaliada da seguinte forma:
+
+Num algoritmo da espécie pesquisa em largura, faz-se uma contagem dos níveis necessários para fazer um caminho entre as bordas opostas, sendo que células com a cor pretendida e a cor aliada não aumentam a contagem. Assim obtém-se o número mínimo de peças a colocar para o jogador ligar a cor. Se a cor estiver bloqueada, o predicado retorna uma distância 'infinita' definida no programa.
+
+No final, a distância é transformada num valor que beneficia distâncias menores em *transform_value/2*, neste caso 1/(Distância^3), e, obtendo-se a lista com a distância para cada cor, somam-se os elementos. Assim, consegue-se a avaliação do estado de jogo atual.
+
+<br>
+
+## Jogada do Computador ##
+
+Nos modos que incluem um jogador de inteligência artifical, este pode ser definido com três modos de dificuldade diferentes:
+- Aleatório
+- Ganancioso Fácil
+- Ganancioso Difícil
+
+Para estes modos, foi criado o predicado **choose_move(+GameState, +Player, +Level, -Move)**, sendo que *Level* pode ser um dos seguintes átomos: *random*, *greedy* ou *greedy_hard*.
+```prolog
+choose_move(GameState, Player, Level, Move) :-
+    valid_moves(GameState, ListOfMoves),
+    getMove(GameState, Level, ListOfMoves, Move, Player).
+```
+Obtendo a lista de todas as jogadas válidas (*valid_moves/3*), é então possível escolher qual a jogada melhor para o jogador através de **getMove(+GameState, +Level, +ListOfMoves, -Move, +Player)**.
+
+Nesse predicado, são gerados todos os tabuleiros possíveis a partir da lista de jogadas, e cada um deles é avaliado com recurso ao predicado *value/3*. É então selecionado a jogada com o valor máximo e, no caso de múltiplas jogadas com esse valor máximo, uma delas é selecionada aleatoriamente.
+
+No entanto, este predicado varia de acordo com o modo de dificuldade:
+- No ganancioso fácil, é efetuado o caso acima normalmente
+- No ganancioso difícil, o valor de cada jogada torna-se no valor do tabuleiro para o inimigo subtraído ao valor do tabuleiro para o jogador atual, seguindo uma proporção definida
+- No modo aleatório, basta selecionar um elemento *random* da lista e unificar com *Move*
+
+No modo aleatório, é também efetuado um *sleep* de 2 segundos, devido à velocidade da escolha de movimento.
+
+<br>
+
+# Conclusão #
+
+Este projeto, realizado no âmbito da Unidade Curricular de Programação em Lógica, teve como objetivo a criação de um jogo de tabuleiro em *Prolog*. Após o desenvolvimento do mesmo, constatamos que foi de facto um projeto desafiante, uma vez que o algoritmo de *path finding* utilizado no cálculo da melhor jogada para os modos *greedy* e *greedy hard*, bem como o desenho do tabuleiro no terminal em formato de malha, trouxeram-nos muitos problemas que foram mais tarde foram ultrapassados. 
+
+O resultado final foi uma implementação robusta e passível de transposições para aplicações gráficas 3D mais complexas.
+Uma possível melhoria relativamente ao projeto, seria o desenvolvimento de um algoritmo de escolha de jogada do computador que tornasse impossível ao adversário ganhar o jogo.
+    
+# Bibliografia #
+
+https://nestorgames.com/rulebooks/ALLIANCES_EN.pdf
+
+https://www.swi-prolog.org/pldoc/man?section=lists

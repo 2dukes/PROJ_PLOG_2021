@@ -7,7 +7,7 @@ choose_move(GameState, Player, Level, Move) :-
     getMove(GameState, Level, ListOfMoves, Move, Player).
 
 getMove(_, random, ListOfMoves, Move, _) :- 
-    % sleep(2),
+    sleep(2),
     random_member(Move, ListOfMoves).
 
 getMove(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2), Level, ListOfMoves, Move, Player) :-
@@ -16,10 +16,9 @@ getMove(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2),
     colourWonBoth(OrangeWon1, OrangeWon2, OrangeWon),
     
     getMoveAux(Board-(PurpleWon-OrangeWon-GreenWon), Player, ListOfMoves, Level, ValueMoveList),
-    % write(ValueMoveList), nl, nl, 
     max_member(ValueMax-_, ValueMoveList),
     findall(Value1-MoveBest, (member(Value1-MoveBest, ValueMoveList), Value1 == ValueMax), BestMoves),
-    % write(BestMoves),nl,
+
     random_member(_-ChosenMove, BestMoves),
     Move = ChosenMove.
 
@@ -45,19 +44,18 @@ colourWonBoth(_, 'TRUE', 'TRUE').
 colourWonBoth('FALSE', 'FALSE', 'FALSE').
 
 % Obtém a lista de moves válidos para a próxima jogada 
-valid_moves(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2), ListOfMoves) :-
-    % searchBoard(NewBoard, List, 1).
+valid_moves(Board-ColoursWon, ListOfMoves) :-
     searchBoard(Board, [], List, 1),
     findall(Move, 
         (
             member(Move, List), 
-            checkValidMove(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2), Move)
+            checkValidMove(Board-ColoursWon, Move)
         ), ListOfMoves).
 
 % Verifica se uma jogada é válida; isto é, se a célula está vazia e se existem discos suficientes para efetuar essa jogada.
-checkValidMove(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2), [Row, Diagonal, Colour]) :-
+checkValidMove(Board-ColoursWon, [Row, Diagonal, Colour]) :-
     checkEmpty([Row, Diagonal, Colour], Board),
-    checkAvailableDisc(Board-(PurpleWon1-OrangeWon1-GreenWon1-PurpleWon2-OrangeWon2-GreenWon2), Colour).
+    checkAvailableDisc(Board-ColoursWon, Colour).
 
 
 

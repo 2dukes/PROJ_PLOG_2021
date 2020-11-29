@@ -123,31 +123,6 @@ colourTable(1, green-purple-orange).
 colourTable(2, purple-green-orange).
 colourTable(2, orange-purple-green).
 colourTable(2, green-orange-purple). 
-% initial([
-% [                                         orange,    empty],                            %1
-% [                                     orange,   empty,   empty],                         %2
-% [                                purple,    orange,   empty,  green],                     %3
-% [                           empty,    purple,    orange,   green,   empty],               %4
-% [                      empty,    empty,    purple,   empty,   green,   empty],           %5
-% [                          empty,     empty,   purple,   green,    empty],               %6
-% [                      empty,    empty,    empty,   green,   empty,   empty],           %7 
-% [                 empty,   empty,     empty,   purple,   empty,    empty,   empty],      %8
-% [                      empty,    green,    empty,   empty,  empty,   empty],           %9
-% [                 empty,   green,     empty,    purple,   empty,    empty,   empty],      %10
-% [                      empty,    green,    empty,   purple,  empty,   empty],           %11
-% [                 empty,   green,     empty,   empty,     empty,    empty,   empty],      %12
-% [                      green,    empty,    empty,   purple,  empty,   empty],           %13
-% [                 empty,   empty,     empty,   orange,     purple,    empty,   empty],      %14
-% [                      green,    green,    orange,   green,   empty,   empty],           %15
-% [                 empty,   empty,     orange,   empty,     purple,    empty,   empty],      %16
-% [                      green,    empty,    empty,   orange,   green,   empty],           %17
-% [                           empty,    green,   purple,    purple,   empty],               %18
-% [                      empty,    empty,    empty,   orange,   purple,   empty],           %19
-% [                           empty,    empty,   orange,   empty,   empty],                %20
-% [                                empty,    empty,   empty,   empty],                    %21
-% [                                     empty,   empty,   empty],                         %22
-% [                                          empty,   empty]                              %23
-% ]-('FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE'-'FALSE')).
 
 % Initial Game State
 initial([
@@ -235,7 +210,7 @@ getAdjList(Pontos, NotAlliedColour, Visited, Board, Lista, Resultado) :-
     getAdjList([], NotAlliedColour, Visited, Board, NovaLista, Resultado).
 
 % Computa o nível 0 (0 jogadas de distância) e o nível 1 (1 jogada de distância) para os algoritmos do bot. 
-newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, 0, Resultado, Board, Predicate) :-
+getDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, 0, Resultado, Board, Predicate) :-
     findall(Row-Diag, 
         (member(Row-Diag, PontosDoNivelAtual), getCellByCoords(Board, Row, Diag, Cell), Cell \= NotAlliedColour, Cell \= empty)
         , PontosAliados),
@@ -276,24 +251,24 @@ newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, 0, Resul
             append(LevelZero, Part3, Visited1),
             getAdjList(NovoNivelAdjacentes, NotAlliedColour, Visited1, Board, [], Part4),
             append(Part3, Part4, LevelOne),
-            !, newGetDistance(LevelOne, LevelZero, NotAlliedColour, Depth, 1, Resultado, Board, Predicate)
+            !, getDistance(LevelOne, LevelZero, NotAlliedColour, Depth, 1, Resultado, Board, Predicate)
         )  
     ).
     
 % Quando a profundidade máxima é atingida ou o próximo nível está vazio, a distância é considerada como 2000
-newGetDistance( _, _, _, Depth, DistanciaAtual, Resultado, _, _) :- 
+getDistance( _, _, _, Depth, DistanciaAtual, Resultado, _, _) :- 
     DistanciaAtual > Depth,
     Resultado is 2000.
 
-newGetDistance([], _, _, _, _, Resultado, _, _) :- 
+getDistance([], _, _, _, _, Resultado, _, _) :- 
     Resultado is 2000.
 
-newGetDistance(NivelAtual, _, _, _, DistanciaAtual, Resultado, _, Predicate) :- % encontrou distancia
+getDistance(NivelAtual, _, _, _, DistanciaAtual, Resultado, _, Predicate) :- % encontrou distancia
     checkReached(NivelAtual, Predicate),
     Resultado is DistanciaAtual.
 
 % Computa os restantes níveis de profundidade recursivamente
-newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, DistanciaAtual, Resultado, Board, Predicate) :-
+getDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, DistanciaAtual, Resultado, Board, Predicate) :-
     append(PontosDoNivelAtual, JaVisitados, Visitados),
     Depth >= DistanciaAtual,
 
@@ -320,7 +295,7 @@ newGetDistance(PontosDoNivelAtual, JaVisitados, NotAlliedColour, Depth, Distanci
     append(NovoNivel, Parte3, Nivel),
     NovaDistancia is DistanciaAtual + 1,
 
-    newGetDistance(Nivel, Visitados, NotAlliedColour, Depth, NovaDistancia, Resultado, Board, Predicate).
+    getDistance(Nivel, Visitados, NotAlliedColour, Depth, NovaDistancia, Resultado, Board, Predicate).
 
 % Update ao Board no ato de uma nova jogada
 updateBoard(Board, [Row, Diagonal, Colour], NewBoard) :-
