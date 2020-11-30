@@ -151,7 +151,7 @@ colourWonOrFence(StartPoints, _, NotAlliedColour, Depth, DistanciaAtual, Board, 
 colourWonOrFence(StartPoints, AlliedColour, _, _, DistanciaAtual, Board, Edge2) :-
     max_depth(MaxDepth),
     once( getDistance(StartPoints, [], AlliedColour, MaxDepth, DistanciaAtual, Result, Board, Edge2) ),
-    Result == 3000.
+    Result == 2000.
 
 % Dado um tabuleiro Board, unifica em Value o seu valor, sendo depois o mesmo utilizado para definir a melhor jogada no momento
 value(GameState, Player, Value) :-
