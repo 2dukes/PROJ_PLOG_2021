@@ -55,24 +55,53 @@ cNote(N, M) :-
     generateGrid(N-M, [], InputGrid, 'TRUE'), % Read Input Puzzle
     generateGrid(N-M, [], DynamicGrid, 'FALSE'), % Generate Dynamic List
     generateGrid(N-M, [], DigitGrid, 'FALSE'), % Generate Digit List
-    element(1, DynamicGrid, 2),
-    write(DynamicGrid),
-    domain(DigitGrid, 0, 9).
-    % applyConstraintsLine(InputGrid, DynamicGrid, LeftOrRightGrid).
+    % write(DynamicGrid),
+    applyConstraints(InputGrid, DigitGrid, DynamicGrid),
+    flattenGrid(DynamicGrid, [], ResultGrid),
+    labeling([], ResultGrid),
+    write(ResultGrid).
+    
+    
+% 18 | 8 
+% 18 % 10  = 8 -> LEFT
+% 81 % 10 != 8 -> RIGHT
 
+applyConstraintsLines([], [], []).
+applyConstraintsLines([H|T], [S|T2], [R|T1]) :- % Input | Digits | Result    
+    S in 0..10,                      
+    R in 0..100,                                                                             % / \
+    R #= H*10 + S #\/ R #= S*10 + H, %#\/ (R #= H #/\ S #= 0), #atencao caso q n se mete nada / ! \
+    applyConstraintsLines(T, T2, T1).                                                      % /_____\
 
-testMap(X, Y) :-
-    Y #= 3 #\/ Y #= 4.
+applySumConstraintsLines([]).
+applySumConstraintsLines([Line|Rest]) :-
+    sum(Line, #=, 100),
+    applySumConstraintsLines(Rest).
 
-applyConstraints([H|T], )
+% [[1, 2], [3, 4]]
+applySumConstraintsColumns([], 0).
+applySumConstraintsColumns(Grid, Ncol) :-
+    applySumConstraintsColumnsAux(Grid, Ncol, [], Result),
+    sum(Result, #=, 100),
+    NewNcol is NewNcol - 1,
+    applySumConstraintsColumns(Grid, NewNcol).
 
-test :-
-    length(L, 3),
-    domain(L, 1, 5),
-    % maplist(testMap, L, Y),
-    write('.'),
-    labeling([all], L),
-    write(L).
+applySumConstraintsColumnsAux([], _, Result, Result).
+applySumConstraintsColumnsAux([Line | Rest], Ncol, Aux, Result) :-
+    element(Ncol, Line, Element),
+    append(Aux, [Element], NewAux),
+    applySumConstraintsLinesAux(Rest, Ncol, NewAux, Result).
+
+applyConstraints(Prob, Sol, Res) :- % Input | Digits | Result  
+    applyConstraintsLines(Prob, Sol, Res),
+    element(1, Prob, Line),
+    length(Line, Ncols),
+    applySumConstraintsColumns(Res, Ncols).
+    
+flattenGrid([], Result, Result).
+flattenGrid([Line|Rest], Aux, Result) :-
+    append(Aux, Line, NewAux),
+    flattenGrid(Rest, NewAux, Result).
 
 solveCNote :-
     write('Insert Number of Lines: '),
@@ -80,3 +109,14 @@ solveCNote :-
     write('Insert Number of Columns: '),
     getDimension(M),
     cNote(N, M).
+
+% testMap(X, Y) :-
+%     Y #= 3 #\/ Y #= 4.
+
+% test :-
+%     length(L, 3),
+%     domain(L, 1, 5),
+%     % maplist(testMap, L, Y),
+%     write('.'),
+%     labeling([all], L),
+%     write(L).
