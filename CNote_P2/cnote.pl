@@ -1,5 +1,6 @@
 :- use_module(library(lists)).
 :- use_module(library(clpfd)).
+:- use_module(library(timeout)).
 :- consult('utils.pl').
 
 % Number unmodified
@@ -57,22 +58,22 @@ cNote(N, M) :-
     % write(DynamicGrid),
     applyConstraints(InputGrid, DigitGrid, DynamicGrid),
     flattenGrid(DynamicGrid, [], ResultGrid),
-    labeling([], ResultGrid),
+    labeling([time_out(5000, Flag)], ResultGrid),
     write(ResultGrid),nl,
     flattenGrid(InputGrid, [], Input),
     presentResult(Input, ResultGrid, N, M, M).
     
-    
+cNote(_, _) :- write('No solution found!'), nl.
 % 18 | 8 
 % 18 % 10  = 8 -> LEFT
 % 81 % 10 != 8 -> RIGHT
 
 applyConstraintsLine([], [], []).
 applyConstraintsLine([H|T], [S|T2], [R|T1]) :- % Input | Digits | Result    
-    S in 0..10,                      
-    R in 0..100,                                                                             % / \
+    S in 0..9,                      
+    R in 1..99,                                                                             % / \
     R #= H*10 + S #\/ R #= S*10 + H, %#\/ (R #= H #/\ S #= 0), #atencao caso q n se mete nada / ! \
-    applyConstraintsLine(T, T2, T1).                                                      % /_____\
+    applyConstraintsLine(T, T2, T1).                                                       % /_____\
 
 applySumConstraintsLines([], [], []).
 applySumConstraintsLines([Prob|ProbRest], [Sol|SolRest], [Line|Rest]) :-
