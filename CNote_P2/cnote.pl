@@ -15,21 +15,20 @@ presentNum(Original, Original, Number) :-
 presentNum(_, _, Number) :-
     write('  '), write(Number), write(' |'). 
 
-presentResult_Line([], []).
-presentResult_Line([FOriginal | RestOriginal], [First | Rest]) :-
-    % write(FOriginal), write(RestOriginal),
-    RigthDigit is mod(First, 10),
-    presentNum(FOriginal, RigthDigit, First),
-    presentResult_Line(RestOriginal, Rest).
+decrementN(N, 0, NewN, OriginalM, OriginalM) :-
+    NewN is N - 1, nl.
+
+decrementN(NewN, M, NewN, M, _).
 
 % Present Solution
-presentResult([], []).
-presentResult([FOriginal | RestOriginal], [First | Rest]) :-
+presentResult([], [], 0, _, _).
+presentResult([Original | RestOriginal], [First | Rest], N, M, OriginalM) :- % Input | Result
     write('|'),
-    presentResult_Line(FOriginal, First),
-    nl,
-    presentResult(RestOriginal, Rest).
-
+    RigthDigit is mod(First, 10),
+    presentNum(Original, RigthDigit, First),
+    NewM is M - 1,
+    decrementN(N, NewM, NewN, NewMAgain, OriginalM),
+    presentResult(RestOriginal, Rest, NewN, NewMAgain, OriginalM).
 
 gridLine('TRUE', LineGrid, M) :-
     write('Enter your Line: '),
@@ -59,42 +58,45 @@ cNote(N, M) :-
     applyConstraints(InputGrid, DigitGrid, DynamicGrid),
     flattenGrid(DynamicGrid, [], ResultGrid),
     labeling([], ResultGrid),
-    write(ResultGrid).
+    write(ResultGrid),nl,
+    flattenGrid(InputGrid, [], Input),
+    presentResult(Input, ResultGrid, N, M, M).
     
     
 % 18 | 8 
 % 18 % 10  = 8 -> LEFT
 % 81 % 10 != 8 -> RIGHT
 
-applyConstraintsLines([], [], []).
-applyConstraintsLines([H|T], [S|T2], [R|T1]) :- % Input | Digits | Result    
+applyConstraintsLine([], [], []).
+applyConstraintsLine([H|T], [S|T2], [R|T1]) :- % Input | Digits | Result    
     S in 0..10,                      
     R in 0..100,                                                                             % / \
     R #= H*10 + S #\/ R #= S*10 + H, %#\/ (R #= H #/\ S #= 0), #atencao caso q n se mete nada / ! \
-    applyConstraintsLines(T, T2, T1).                                                      % /_____\
+    applyConstraintsLine(T, T2, T1).                                                      % /_____\
 
-applySumConstraintsLines([]).
-applySumConstraintsLines([Line|Rest]) :-
+applySumConstraintsLines([], [], []).
+applySumConstraintsLines([Prob|ProbRest], [Sol|SolRest], [Line|Rest]) :-
     sum(Line, #=, 100),
-    applySumConstraintsLines(Rest).
+    applyConstraintsLine(Prob, Sol, Line),
+    applySumConstraintsLines(ProbRest, SolRest, Rest).
 
 % [[1, 2], [3, 4]]
-applySumConstraintsColumns([], 0).
+applySumConstraintsColumns(_, 0).
 applySumConstraintsColumns(Grid, Ncol) :-
     applySumConstraintsColumnsAux(Grid, Ncol, [], Result),
     sum(Result, #=, 100),
-    NewNcol is NewNcol - 1,
+    NewNcol is Ncol - 1,
     applySumConstraintsColumns(Grid, NewNcol).
 
 applySumConstraintsColumnsAux([], _, Result, Result).
 applySumConstraintsColumnsAux([Line | Rest], Ncol, Aux, Result) :-
     element(Ncol, Line, Element),
     append(Aux, [Element], NewAux),
-    applySumConstraintsLinesAux(Rest, Ncol, NewAux, Result).
+    applySumConstraintsColumnsAux(Rest, Ncol, NewAux, Result).
 
 applyConstraints(Prob, Sol, Res) :- % Input | Digits | Result  
-    applyConstraintsLines(Prob, Sol, Res),
-    element(1, Prob, Line),
+    applySumConstraintsLines(Prob, Sol, Res),
+    nth1(1, Prob, Line),
     length(Line, Ncols),
     applySumConstraintsColumns(Res, Ncols).
     
@@ -109,14 +111,3 @@ solveCNote :-
     write('Insert Number of Columns: '),
     getDimension(M),
     cNote(N, M).
-
-% testMap(X, Y) :-
-%     Y #= 3 #\/ Y #= 4.
-
-% test :-
-%     length(L, 3),
-%     domain(L, 1, 5),
-%     % maplist(testMap, L, Y),
-%     write('.'),
-%     labeling([all], L),
-%     write(L).
