@@ -58,7 +58,10 @@ cNote(N, M) :-
     % write(DynamicGrid),
     applyConstraints(InputGrid, DigitGrid, DynamicGrid),
     flattenGrid(DynamicGrid, [], ResultGrid),
-    labeling([time_out(5000, Flag)], ResultGrid),
+    reset_timer,
+    labeling([], ResultGrid),
+    print_time,
+	fd_statistics.
     write(ResultGrid),nl,
     flattenGrid(InputGrid, [], Input),
     presentResult(Input, ResultGrid, N, M, M).
