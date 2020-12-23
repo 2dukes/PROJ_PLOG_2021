@@ -33,23 +33,17 @@ presentResult([Original | RestOriginal], [First | Rest], N, M, OriginalM) :- % I
 
 gridLine('TRUE', LineGrid, M) :-
     write('Enter your Line: '),
-    getLine(LineGrid, M).
+    getLine(LineGrid, M), !.
 
 gridLine('FALSE', LineGrid, M) :-
     length(LineGrid, M).
 
-generateGrid(0-_, Grid, Grid, _).
+generateGrid(0-_, Grid, Grid, _) :- !.
 generateGrid(N-M, Aux, Grid, ReadInput) :-
     gridLine(ReadInput, LineGrid, M),
     append(Aux, [LineGrid], NewAux),
     NewN is N - 1,
     generateGrid(NewN-M, NewAux, Grid, ReadInput).
-
-% applyConstraintsCell([IFirst | IRest], [DFirst | DRest], [LRFirst | LRRest]) :-
-%     DynamicFirst #= InputFirst + 
-
-% applyConstraintsLine([ILine | IRest], [DLine | DRest], [LRLine | LRRest]) :-
-%     applyConstraintsCell(ILine, DLine, LRLine),
 
 cNote(N, M) :-
     generateGrid(N-M, [], InputGrid, 'TRUE'), % Read Input Puzzle
@@ -61,7 +55,8 @@ cNote(N, M) :-
     reset_timer,
     % time_out(labeling([], ResultGrid), 1000, Res),
     % write(Res),
-    labeling([], ResultGrid),
+    trace,
+    labeling([time_out(1000, time_out)], ResultGrid),
     print_time,
 	fd_statistics,
     write(ResultGrid),nl,
@@ -87,7 +82,7 @@ applySumConstraintsLines([Prob|ProbRest], [Sol|SolRest], [Line|Rest]) :-
     applySumConstraintsLines(ProbRest, SolRest, Rest).
 
 % [[1, 2], [3, 4]]
-applySumConstraintsColumns(_, 0).
+applySumConstraintsColumns(_, 0) :- !.
 applySumConstraintsColumns(Grid, Ncol) :-
     applySumConstraintsColumnsAux(Grid, Ncol, [], Result),
     sum(Result, #=, 100),
