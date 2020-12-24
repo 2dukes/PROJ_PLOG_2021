@@ -15,7 +15,7 @@ getIntAux(_) :-
 
 getDimension(N) :-
     repeat,
-    getDimensionAux(N).
+    getDimensionAux(N), !.
 
 getDimensionAux(N) :-
     getInt(N),

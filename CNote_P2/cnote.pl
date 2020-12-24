@@ -1,6 +1,8 @@
 :- use_module(library(lists)).
 :- use_module(library(clpfd)).
+:- use_module(library(random)).
 :- consult('utils.pl').
+:- consult('generate.pl').
 
 % Number unmodified
 presentNum(_, _, Number) :-
@@ -37,35 +39,20 @@ gridLine('TRUE', LineGrid, M) :-
 gridLine('FALSE', LineGrid, M) :-
     length(LineGrid, M).
 
-generateGrid(0-_, Grid, Grid, _).
+generateGrid(0-_, Grid, Grid, _) :- !.
 generateGrid(N-M, Aux, Grid, ReadInput) :-
     gridLine(ReadInput, LineGrid, M),
     append(Aux, [LineGrid], NewAux),
     NewN is N - 1,
     generateGrid(NewN-M, NewAux, Grid, ReadInput).
 
-cNote(N, M, InputGrid, DynamicGrid, DigitGrid) :-
-    % write(DynamicGrid),
+cNote(InputGrid, DynamicGrid, DigitGrid, ResultGrid, Flag, Timeout) :-
     applyConstraints(InputGrid, DigitGrid, DynamicGrid),
     flattenGrid(DynamicGrid, [], ResultGrid),
     reset_timer,
-    % time_out(labeling([], ResultGrid), 1000, Res),
-    % write(Res),
-    labeling([time_out(5000, Flag)], ResultGrid),
-    finalCNote(Flag, InputGrid, ResultGrid, N, M).
+    labeling([time_out(Timeout, Flag)], ResultGrid).
    
-    
-cNote(_, _, _, _, _) :- write('No solution found!'), nl.
-
-finalCNote(success, InputGrid, ResultGrid, N, M) :-
-    print_time,
-	fd_statistics,
-    write(ResultGrid),nl,
-    flattenGrid(InputGrid, [], Input),
-    presentResult(Input, ResultGrid, N, M, M).
-
-finalCNote(time_out, _, _, _, _) :-
-    write('No solutions found withing 5s!'), nl.
+cNote(_, _, _, _, nosolutions, _).
 
 % 18 | 8 
 % 18 % 10  = 8 -> LEFT
@@ -117,4 +104,19 @@ solveCNote :-
     generateGrid(N-M, [], InputGrid, 'TRUE'), % Read Input Puzzle
     generateGrid(N-M, [], DynamicGrid, 'FALSE'), % Generate Dynamic List
     generateGrid(N-M, [], DigitGrid, 'FALSE'), % Generate Digit List
-    !, cNote(N, M, InputGrid, DynamicGrid, DigitGrid).
+    !,
+    cNote(InputGrid, DynamicGrid, DigitGrid, ResultGrid, Flag, 5000),
+    finalCNote(Flag, InputGrid, ResultGrid, N, M, true).
+
+finalCNote(success, InputGrid, ResultGrid, N, M, true) :-
+    print_time,
+	fd_statistics,
+    write(ResultGrid),nl,
+    flattenGrid(InputGrid, [], Input),
+    presentResult(Input, ResultGrid, N, M, M).
+
+finalCNote(time_out, _, _, _, _, true) :-
+    write('No solutions found withing 5s!'), nl.
+
+finalCNote(nosolutions, _, _, _, _, true) :-
+    write('No solutions found!'), nl.
