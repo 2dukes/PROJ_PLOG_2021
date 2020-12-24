@@ -32,34 +32,30 @@ presentResult([Original | RestOriginal], [First | Rest], N, M, OriginalM) :- % I
 
 gridLine('TRUE', LineGrid, M) :-
     write('Enter your Line: '),
-    getLine(LineGrid, M), !.
+    getLine(LineGrid, M).
 
 gridLine('FALSE', LineGrid, M) :-
     length(LineGrid, M).
 
-generateGrid(0-_, Grid, Grid, _) :- !.
+generateGrid(0-_, Grid, Grid, _).
 generateGrid(N-M, Aux, Grid, ReadInput) :-
     gridLine(ReadInput, LineGrid, M),
     append(Aux, [LineGrid], NewAux),
     NewN is N - 1,
     generateGrid(NewN-M, NewAux, Grid, ReadInput).
 
-cNote(N, M) :-
-    generateGrid(N-M, [], InputGrid, 'TRUE'), % Read Input Puzzle
-    generateGrid(N-M, [], DynamicGrid, 'FALSE'), % Generate Dynamic List
-    generateGrid(N-M, [], DigitGrid, 'FALSE'), % Generate Digit List
+cNote(N, M, InputGrid, DynamicGrid, DigitGrid) :-
     % write(DynamicGrid),
     applyConstraints(InputGrid, DigitGrid, DynamicGrid),
     flattenGrid(DynamicGrid, [], ResultGrid),
     reset_timer,
     % time_out(labeling([], ResultGrid), 1000, Res),
     % write(Res),
-     
     labeling([time_out(5000, Flag)], ResultGrid),
     finalCNote(Flag, InputGrid, ResultGrid, N, M).
    
     
-cNote(_, _) :- write('No solution found!'), nl.
+cNote(_, _, _, _, _) :- write('No solution found!'), nl.
 
 finalCNote(success, InputGrid, ResultGrid, N, M) :-
     print_time,
@@ -118,4 +114,7 @@ solveCNote :-
     getDimension(N),
     write('Insert Number of Columns: '),
     getDimension(M),
-    !, cNote(N, M).
+    generateGrid(N-M, [], InputGrid, 'TRUE'), % Read Input Puzzle
+    generateGrid(N-M, [], DynamicGrid, 'FALSE'), % Generate Dynamic List
+    generateGrid(N-M, [], DigitGrid, 'FALSE'), % Generate Digit List
+    !, cNote(N, M, InputGrid, DynamicGrid, DigitGrid).
