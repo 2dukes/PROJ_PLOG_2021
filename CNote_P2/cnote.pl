@@ -1,6 +1,5 @@
 :- use_module(library(lists)).
 :- use_module(library(clpfd)).
-:- use_module(library(timeout)).
 :- consult('utils.pl').
 
 % Number unmodified
@@ -55,15 +54,23 @@ cNote(N, M) :-
     reset_timer,
     % time_out(labeling([], ResultGrid), 1000, Res),
     % write(Res),
-    trace,
-    labeling([time_out(1000, time_out)], ResultGrid),
+     
+    labeling([time_out(5000, Flag)], ResultGrid),
+    finalCNote(Flag, InputGrid, ResultGrid, N, M).
+   
+    
+cNote(_, _) :- write('No solution found!'), nl.
+
+finalCNote(success, InputGrid, ResultGrid, N, M) :-
     print_time,
 	fd_statistics,
     write(ResultGrid),nl,
     flattenGrid(InputGrid, [], Input),
     presentResult(Input, ResultGrid, N, M, M).
-    
-cNote(_, _) :- write('No solution found!'), nl.
+
+finalCNote(time_out, _, _, _, _) :-
+    write('No solutions found withing 5s!'), nl.
+
 % 18 | 8 
 % 18 % 10  = 8 -> LEFT
 % 81 % 10 != 8 -> RIGHT
@@ -100,7 +107,7 @@ applyConstraints(Prob, Sol, Res) :- % Input | Digits | Result
     nth1(1, Prob, Line),
     length(Line, Ncols),
     applySumConstraintsColumns(Res, Ncols).
-    
+  
 flattenGrid([], Result, Result).
 flattenGrid([Line|Rest], Aux, Result) :-
     append(Aux, Line, NewAux),
@@ -111,4 +118,4 @@ solveCNote :-
     getDimension(N),
     write('Insert Number of Columns: '),
     getDimension(M),
-    cNote(N, M).
+    !, cNote(N, M).

@@ -130,21 +130,21 @@ initial([
     [                                     empty,   empty,   empty],                         %2
     [                                empty,    empty,   empty,  empty],                     %3
     [                           empty,    empty,    empty,   empty,   empty],               %4
-    [                      empty,    empty,    empty,   empty,   empty,   empty],           %5
-    [                          empty,     empty,   empty,   empty,    empty],               %6
-    [                      empty,    empty,    empty,   empty,   empty,   empty],           %7 
-    [                 empty,   empty,     empty,   empty,   empty,    empty,   empty],      %8
-    [                      empty,    empty,    empty,   empty,  empty,   empty],           %9
-    [                 empty,   empty,     empty,    empty,   empty,    empty,   empty],      %10
+    [                      empty,    empty,    empty,   empty,   empty,   purple],           %5
+    [                          empty,     empty,   empty,   empty,    purple],               %6
+    [                      empty,    empty,    empty,   empty,   purple,   empty],           %7 
+    [                 empty,   empty,     empty,   empty,   purple,    empty,   empty],      %8
+    [                      empty,    empty,    empty,   purple,  empty,   empty],           %9
+    [                 empty,   empty,     empty,    purple,   empty,    empty,   empty],      %10
     [                      empty,    empty,    empty,   empty,  empty,   empty],           %11
-    [                 empty,   empty,     empty,   empty,     empty,    empty,   empty],      %12
-    [                      empty,    empty,    empty,   empty,  empty,   empty],           %13
-    [                 empty,   empty,     empty,   empty,     empty,    empty,   empty],      %14
-    [                      empty,    empty,    empty,   empty,   empty,   empty],           %15
-    [                 empty,   empty,     empty,   empty,     empty,    empty,   empty],      %16
-    [                      empty,    empty,    empty,   empty,   empty,   empty],           %17
-    [                           empty,    empty,   empty,    empty,   empty],               %18
-    [                      empty,    empty,    empty,   empty,   empty,   empty],           %19
+    [                 purple,   empty,     empty,   purple,     empty,    empty,   empty],      %12
+    [                      purple,    empty,    purple,   empty,  empty,   purple],           %13
+    [                 empty,   purple,     empty,   empty,     empty,    purple,   empty],      %14
+    [                      empty,    purple,    purple,   empty,   purple,   empty],           %15
+    [                 empty,   empty,     purple,   empty,     purple,    empty,   empty],      %16
+    [                      empty,    purple,    empty,   purple,   empty,   empty],           %17
+    [                           empty,    empty,   purple,    empty,   empty],               %18
+    [                      empty,    purple,    empty,   empty,   empty,   empty],           %19
     [                           empty,    empty,   empty,   empty,   empty],                %20
     [                                empty,    empty,   empty,   empty],                    %21
     [                                     empty,   empty,   empty],                         %22
