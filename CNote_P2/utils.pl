@@ -61,7 +61,13 @@ print_time :-
 	TS is ((T//10)*10)/1000,
 	nl, write('Time: '), write(TS), write('s'), nl, nl.
 
-selRandom(Var, Rest, BB0, BB1):- % seleciona valor de forma aleatória
+readPuzzleInput(N, M) :-
+    write('Insert Number of Lines: '),
+    getDimension(N),
+    write('Insert Number of Columns: '),
+    getDimension(M).
+
+selRandom(Var, _, BB0, BB1):- % seleciona valor de forma aleatória
     fd_set(Var, Set), fdset_to_list(Set, List),
     random_member(Value, List), % da library(random)
     ( first_bound(BB0, BB1), Var #= Value ;

@@ -103,10 +103,7 @@ flattenGrid([Line|Rest], Aux, Result) :-
     flattenGrid(Rest, NewAux, Result).
 
 solveCNote :-
-    write('Insert Number of Lines: '),
-    getDimension(N),
-    write('Insert Number of Columns: '),
-    getDimension(M),
+    readPuzzleInput(N, M),
     generateGrid(N-M, [], InputGrid, 'TRUE'), % Read Input Puzzle
     generateGrid(N-M, [], DynamicGrid, 'FALSE'), % Generate Dynamic List
     generateGrid(N-M, [], DigitGrid, 'FALSE'), % Generate Digit List
@@ -115,10 +112,7 @@ solveCNote :-
     finalCNote(Flag, InputGrid, ResultGrid, N, M).
 
 generateCNote :-
-    write('Insert Number of Lines: '),
-    getDimension(N),
-    write('Insert Number of Columns: '),
-    getDimension(M),
+    readPuzzleInput(N, M),
     generateGrid(N-M, [], InputGrid, 'FALSE'), % Read Input Puzzle
     generateGrid(N-M, [], DynamicGrid, 'FALSE'), % Generate Dynamic List
     generateGrid(N-M, [], DigitGrid, 'FALSE'), % Generate Digit List
@@ -135,7 +129,7 @@ finalCNote(success, InputGrid, ResultGrid, N, M) :-
     presentResult(Input, ResultGrid, N, M, M).
 
 finalCNote(time_out, _, _, _, _) :-
-    write('No solutions found withing 5s!'), nl.
+    nl, write('No solutions found withing 5s!'), nl.
 
 finalCNote(nosolutions, _, _, _, _) :-
-    write('No solutions found!'), nl.
+    nl, write('No solutions found!'), nl.
