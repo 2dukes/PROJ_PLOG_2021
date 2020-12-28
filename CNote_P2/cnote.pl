@@ -50,6 +50,8 @@ cNote(InputGrid, DynamicGrid, DigitGrid, ResultGrid, Flag, Timeout) :-
     applyConstraints(InputGrid, DigitGrid, DynamicGrid),
     flattenGrid(DynamicGrid, [], ResultGrid),
     reset_timer,
+    % findall(ResultGrid, labeling([time_out(500,success)], ResultGrid), Solutions),
+    % write(Solutions).
     labeling([time_out(Timeout, Flag)], ResultGrid).
    
 cNote(_, _, _, _, nosolutions, _).
@@ -107,6 +109,31 @@ solveCNote :-
     !,
     cNote(InputGrid, DynamicGrid, DigitGrid, ResultGrid, Flag, 5000),
     finalCNote(Flag, InputGrid, ResultGrid, N, M, true).
+
+generateCNote :-
+    write('Insert Number of Lines: '),
+    getDimension(N),
+    write('Insert Number of Columns: '),
+    getDimension(M),
+    generateGrid(N-M, [], InputGrid, 'FALSE'), % Read Input Puzzle
+    generateGrid(N-M, [], DynamicGrid, 'FALSE'), % Generate Dynamic List
+    generateGrid(N-M, [], DigitGrid, 'FALSE'), % Generate Digit List
+    % !,
+    % cNote(InputGrid, DynamicGrid, DigitGrid, ResultGrid, Flag, 5000),
+    applyConstraints(InputGrid, DigitGrid, DynamicGrid),
+    flattenGrid(DynamicGrid, [], ResultGrid),
+    reset_timer,
+    % findall(ResultGrid, labeling([time_out(500,success)], ResultGrid), Solutions),
+    % write(Solutions).
+    labeling([value(mySelValores)], ResultGrid),
+    finalCNote(Flag, InputGrid, ResultGrid, N, M, true).
+    
+selRandom(Var, Rest, BB0, BB1):- % seleciona valor de forma aleatória
+    fd_set(Var, Set), fdset_to_list(Set, List),
+    random_member(Value, List), % da library(random)
+    ( first_bound(BB0, BB1), Var #= Value ;
+    later_bound(BB0, BB1), Var #\= Value ).
+
 
 finalCNote(success, InputGrid, ResultGrid, N, M, true) :-
     print_time,
