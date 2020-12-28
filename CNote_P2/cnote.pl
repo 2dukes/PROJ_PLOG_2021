@@ -125,7 +125,7 @@ generateCNote :-
     reset_timer,
     % findall(ResultGrid, labeling([time_out(500,success)], ResultGrid), Solutions),
     % write(Solutions).
-    labeling([value(mySelValores)], ResultGrid),
+    labeling([value(selRandom)], ResultGrid),
     finalCNote(Flag, InputGrid, ResultGrid, N, M, true).
     
 selRandom(Var, Rest, BB0, BB1):- % seleciona valor de forma aleatória
