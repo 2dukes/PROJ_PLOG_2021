@@ -65,7 +65,8 @@ labelCNote(ResultGrid, _, _, generatePuzzle) :-
 % 81 % 10 != 8 -> RIGHT
 
 applyConstraintsLine([], [], []).
-applyConstraintsLine([H|T], [S|T2], [R|T1]) :- % Input | Digits | Result    
+applyConstraintsLine([H|T], [S|T2], [R|T1]) :- % Input | Digits | Result 
+    H in 1..9,
     S in 0..9,                      
     R in 1..99,                                                                              % / \
     R #= H*10 + S #\/ R #= S*10 + H, %#\/ (R #= H #/\ S #= 0), #atencao caso q n se mete nada / ! \
