@@ -41,20 +41,17 @@ getLineAux(Line, M) :-
     catch(read(Line), _, fail),
     read_line(_),
     Line = [_|_],
-    length(Line, M).
+    length(Line, M),
+    checkValidRow(Line).
 
 getLineAux(_, _) :-
     write('Invalid Line. Please try again.'), nl,
     fail.
 
-% % Lê um inteiro sem deteção de erros
-% getNewInt(Int) :-
-%     (
-%         catch(read(Int), _, true),
-%         read_line(_),
-%         integer(Int),
-%         nl
-%     ).
+checkValidRow([]).
+checkValidRow([H | T]) :-
+    H >= 1 , H =< 9,
+    checkValidRow(T).
 
 % Lê um carater
 getChar(Char) :-
