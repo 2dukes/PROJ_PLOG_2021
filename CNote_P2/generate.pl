@@ -1,28 +1,81 @@
-# generateRow(0, Result, Result) :- !.
-# generateRow(M, Aux, Result) :-
-#     random(1, 10, Random),
-#     append(Aux, [Random], NewAux),
-#     NewM is M - 1,
-#     generateRow(NewM, NewAux, Result).
+%  Hard coded Puzzles
+puzzle(1, 
+    [
+            [8, 7, 8],
+            [3, 1, 2],
+            [2, 7, 2]
+    ]).
 
-# geneRandomPuzzleLines(0, _, Result, Result) :- !.
-# geneRandomPuzzleLines(N, M, Aux, Result) :-
-#     generateRow(M, [], ResultRow),
-#     append(Aux, [ResultRow], NewAux),
-#     NewN is N - 1,
-#     geneRandomPuzzleLines(NewN, M, NewAux, Result).
-
-# printR(success, true).
-# printR(_, false).
-
-# % [[1, 2], [3, 4]]
-# generateRandomPuzzle(N, M) :- 
-#     repeat, 
-#     geneRandomPuzzleLines(N, M, [], InputPuzzle), % Input Grid
-#     generateGrid(N-M, [], DynamicGrid, 'FALSE'), % Generate Dynamic List
-#     generateGrid(N-M, [], DigitGrid, 'FALSE'), % Generate Digit List
+puzzle(2, 
+    [
+        [8, 7, 8],
+        [3, 1, 2],
+        [2, 7, 2]
+    ]).
     
-#     cNote(InputPuzzle, DynamicGrid, DigitGrid, ResultGrid, Flag, 500),
-#     printR(Flag, PrintResult),
-#     finalCNote(Flag, InputPuzzle, ResultGrid, N, M, PrintResult).
-#     % write(ResultPuzzle).
+
+puzzle(3, 
+    [
+        [1, 1, 6],
+        [2, 7, 9],
+        [3, 2, 4]
+    ]).
+
+
+puzzle(4, [
+        [7, 5, 1],
+        [2, 7, 2],
+        [9, 4, 7]
+    ]).
+    
+puzzle(5, [
+        [4, 6, 5],
+        [8, 2, 5],
+        [7, 1, 8]
+    ]).
+
+puzzle(6, [
+        [4, 9, 7],
+        [6, 2, 4],
+        [5, 7, 4]
+    ]).
+
+puzzle(7,
+    [
+        [4, 3, 6],
+        [3, 3, 9],
+        [4, 3, 7]
+    ]).
+
+puzzle(8,
+    [
+        [1, 4, 7],
+        [9, 7, 3],
+        [9, 6, 2]
+    ]).
+
+puzzle(9, [
+        [7, 3, 9],
+        [8, 2, 5],
+        [7, 1, 8]
+    ]).    
+
+puzzle(10, 
+    [
+        [1, 2, 1],
+        [2, 7, 8],
+        [6, 2, 5]
+    ]).
+
+puzzle(11, [
+        [9, 1, 8],
+        [8, 7, 6],
+        [7, 2, 4]
+    ]).
+
+puzzle(12, 
+    [
+        [2, 8, 2],
+        [1, 4, 7],
+        [9, 5, 6]
+    ]).
