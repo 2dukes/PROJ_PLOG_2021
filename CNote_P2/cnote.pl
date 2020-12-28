@@ -58,8 +58,11 @@ cNote(_, _, _, _, nosolutions, _, _).
 labelCNote(ResultGrid, Timeout, Flag, solvePuzzle) :-
     labeling([time_out(Timeout, Flag)], ResultGrid).
    
-labelCNote(ResultGrid, _, _, generatePuzzle) :-
-    labeling([value(selRandom)], ResultGrid).
+labelCNote(ResultGrid, Timeout, Flag, generatePuzzle) :-
+    labeling([time_out(Timeout, Flag), value(selRandom), variable(selRandomAgain)], ResultGrid).
+
+selRandomAgain(ListOfVars, Var, Rest):-
+    random_select(Var, ListOfVars, Rest). % da library(random)
 
 % 18 | 8 
 % 18 % 10  = 8 -> LEFT
@@ -121,7 +124,7 @@ generateCNote :-
     generateGrid(N-M, [], DynamicGrid, 'FALSE'), % Generate Dynamic List
     generateGrid(N-M, [], DigitGrid, 'FALSE'), % Generate Digit List
     !,
-    cNote(InputGrid, DynamicGrid, DigitGrid, ResultGrid, Flag, _, generatePuzzle),
+    cNote(InputGrid, DynamicGrid, DigitGrid, ResultGrid, Flag, 5000, generatePuzzle),
     finalCNote(Flag, InputGrid, ResultGrid, N, M).
 
 % Solve one of the hard coded puzzles
@@ -143,7 +146,7 @@ finalCNote(success, InputGrid, ResultGrid, N, M) :-
     presentResult(Input, ResultGrid, N, M, M).
 
 finalCNote(time_out, _, _, _, _) :-
-    nl, write('No solutions found withing 5s!'), nl.
+    nl, write('No solutions found within 5s!'), nl.
 
 finalCNote(nosolutions, _, _, _, _) :-
     nl, write('No solutions found!'), nl.
