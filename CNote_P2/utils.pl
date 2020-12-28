@@ -13,6 +13,14 @@ getIntAux(_) :-
     write('Invalid input! Please try again.'), nl,
     fail.
 
+getNewInt(Int) :-
+    (
+        catch(read(Int), _, true),
+        read_line(_),
+        integer(Int),
+        nl
+    ).
+
 getDimension(N) :-
     repeat,
     getDimensionAux(N), !.

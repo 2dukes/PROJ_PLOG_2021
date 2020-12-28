@@ -2,7 +2,8 @@
 :- use_module(library(clpfd)).
 :- use_module(library(random)).
 :- consult('utils.pl').
-% :- consult('generate.pl').
+:- consult('generate.pl').
+:- consult('menu.pl').
 
 % Number unmodified
 presentNum(_, _, Number) :-
@@ -81,8 +82,8 @@ applySumConstraintsLines([Prob|ProbRest], [Sol|SolRest], [Line|Rest]) :-
 % [[1, 2], [3, 4]]
 applySumConstraintsColumns(_, 0) :- !.
 applySumConstraintsColumns(Grid, Ncol) :-
-    applySumConstraintsColumnsAux(Grid, Ncol, [], Result),
-    sum(Result, #=, 100),
+    applySumConstraintsColumnsAux(Grid, Ncol, [], Column),
+    sum(Column, #=, 100),
     NewNcol is Ncol - 1,
     applySumConstraintsColumns(Grid, NewNcol).
 
@@ -103,6 +104,7 @@ flattenGrid([Line|Rest], Aux, Result) :-
     append(Aux, Line, NewAux),
     flattenGrid(Rest, NewAux, Result).
 
+% Solve puzzle given by the user
 solveCNote :-
     readPuzzleInput(N, M),
     generateGrid(N-M, [], InputGrid, 'TRUE'), % Read Input Puzzle
@@ -112,6 +114,7 @@ solveCNote :-
     cNote(InputGrid, DynamicGrid, DigitGrid, ResultGrid, Flag, 5000, solvePuzzle),
     finalCNote(Flag, InputGrid, ResultGrid, N, M).
 
+% Generate a random puzzle
 generateCNote :-
     readPuzzleInput(N, M),
     generateGrid(N-M, [], InputGrid, 'FALSE'), % Read Input Puzzle
@@ -121,11 +124,21 @@ generateCNote :-
     cNote(InputGrid, DynamicGrid, DigitGrid, ResultGrid, Flag, _, generatePuzzle),
     finalCNote(Flag, InputGrid, ResultGrid, N, M).
 
+% Solve one of the hard coded puzzles
+hardCNote :-
+    write('Insert the puzzle number: '),
+    getInt(PuzzleN),
+    puzzle(PuzzleN, N, M, InputGrid), % Selected Puzzle
+    generateGrid(N-M, [], DynamicGrid, 'FALSE'), % Generate Dynamic List
+    generateGrid(N-M, [], DigitGrid, 'FALSE'), % Generate Digit List
+    !,
+    write(InputGrid),
+    cNote(InputGrid, DynamicGrid, DigitGrid, ResultGrid, Flag, 5000, solvePuzzle),
+    finalCNote(Flag, InputGrid, ResultGrid, N, M).
 
 finalCNote(success, InputGrid, ResultGrid, N, M) :-
     print_time,
 	fd_statistics,
-    write(ResultGrid),nl,
     flattenGrid(InputGrid, [], Input),
     presentResult(Input, ResultGrid, N, M, M).
 
@@ -134,3 +147,6 @@ finalCNote(time_out, _, _, _, _) :-
 
 finalCNote(nosolutions, _, _, _, _) :-
     nl, write('No solutions found!'), nl.
+
+cnote :-
+    mainMenu.

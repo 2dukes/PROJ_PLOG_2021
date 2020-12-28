@@ -101,11 +101,11 @@ printMainMenu :-
     nl, nl,
     write(' ________________________________________________________________ '), nl,
     write('|                                                                |'), nl,
-    write('|               _   _ _ _                                        |'), nl,
-    write('|              /_\\ | | (_) __ _ _ __   ___ ___  ___              |'), nl,
-    write('|             //_\\\\| | | |/ _` |  _ \\ / __/ _ \\/ __|             |'), nl,
-    write('|            /  _  \\ | | | (_| | | | | (_|  __/\\__ \\             |'), nl,
-    write('|            \\_/ \\_/_|_|_|\\__,_|_| |_|\\___\\___||___/             |'), nl,
+    write('|                                                                |'), nl,
+    write('|              / __\\ /\\ \\ \\___ | |_ ___                      |'), nl,
+    write('|             / /   /  \\/ / _ \\| __/ _ \\                      |'), nl,
+    write('|            / /___/ /\\  / (_) | ||  __/                        |'), nl,
+    write('|            \\____/\\_\\ \\/ \\___/ \\__\\___|                  |'), nl,
     write('|                                                                |'), nl,
     write('|                                                                |'), nl,                                           
     write('|                         Davide Castro                          |'), nl,  
@@ -113,14 +113,13 @@ printMainMenu :-
     write('|                            Rui Pinto                           |'), nl,
     write('|================================================================|'), nl,              
     write('|                                                                |'), nl,
-    write('|                    1. Player   vs  Player                      |'), nl,
-    write('|                    2. Player   vs  Computer                    |'), nl,
+    write('|                    1. Solve Puzzle                             |'), nl,
+    write('|                    2. Generate Puzzle                         |'), nl,
     write('|                    3. Computer vs  Player                      |'), nl,
-    write('|                    4. Computer vs  Computer                    |'), nl,
     write('|                                                                |'), nl,
     write('|                         5. How to play                         |'), nl,
     write('|                            0. Exit                             |'), nl,     
-    write('|________________________________________________________________|'), nl.                                                                 
+    write('|________________________________________________________________|'), nl.                                                                                                                               
 
 % (Ogre)
 %        _ _ _                            
