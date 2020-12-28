@@ -2,7 +2,7 @@
 :- use_module(library(clpfd)).
 :- use_module(library(random)).
 :- consult('utils.pl').
-:- consult('generate.pl').
+% :- consult('generate.pl').
 
 % Number unmodified
 presentNum(_, _, Number) :-
@@ -46,15 +46,19 @@ generateGrid(N-M, Aux, Grid, ReadInput) :-
     NewN is N - 1,
     generateGrid(NewN-M, NewAux, Grid, ReadInput).
 
-cNote(InputGrid, DynamicGrid, DigitGrid, ResultGrid, Flag, Timeout) :-
+cNote(InputGrid, DynamicGrid, DigitGrid, ResultGrid, Flag, Timeout, Option) :-
     applyConstraints(InputGrid, DigitGrid, DynamicGrid),
     flattenGrid(DynamicGrid, [], ResultGrid),
     reset_timer,
-    % findall(ResultGrid, labeling([time_out(500,success)], ResultGrid), Solutions),
-    % write(Solutions).
+    labelCNote(ResultGrid, Timeout, Flag, Option).
+
+cNote(_, _, _, _, nosolutions, _, _).
+
+labelCNote(ResultGrid, Timeout, Flag, solvePuzzle) :-
     labeling([time_out(Timeout, Flag)], ResultGrid).
    
-cNote(_, _, _, _, nosolutions, _).
+labelCNote(ResultGrid, _, _, generatePuzzle) :-
+    labeling([value(selRandom)], ResultGrid).
 
 % 18 | 8 
 % 18 % 10  = 8 -> LEFT
@@ -63,7 +67,7 @@ cNote(_, _, _, _, nosolutions, _).
 applyConstraintsLine([], [], []).
 applyConstraintsLine([H|T], [S|T2], [R|T1]) :- % Input | Digits | Result    
     S in 0..9,                      
-    R in 1..99,                                                                             % / \
+    R in 1..99,                                                                              % / \
     R #= H*10 + S #\/ R #= S*10 + H, %#\/ (R #= H #/\ S #= 0), #atencao caso q n se mete nada / ! \
     applyConstraintsLine(T, T2, T1).                                                       % /_____\
 
@@ -107,8 +111,8 @@ solveCNote :-
     generateGrid(N-M, [], DynamicGrid, 'FALSE'), % Generate Dynamic List
     generateGrid(N-M, [], DigitGrid, 'FALSE'), % Generate Digit List
     !,
-    cNote(InputGrid, DynamicGrid, DigitGrid, ResultGrid, Flag, 5000),
-    finalCNote(Flag, InputGrid, ResultGrid, N, M, true).
+    cNote(InputGrid, DynamicGrid, DigitGrid, ResultGrid, Flag, 5000, solvePuzzle),
+    finalCNote(Flag, InputGrid, ResultGrid, N, M).
 
 generateCNote :-
     write('Insert Number of Lines: '),
@@ -118,32 +122,20 @@ generateCNote :-
     generateGrid(N-M, [], InputGrid, 'FALSE'), % Read Input Puzzle
     generateGrid(N-M, [], DynamicGrid, 'FALSE'), % Generate Dynamic List
     generateGrid(N-M, [], DigitGrid, 'FALSE'), % Generate Digit List
-    % !,
-    % cNote(InputGrid, DynamicGrid, DigitGrid, ResultGrid, Flag, 5000),
-    applyConstraints(InputGrid, DigitGrid, DynamicGrid),
-    flattenGrid(DynamicGrid, [], ResultGrid),
-    reset_timer,
-    % findall(ResultGrid, labeling([time_out(500,success)], ResultGrid), Solutions),
-    % write(Solutions).
-    labeling([value(selRandom)], ResultGrid),
-    finalCNote(Flag, InputGrid, ResultGrid, N, M, true).
-    
-selRandom(Var, Rest, BB0, BB1):- % seleciona valor de forma aleatória
-    fd_set(Var, Set), fdset_to_list(Set, List),
-    random_member(Value, List), % da library(random)
-    ( first_bound(BB0, BB1), Var #= Value ;
-    later_bound(BB0, BB1), Var #\= Value ).
+    !,
+    cNote(InputGrid, DynamicGrid, DigitGrid, ResultGrid, Flag, _, generatePuzzle),
+    finalCNote(Flag, InputGrid, ResultGrid, N, M).
 
 
-finalCNote(success, InputGrid, ResultGrid, N, M, true) :-
+finalCNote(success, InputGrid, ResultGrid, N, M) :-
     print_time,
 	fd_statistics,
     write(ResultGrid),nl,
     flattenGrid(InputGrid, [], Input),
     presentResult(Input, ResultGrid, N, M, M).
 
-finalCNote(time_out, _, _, _, _, true) :-
+finalCNote(time_out, _, _, _, _) :-
     write('No solutions found withing 5s!'), nl.
 
-finalCNote(nosolutions, _, _, _, _, true) :-
+finalCNote(nosolutions, _, _, _, _) :-
     write('No solutions found!'), nl.
