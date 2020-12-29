@@ -1,0 +1,27 @@
+5x5- 	time- 0.0s
+	back- 373
+	constraints- 110
+
+7x7-	time- 0.0s
+	back- 155
+	const- 210
+
+9x9- 	time- 1.57s
+	back- 203365
+	const- 342
+
+11x11-	time-0.0s
+	back- 1284
+	const- 506
+
+13x13 - time- 0.03s
+	back- 4284
+	const- 1404
+
+15x15- 	time- 0.01s
+	back- 2300
+	const- 930
+
+17x17- 	time- 0.01s
+	back- 543
+	const- 2289
