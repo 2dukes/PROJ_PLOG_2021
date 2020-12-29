@@ -56,7 +56,7 @@ cNote(InputGrid, DynamicGrid, DigitGrid, ResultGrid, Flag, Timeout, Option) :-
 cNote(_, _, _, _, nosolutions, _, _).
 
 labelCNote(ResultGrid, Timeout, Flag, solvePuzzle) :-
-    labeling([time_out(Timeout, Flag)], ResultGrid).
+    labeling([ff], ResultGrid).
    
 labelCNote(ResultGrid, Timeout, Flag, generatePuzzle) :-
     labeling([time_out(Timeout, Flag), value(selRandom), variable(selRandomAgain)], ResultGrid).
