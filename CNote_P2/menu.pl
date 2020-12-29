@@ -1,4 +1,4 @@
-
+% Main menu predicate
 mainMenu :-
     repeat,
     (
@@ -6,39 +6,41 @@ mainMenu :-
         \+manageInput(Input) 
     ).
 
-% Verifica se o input do menu é válido
+% Checks if menu input is valid
 checkInput(Input) :-
     printMainMenu,
     repeat,
     (checkInputAux(Input)), !. 
 
+% Checks if inserted option is within the given range
 checkInputAux(Input) :-
     askMenuOption,
     getNewInt(Input),
     Input >= 0,
     Input =< 4, !.
 
+% When an error occurs regarding a user input
 checkInputAux(_) :- 
     nl, write('ERROR: Invalid Option!'), nl, nl, 
     fail.
 
-% Prompt da nova opção a inserir
+% Prompt for menu option
 askMenuOption :-
     write('> Insert your option ').  
 
 manageInput(0, _) :- % Exit
     write('\nExiting...\n\n'), fail.
 
-manageInput(1) :- % Inserir puzzle e resolver
+manageInput(1) :- % Insert puzzle and solve
     solveCNote.
 
-manageInput(2) :- % Gerar puzzle dinamicamente e resolver
+manageInput(2) :- % Generate puzzle dynamically and solve
     generateCNote.
 
-manageInput(3) :- % Escolher puzzle e resolver
+manageInput(3) :- % Choose puzzle and solve
     hardCNote.
 
-manageInput(4) :-
+manageInput(4) :- % About
     nl,
     write('._______________________________________________________________.'), nl,
     write('|                                                               |'), nl,                                        
@@ -51,7 +53,7 @@ manageInput(4) :-
     write('|_______________________________________________________________|'), nl,
     getChar(_).
 
-% Menu Principal
+% Main Menu
 printMainMenu :-
     nl, nl,
     write(' ________________________________________________________________ '), nl,

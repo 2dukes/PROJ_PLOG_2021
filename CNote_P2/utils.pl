@@ -1,4 +1,4 @@
-% Lê um inteiro com deteção de erros
+% Reads an integer with error detection
 getInt(Int) :- 
     repeat,
     getIntAux(Int).
@@ -21,6 +21,7 @@ getNewInt(Int) :-
         nl
     ).
 
+% Reads the dimension grid 
 getDimension(N) :-
     repeat,
     getDimensionAux(N), !.
@@ -32,11 +33,12 @@ getDimensionAux(N) :-
 getDimensionAux(_) :-
     write('Invalid dimension. Please try again.'), nl,
     fail.
-
+% Reads a grid line
 getLine(Line, M) :-
     repeat,
     getLineAux(Line, M).
 
+% Checks if the grid's line is indeed a list with M length and with values in [1, 9]
 getLineAux(Line, M) :-
     catch(read(Line), _, fail),
     read_line(_),
@@ -48,32 +50,40 @@ getLineAux(_, _) :-
     write('Invalid Line. Please try again.'), nl,
     fail.
 
+% Check if a given row is valid
 checkValidRow([]).
 checkValidRow([H | T]) :-
     H >= 1 , H =< 9,
     checkValidRow(T).
 
-% Lê um carater
+% Reads a single character
 getChar(Char) :-
     get_char(Char),
     read_line(Line),!,
     (Line == ""; Line == "."),
     nl.
 
-reset_timer :- statistics(walltime,_).	
+% Reset labeling timer
+reset_timer :- statistics(walltime,_).
+
+% Print the labeling time on the screen	
 print_time :-
 	statistics(walltime,[_,T]),
 	TS is ((T//10)*10)/1000,
 	nl, write('Time: '), write(TS), write('s'), nl, nl.
 
-readPuzzleInput(N, M) :-
-    write('Insert Number of Lines: '),
-    getDimension(N),
-    write('Insert Number of Columns: '),
-    getDimension(M).
+% Get puzzle grid dimension from user input
+readPuzzleInput(N, N) :-
+    write('Insert Number of Lines/Columns: '),
+    getDimension(N).
 
-selRandom(Var, _, BB0, BB1):- % seleciona valor de forma aleatória
+% Selects value randomly
+selRandomValue(Var, _, BB0, BB1):- 
     fd_set(Var, Set), fdset_to_list(Set, List),
-    random_member(Value, List), % da library(random)
+    random_member(Value, List),
     ( first_bound(BB0, BB1), Var #= Value ;
     later_bound(BB0, BB1), Var #\= Value ).
+
+% Selects a random variable
+selRandomVariable(ListOfVars, Var, Rest):-
+    random_select(Var, ListOfVars, Rest). 
