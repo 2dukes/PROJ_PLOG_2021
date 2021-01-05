@@ -63,7 +63,7 @@ cNote(_, _, _, _, nosolutions, _, _).
 
 % Labeling (solver)
 labelCNote(ResultGrid, _, _, solvePuzzle) :-
-    labeling([ff, ffc], ResultGrid).
+    labeling([ffc], ResultGrid).
 
 % Labeling (generator)
 labelCNote(ResultGrid, Timeout, Flag, generatePuzzle) :-
